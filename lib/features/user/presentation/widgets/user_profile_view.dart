@@ -27,7 +27,7 @@ class UserProfileView extends StatelessWidget {
         preferredSize: const Size.fromHeight(80),
         child: ProfileAppBar(
           title: LocaleKeys.profileUserTitle,
-          showBackButton: true,
+          showBackButton: false,
           actions: [
             IconButton(
               onPressed: () =>

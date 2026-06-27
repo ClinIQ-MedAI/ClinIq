@@ -1,7 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:device_preview/device_preview.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -16,7 +14,6 @@ import 'package:cliniq/core/helpers/on_generate_routes.dart';
 import 'package:cliniq/core/services/custom_bloc_observer.dart';
 import 'package:cliniq/core/services/get_it_service.dart';
 import 'package:cliniq/core/utils/app_themes.dart';
-import 'package:cliniq/core/widgets/developer_overlay.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -33,10 +30,7 @@ Future<void> main() async {
       supportedLocales: const [Locale('en'), Locale('ar')],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
-      child: DevicePreview(
-        enabled: kDebugMode,
-        builder: (context) => const ProviderScope(child: ClinIq()),
-      ),
+      child: const ProviderScope(child: ClinIq()),
     ),
   );
 }
