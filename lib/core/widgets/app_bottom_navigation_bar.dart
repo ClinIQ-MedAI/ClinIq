@@ -65,7 +65,7 @@ class AppBottomNavigationBar extends StatelessWidget {
       case 2:
         return LocaleKeys.bottomNavigationBarAiChat;
       case 3:
-        return LocaleKeys.profileUserAilments; // Placeholder label for Chat
+        return LocaleKeys.bottomNavigationBarDoctorChat;
       case 4:
         return LocaleKeys.profileUserTitle;
       default:

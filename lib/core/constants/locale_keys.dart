@@ -86,6 +86,8 @@ abstract class LocaleKeys {
 
   // bottom_navigation_bar
   static const bottomNavigationBarAiChat = "bottom_navigation_bar.ai_chat";
+  static const bottomNavigationBarDoctorChat =
+      "bottom_navigation_bar.doctor_chat";
 
   // auth_login
   static const authLoginTitle = "auth_login.title";
@@ -224,6 +226,24 @@ abstract class LocaleKeys {
   static const homeSpecializationsDesc = "home.specializations_desc";
   static const homeDoctorsDesc = "home.doctors_desc";
   static const homeNewsDesc = "home.news_desc";
+
+  // chat
+  static const chatDoctorTitle = "chat.doctor.title";
+  static const chatDoctorSubtitle = "chat.doctor.subtitle";
+  static const chatDoctorEmptyTitle = "chat.doctor.empty_title";
+  static const chatDoctorEmptyDescription = "chat.doctor.empty_description";
+  static const chatDoctorMessage1 = "chat.doctor.message_1";
+  static const chatDoctorMessage2 = "chat.doctor.message_2";
+  static const chatDoctorMessage3 = "chat.doctor.message_3";
+  static const chatAiTitle = "chat.ai.title";
+  static const chatAiSubtitle = "chat.ai.subtitle";
+  static const chatAiEmptyTitle = "chat.ai.empty_title";
+  static const chatAiEmptyDescription = "chat.ai.empty_description";
+  static const chatAiMessage1 = "chat.ai.message_1";
+  static const chatAiMessage2 = "chat.ai.message_2";
+  static const chatAiMessage3 = "chat.ai.message_3";
+  static const chatInputHint = "chat.input_hint";
+  static const chatToday = "chat.today";
 
   // profile
   static const profileUserTitle = "profile.user.title";

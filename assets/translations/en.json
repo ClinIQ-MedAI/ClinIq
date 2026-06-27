@@ -48,7 +48,8 @@
         "invalid_birth_date": "Invalid birth date"
     },
     "bottom_navigation_bar": {
-        "ai_chat": "Ai Chat"
+        "ai_chat": "Ai Chat",
+        "doctor_chat": "Doctor Chat"
     },
     "onboarding": {
         "title_1": "Your Health, Our Priority",
@@ -175,6 +176,28 @@
         "specializations_desc": "Browse through our wide range of medical specialties.",
         "doctors_desc": "Expert physicians handpicked for your health needs.",
         "news_desc": "Discover insights and updates for a healthier lifestyle."
+    },
+    "chat": {
+        "doctor": {
+            "title": "Doctor Chat",
+            "subtitle": "Dr. Ahmed is available for follow-up care",
+            "empty_title": "Start your doctor conversation",
+            "empty_description": "Ask your doctor about your appointment, treatment plan, or follow-up instructions.",
+            "message_1": "Hello, I reviewed your latest appointment notes. How are you feeling today?",
+            "message_2": "I feel better, but I still have mild headaches in the morning.",
+            "message_3": "Please keep tracking the headache timing and drink enough water. We can adjust the plan if it continues."
+        },
+        "ai": {
+            "title": "AI Chat",
+            "subtitle": "Instant medical guidance assistant",
+            "empty_title": "Ask the AI assistant",
+            "empty_description": "Describe your symptoms or health question to get helpful guidance before your visit.",
+            "message_1": "Hi, I can help you understand symptoms, prepare questions, and organize your health notes.",
+            "message_2": "What should I track before my next doctor appointment?",
+            "message_3": "Track symptom timing, severity, medications, sleep, meals, and anything that makes symptoms better or worse."
+        },
+        "input_hint": "Type your message...",
+        "today": "Today"
     },
     "profile": {
         "user": {

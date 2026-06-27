@@ -39,4 +39,7 @@ class EndPoints {
       "Appointments/GetDoctorById/get-doctor-by-id";
   static const String bookAppointment =
       "Appointments/BookAppointment/book-appointment";
+
+  // chats 
+  static const String getConversations = "Chats/GetConversations";
 }
