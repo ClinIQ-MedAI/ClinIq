@@ -1,4 +1,5 @@
 import 'package:cliniq/core/api/end_points.dart';
+import 'package:cliniq/core/constants/locale_keys.dart';
 
 class DummyResponses {
   static dynamic getResponse(
@@ -330,7 +331,7 @@ class DummyResponses {
           int hour = 9 + (seed % 3) + j;
 
           selectedDoctors.add({
-            "id": "${seed}_${j}",
+            "id": "${seed}_$j",
             "doctorName": doc["name"],
             "doctorSpeciality": doc["spec"],
             "doctorImage": doc["img"],
@@ -457,6 +458,45 @@ class DummyResponses {
       case EndPoints.bookAppointment:
         return {"success": true, "message": "Appointment booked successfully"};
 
+      case EndPoints.getConversations:
+        return {
+          "success": true,
+          "message": "Conversations fetched successfully",
+          "data": _doctorConversations,
+        };
+
+      case EndPoints.getConversation:
+        final type = queryParameters?['type'] as String?;
+        return {
+          "success": true,
+          "message": "Conversation fetched successfully",
+          "data": type == "ai" ? _aiConversation : _doctorConversations.first,
+        };
+
+      case EndPoints.getConversationById:
+        final id = queryParameters?['id'] as String?;
+        return {
+          "success": true,
+          "message": "Conversation fetched successfully",
+          "data": _doctorConversations.firstWhere(
+            (conversation) => conversation['id'] == id,
+            orElse: () => _doctorConversations.first,
+          ),
+        };
+
+      case EndPoints.sendChatMessage:
+        return {
+          "success": true,
+          "message": "Message sent successfully",
+          "data": {
+            "id": "sent-message",
+            "content": "",
+            "sentAt": "Now",
+            "sender": "user",
+            "status": "delivered",
+          },
+        };
+
       default:
         return {
           "success": false,
@@ -464,4 +504,148 @@ class DummyResponses {
         };
     }
   }
+
+  static List<Map<String, dynamic>> get _doctorConversations => [
+    {
+      "id": "doctor-ahmed",
+      "type": "doctor",
+      "title": LocaleKeys.chatDoctorAhmedName,
+      "subtitle": LocaleKeys.chatDoctorAhmedSpecialty,
+      "emptyTitle": LocaleKeys.chatDoctorEmptyTitle,
+      "emptyDescription": LocaleKeys.chatDoctorEmptyDescription,
+      "lastMessage": LocaleKeys.chatDoctorMessage3,
+      "lastMessageTime": "09:34",
+      "unreadCount": 2,
+      "isTyping": true,
+      "isOnline": true,
+      "messages": [
+        {
+          "id": "doctor-ahmed-message-1",
+          "content": LocaleKeys.chatDoctorMessage1,
+          "sentAt": "09:30",
+          "sender": "doctor",
+          "status": "seen",
+        },
+        {
+          "id": "doctor-ahmed-message-2",
+          "content": LocaleKeys.chatDoctorMessage2,
+          "sentAt": "09:32",
+          "sender": "user",
+          "status": "seen",
+        },
+        {
+          "id": "doctor-ahmed-message-3",
+          "content": LocaleKeys.chatDoctorMessage3,
+          "sentAt": "09:34",
+          "sender": "doctor",
+          "status": "delivered",
+        },
+      ],
+    },
+    {
+      "id": "doctor-salma",
+      "type": "doctor",
+      "title": LocaleKeys.chatDoctorSalmaName,
+      "subtitle": LocaleKeys.chatDoctorSalmaSpecialty,
+      "emptyTitle": LocaleKeys.chatDoctorEmptyTitle,
+      "emptyDescription": LocaleKeys.chatDoctorEmptyDescription,
+      "lastMessage": LocaleKeys.chatDoctorSalmaMessage3,
+      "lastMessageTime": "08:12",
+      "unreadCount": 0,
+      "isOnline": false,
+      "messages": [
+        {
+          "id": "doctor-salma-message-1",
+          "content": LocaleKeys.chatDoctorSalmaMessage1,
+          "sentAt": "08:04",
+          "sender": "doctor",
+          "status": "seen",
+        },
+        {
+          "id": "doctor-salma-message-2",
+          "content": LocaleKeys.chatDoctorSalmaMessage2,
+          "sentAt": "08:08",
+          "sender": "user",
+          "status": "seen",
+        },
+        {
+          "id": "doctor-salma-message-3",
+          "content": LocaleKeys.chatDoctorSalmaMessage3,
+          "sentAt": "08:12",
+          "sender": "doctor",
+          "status": "seen",
+        },
+      ],
+    },
+    {
+      "id": "doctor-youssef",
+      "type": "doctor",
+      "title": LocaleKeys.chatDoctorYoussefName,
+      "subtitle": LocaleKeys.chatDoctorYoussefSpecialty,
+      "emptyTitle": LocaleKeys.chatDoctorEmptyTitle,
+      "emptyDescription": LocaleKeys.chatDoctorEmptyDescription,
+      "lastMessage": LocaleKeys.chatDoctorYoussefMessage3,
+      "lastMessageTime": "07:31",
+      "unreadCount": 1,
+      "isOnline": true,
+      "messages": [
+        {
+          "id": "doctor-youssef-message-1",
+          "content": LocaleKeys.chatDoctorYoussefMessage1,
+          "sentAt": "07:20",
+          "sender": "doctor",
+          "status": "seen",
+        },
+        {
+          "id": "doctor-youssef-message-2",
+          "content": LocaleKeys.chatDoctorYoussefMessage2,
+          "sentAt": "07:25",
+          "sender": "user",
+          "status": "delivered",
+        },
+        {
+          "id": "doctor-youssef-message-3",
+          "content": LocaleKeys.chatDoctorYoussefMessage3,
+          "sentAt": "07:31",
+          "sender": "doctor",
+          "status": "delivered",
+        },
+      ],
+    },
+  ];
+
+  static Map<String, dynamic> get _aiConversation => {
+    "id": "ai-assistant",
+    "type": "ai",
+    "title": LocaleKeys.chatAiTitle,
+    "subtitle": LocaleKeys.chatAiSubtitle,
+    "emptyTitle": LocaleKeys.chatAiEmptyTitle,
+    "emptyDescription": LocaleKeys.chatAiEmptyDescription,
+    "lastMessage": LocaleKeys.chatAiMessage3,
+    "lastMessageTime": "10:06",
+    "isOnline": true,
+    "messages": [
+      {
+        "id": "ai-message-1",
+        "content": LocaleKeys.chatAiMessage1,
+        "sentAt": "10:05",
+        "sender": "ai",
+        "status": "seen",
+      },
+      {
+        "id": "ai-message-2",
+        "content": LocaleKeys.chatAiMessage2,
+        "sentAt": "10:06",
+        "sender": "user",
+        "status": "delivered",
+      },
+      {
+        "id": "ai-message-3",
+        "content": LocaleKeys.chatAiMessage3,
+        "sentAt": "10:06",
+        "sender": "ai",
+        "status": "delivered",
+      },
+    ],
+  };
 }

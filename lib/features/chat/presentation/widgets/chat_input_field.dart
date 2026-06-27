@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatInputField extends StatefulWidget {
-  const ChatInputField({super.key});
+  const ChatInputField({super.key, this.bottomSpacing = 16});
+
+  final double bottomSpacing;
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -27,7 +29,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
     return SafeArea(
       top: false,
       child: Container(
-        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 16.h),
+        padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, widget.bottomSpacing.h),
         decoration: BoxDecoration(
           color: context.colorScheme.surface,
           boxShadow: [

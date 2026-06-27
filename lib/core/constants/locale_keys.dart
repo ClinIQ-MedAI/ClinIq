@@ -232,9 +232,24 @@ abstract class LocaleKeys {
   static const chatDoctorSubtitle = "chat.doctor.subtitle";
   static const chatDoctorEmptyTitle = "chat.doctor.empty_title";
   static const chatDoctorEmptyDescription = "chat.doctor.empty_description";
+  static const chatDoctorListEmptyTitle = "chat.doctor.list_empty_title";
+  static const chatDoctorListEmptyDescription =
+      "chat.doctor.list_empty_description";
+  static const chatDoctorAhmedName = "chat.doctor.ahmed_name";
+  static const chatDoctorAhmedSpecialty = "chat.doctor.ahmed_specialty";
+  static const chatDoctorSalmaName = "chat.doctor.salma_name";
+  static const chatDoctorSalmaSpecialty = "chat.doctor.salma_specialty";
+  static const chatDoctorYoussefName = "chat.doctor.youssef_name";
+  static const chatDoctorYoussefSpecialty = "chat.doctor.youssef_specialty";
   static const chatDoctorMessage1 = "chat.doctor.message_1";
   static const chatDoctorMessage2 = "chat.doctor.message_2";
   static const chatDoctorMessage3 = "chat.doctor.message_3";
+  static const chatDoctorSalmaMessage1 = "chat.doctor.salma_message_1";
+  static const chatDoctorSalmaMessage2 = "chat.doctor.salma_message_2";
+  static const chatDoctorSalmaMessage3 = "chat.doctor.salma_message_3";
+  static const chatDoctorYoussefMessage1 = "chat.doctor.youssef_message_1";
+  static const chatDoctorYoussefMessage2 = "chat.doctor.youssef_message_2";
+  static const chatDoctorYoussefMessage3 = "chat.doctor.youssef_message_3";
   static const chatAiTitle = "chat.ai.title";
   static const chatAiSubtitle = "chat.ai.subtitle";
   static const chatAiEmptyTitle = "chat.ai.empty_title";

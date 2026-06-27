@@ -24,7 +24,7 @@ class DummyApiConsumer extends ApiConsumer {
   }) async {
     log(data.toString());
     await Future.delayed(const Duration(seconds: 1));
-    return DummyResponses.getResponse(path);
+    return DummyResponses.getResponse(path, queryParameters: queryParameters);
   }
 
   @override
@@ -35,7 +35,7 @@ class DummyApiConsumer extends ApiConsumer {
     bool isFromData = false,
   }) async {
     await Future.delayed(const Duration(seconds: 1));
-    return DummyResponses.getResponse(path);
+    return DummyResponses.getResponse(path, queryParameters: queryParameters);
   }
 
   @override
@@ -46,6 +46,6 @@ class DummyApiConsumer extends ApiConsumer {
     bool isFromData = false,
   }) async {
     await Future.delayed(const Duration(seconds: 1));
-    return DummyResponses.getResponse(path);
+    return DummyResponses.getResponse(path, queryParameters: queryParameters);
   }
 }

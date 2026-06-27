@@ -40,6 +40,9 @@ class EndPoints {
   static const String bookAppointment =
       "Appointments/BookAppointment/book-appointment";
 
-  // chats 
+  // chats
   static const String getConversations = "Chats/GetConversations";
+  static const String getConversation = "Chats/GetConversation";
+  static const String getConversationById = "Chats/GetConversationById";
+  static const String sendChatMessage = "Chats/SendMessage";
 }

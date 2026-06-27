@@ -3,7 +3,6 @@ import 'package:cliniq/core/api/socket/socket_service.dart';
 import 'package:cliniq/core/api/dummy_api_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
-import 'package:cliniq/features/chat/data/data_sources/chat_dummy_data_source.dart';
 import 'package:cliniq/features/chat/data/repos_impl/chat_repo_impl.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
 import 'package:cliniq/features/home/data/repos_impl/home_repo_impl.dart';
@@ -44,7 +43,5 @@ Future<void> setupGetIt() async {
     AppointmentsRepoImpl(api: getIt<ApiConsumer>()),
   );
 
-  getIt.registerSingleton<ChatRepo>(
-    ChatRepoImpl(dataSource: ChatDummyDataSource()),
-  );
+  getIt.registerSingleton<ChatRepo>(ChatRepoImpl(api: getIt<ApiConsumer>()));
 }
