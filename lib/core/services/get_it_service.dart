@@ -1,6 +1,7 @@
 import 'package:cliniq/core/api/api_config.dart';
-import 'package:cliniq/core/api/socket/socket_service.dart';
 import 'package:cliniq/core/api/dummy_api_consumer.dart';
+import 'package:cliniq/core/socket/socket_consumer.dart';
+import 'package:cliniq/core/socket/socket_io_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
 import 'package:cliniq/features/chat/data/repos_impl/chat_repo_impl.dart';
@@ -20,7 +21,9 @@ final getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   // Connectivity
   getIt.registerSingleton<Connectivity>(Connectivity());
-  getIt.registerSingleton<SocketService>(SocketService());
+  final socketConsumer = SocketIoConsumer();
+  socketConsumer.init();
+  getIt.registerSingleton<SocketConsumer>(socketConsumer);
 
   // Decide API source
   if (ApiConfig.useDummyApi) {
@@ -43,5 +46,7 @@ Future<void> setupGetIt() async {
     AppointmentsRepoImpl(api: getIt<ApiConsumer>()),
   );
 
-  getIt.registerSingleton<ChatRepo>(ChatRepoImpl(api: getIt<ApiConsumer>()));
+  getIt.registerSingleton<ChatRepo>(
+    ChatRepoImpl(api: getIt<ApiConsumer>(), socket: getIt<SocketConsumer>()),
+  );
 }
