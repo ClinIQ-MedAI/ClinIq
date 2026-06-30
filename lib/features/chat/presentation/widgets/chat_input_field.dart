@@ -2,13 +2,21 @@ import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
+import 'package:cliniq/features/chat/presentation/widgets/chat_icon_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatInputField extends StatefulWidget {
-  const ChatInputField({super.key, this.bottomSpacing = 16});
+  const ChatInputField({
+    super.key,
+    required this.onMessageSubmitted,
+    required this.onTypingChanged,
+    this.bottomSpacing = 16,
+  });
 
+  final ValueChanged<String> onMessageSubmitted;
+  final ValueChanged<bool> onTypingChanged;
   final double bottomSpacing;
 
   @override
@@ -17,11 +25,32 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField> {
   final TextEditingController _controller = TextEditingController();
+  bool _isTyping = false;
 
   @override
   void dispose() {
+    if (_isTyping) {
+      widget.onTypingChanged(false);
+    }
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handleTextChanged(String value) {
+    final isTyping = value.trim().isNotEmpty;
+    if (_isTyping == isTyping) return;
+
+    _isTyping = isTyping;
+    widget.onTypingChanged(isTyping);
+  }
+
+  void _submitMessage() {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+
+    widget.onMessageSubmitted(text);
+    _controller.clear();
+    _handleTextChanged('');
   }
 
   @override
@@ -42,11 +71,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
         ),
         child: Row(
           children: [
-            _ChatIconButton(icon: Icons.add_rounded, onPressed: () {}),
+            ChatIconButton(icon: Icons.add_rounded, onPressed: () {}),
             const HorizontalGap(10),
             Expanded(
               child: TextField(
                 controller: _controller,
+                onChanged: _handleTextChanged,
                 minLines: 1,
                 maxLines: 4,
                 style: AppTextStyles.getTextStyle(14).copyWith(
@@ -89,53 +119,14 @@ class _ChatInputFieldState extends State<ChatInputField> {
               ),
             ),
             const HorizontalGap(10),
-            _ChatIconButton(icon: Icons.mic_none_rounded, onPressed: () {}),
+            ChatIconButton(icon: Icons.mic_none_rounded, onPressed: () {}),
             const HorizontalGap(8),
-            _ChatIconButton(
+            ChatIconButton(
               icon: Icons.send_rounded,
               isPrimary: true,
-              onPressed: () {
-                _controller.clear();
-              },
+              onPressed: _submitMessage,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ChatIconButton extends StatelessWidget {
-  const _ChatIconButton({
-    required this.icon,
-    required this.onPressed,
-    this.isPrimary = false,
-  });
-
-  final IconData icon;
-  final VoidCallback onPressed;
-  final bool isPrimary;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(18.r),
-      child: Container(
-        width: 42.w,
-        height: 42.w,
-        decoration: BoxDecoration(
-          color: isPrimary
-              ? context.colorScheme.primary
-              : context.colorScheme.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(18.r),
-        ),
-        child: Icon(
-          icon,
-          color: isPrimary
-              ? context.colorScheme.onPrimary
-              : context.colorScheme.primary,
-          size: 21.sp,
         ),
       ),
     );

@@ -30,4 +30,34 @@ class ChatConversationEntity {
   final bool isTyping;
   final int unreadCount;
   final bool isOnline;
+
+  ChatConversationEntity copyWith({
+    String? id,
+    ChatType? type,
+    String? title,
+    String? subtitle,
+    String? emptyTitle,
+    String? emptyDescription,
+    List<ChatMessageEntity>? messages,
+    String? lastMessage,
+    String? lastMessageTime,
+    bool? isTyping,
+    int? unreadCount,
+    bool? isOnline,
+  }) {
+    return ChatConversationEntity(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
+      subtitle: subtitle ?? this.subtitle,
+      emptyTitle: emptyTitle ?? this.emptyTitle,
+      emptyDescription: emptyDescription ?? this.emptyDescription,
+      messages: messages ?? this.messages,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      isTyping: isTyping ?? this.isTyping,
+      unreadCount: unreadCount ?? this.unreadCount,
+      isOnline: isOnline ?? this.isOnline,
+    );
+  }
 }

@@ -12,8 +12,10 @@ class ChatMessageStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final icon = switch (status) {
       ChatMessageStatus.sending => Icons.schedule_rounded,
+      ChatMessageStatus.sent => Icons.done_rounded,
       ChatMessageStatus.delivered => Icons.done_all_rounded,
       ChatMessageStatus.seen => Icons.done_all_rounded,
+      ChatMessageStatus.failed => Icons.error_outline_rounded,
     };
 
     return Icon(

@@ -1,4 +1,7 @@
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
+import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
+
+typedef ChatRealtimeSubscription = void Function();
 
 abstract class ChatRepo {
   Future<ChatConversationEntity> getConversation(ChatType type);
@@ -17,7 +20,10 @@ abstract class ChatRepo {
 
   void leaveConversation(String conversationId);
 
-  void sendMessage({required String conversationId, required String message});
+  void sendMessage({
+    required String conversationId,
+    required ChatMessageEntity message,
+  });
 
   void sendTypingStatus({
     required String conversationId,
@@ -29,7 +35,30 @@ abstract class ChatRepo {
     required String messageId,
   });
 
-  void onMessageReceived(void Function(dynamic data) handler);
+  ChatRealtimeSubscription onMessageReceived(
+    void Function({
+      required String conversationId,
+      required ChatMessageEntity message,
+    })
+    handler,
+  );
 
-  void offMessageReceived([void Function(dynamic data)? handler]);
+  ChatRealtimeSubscription onTypingStatusChanged(
+    void Function({required String conversationId, required bool isTyping})
+    handler,
+  );
+
+  ChatRealtimeSubscription onMessageStatusChanged(
+    void Function({
+      required String conversationId,
+      required String messageId,
+      required ChatMessageStatus status,
+    })
+    handler,
+  );
+
+  ChatRealtimeSubscription onOnlineStatusChanged(
+    void Function({required String conversationId, required bool isOnline})
+    handler,
+  );
 }

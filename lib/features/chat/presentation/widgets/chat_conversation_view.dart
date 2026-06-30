@@ -16,7 +16,8 @@ class ChatConversationView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final conversationAsync = ref.watch(chatConversationProvider(type));
+    final request = ChatConversationRequest.byType(type);
+    final conversationAsync = ref.watch(chatConversationProvider(request));
 
     return conversationAsync.when(
       data: (conversation) => Scaffold(
@@ -24,6 +25,12 @@ class ChatConversationView extends ConsumerWidget {
         appBar: ProfileAppBar(title: conversation.title, showBackButton: false),
         body: ChatConversationBody(
           conversation: conversation,
+          onMessageSubmitted: ref
+              .read(chatConversationProvider(request).notifier)
+              .sendMessage,
+          onTypingChanged: ref
+              .read(chatConversationProvider(request).notifier)
+              .updateTypingStatus,
           inputBottomSpacing: 28,
         ),
       ),

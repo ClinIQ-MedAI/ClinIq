@@ -10,10 +10,14 @@ class ChatConversationBody extends StatelessWidget {
   const ChatConversationBody({
     super.key,
     required this.conversation,
+    required this.onMessageSubmitted,
+    required this.onTypingChanged,
     this.inputBottomSpacing = 16,
   });
 
   final ChatConversationEntity conversation;
+  final ValueChanged<String> onMessageSubmitted;
+  final ValueChanged<bool> onTypingChanged;
   final double inputBottomSpacing;
 
   @override
@@ -26,7 +30,11 @@ class ChatConversationBody extends StatelessWidget {
         ).animate().fadeIn(delay: 100.ms).slideY(begin: -0.1),
         const VerticalGap(8),
         Expanded(child: ChatMessageList(conversation: conversation)),
-        ChatInputField(bottomSpacing: inputBottomSpacing),
+        ChatInputField(
+          bottomSpacing: inputBottomSpacing,
+          onMessageSubmitted: onMessageSubmitted,
+          onTypingChanged: onTypingChanged,
+        ),
       ],
     );
   }

@@ -14,6 +14,10 @@ class SocketEvents {
   static const String receiveMessage = 'receiveMessage';
   static const String typing = 'typing';
   static const String stopTyping = 'stopTyping';
+  static const String markMessageSeen = 'markMessageSeen';
+  static const String messageStatusChanged = 'messageStatusChanged';
+  static const String typingStatusChanged = 'typingStatusChanged';
+  static const String onlineStatusChanged = 'onlineStatusChanged';
   static const String seen = 'seen';
   static const String online = 'online';
   static const String offline = 'offline';

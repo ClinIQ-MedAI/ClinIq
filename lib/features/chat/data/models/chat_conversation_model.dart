@@ -43,6 +43,7 @@ class ChatConversationModel extends ChatConversationEntity {
     );
   }
 
+  @override
   ChatConversationModel copyWith({
     String? id,
     ChatType? type,
