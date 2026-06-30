@@ -18,4 +18,7 @@ class Routes {
   static const String settingsScreen = '/settingsScreen';
   static const String privacyPolicyScreen = '/privacyPolicyScreen';
   static const String termsAndConditionsScreen = '/termsAndConditionsScreen';
+
+  // chat
+  static const String chatDetailsScreen = '/chatDetailsScreen';
 }

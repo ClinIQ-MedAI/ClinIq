@@ -1,11 +1,12 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
-import 'package:cliniq/core/utils/app_text_styles.dart';
+import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
 import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
-import 'package:cliniq/features/chat/presentation/screens/chat_details_screen.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_tile.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
+import 'package:cliniq/features/chat/presentation/widgets/doctor_chats_empty_state.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class ChatsView extends ConsumerWidget {
       body: conversationsAsync.when(
         data: (conversations) {
           if (conversations.isEmpty) {
-            return _DoctorChatsEmptyState();
+            return DoctorChatsEmptyState();
           }
 
           return ListView.separated(
@@ -43,11 +44,11 @@ class ChatsView extends ConsumerWidget {
               return ChatConversationTile(
                 conversation: conversation,
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushNamed(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) =>
-                          ChatDetailsScreen(conversationId: conversation.id),
+                    Routes.chatDetailsScreen,
+                    arguments: ChatDetailsArguments(
+                      conversationId: conversation.id,
                     ),
                   );
                 },
@@ -59,46 +60,6 @@ class ChatsView extends ConsumerWidget {
           child: Text(LocaleKeys.messagesFailuresUnexpectedError.tr()),
         ),
         loading: () => const ChatLoadingState(),
-      ),
-    );
-  }
-}
-
-class _DoctorChatsEmptyState extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.chat_bubble_outline_rounded,
-              color: context.colorScheme.primary,
-              size: 56.sp,
-            ),
-            const VerticalGap(18),
-            Text(
-              LocaleKeys.chatDoctorListEmptyTitle.tr(),
-              textAlign: TextAlign.center,
-              style: AppTextStyles.getTextStyle(20).copyWith(
-                color: context.textPalette.primaryColor,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-            const VerticalGap(10),
-            Text(
-              LocaleKeys.chatDoctorListEmptyDescription.tr(),
-              textAlign: TextAlign.center,
-              style: AppTextStyles.getTextStyle(14).copyWith(
-                color: context.textPalette.secondaryColor,
-                fontWeight: FontWeight.w500,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

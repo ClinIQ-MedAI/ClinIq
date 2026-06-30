@@ -12,6 +12,7 @@ import 'package:cliniq/core/utils/success.dart';
 import 'package:cliniq/core/utils/validators.dart';
 import 'package:cliniq/core/widgets/custom_button.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/auth/presentation/arguments/verify_reset_code_arguments.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cliniq/features/auth/presentation/providers/forget_password_provider.dart';
 
@@ -62,7 +63,7 @@ class _ForgetPasswordBodyState extends ConsumerState<ForgetPasswordBody> {
     Navigator.pushNamed(
       context,
       Routes.verifyResetCodeScreen,
-      arguments: {'email': emailController.text},
+      arguments: VerifyResetCodeArguments(email: emailController.text),
     );
   }
 

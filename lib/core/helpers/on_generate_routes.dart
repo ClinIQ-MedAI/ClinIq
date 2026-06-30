@@ -1,6 +1,10 @@
 import 'dart:developer';
+import 'package:cliniq/features/auth/presentation/arguments/verify_email_arguments.dart';
+import 'package:cliniq/features/auth/presentation/arguments/verify_reset_code_arguments.dart';
 import 'package:cliniq/features/auth/presentation/screens/complete_user_profile_screen.dart';
 import 'package:cliniq/features/auth/presentation/screens/user_sign_up_screen.dart';
+import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
+import 'package:cliniq/features/chat/presentation/screens/chat_details_screen.dart';
 import 'package:cliniq/features/home/presentation/screens/user_main_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:cliniq/core/widgets/undefined_route_page.dart';
@@ -32,15 +36,15 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
       return MaterialPageRoute(builder: (_) => const ResetPasswordScreen());
 
     case Routes.verifyResetCodeScreen:
-      final args = settings.arguments as Map<String, dynamic>?;
-      final email = args?['email'] ?? '';
+      final args = settings.arguments as VerifyResetCodeArguments?;
+      final email = args?.email ?? '';
       return MaterialPageRoute(
         builder: (_) => VerifyResetCodeScreen(userEmail: email),
       );
 
     case Routes.verifyEmailScreen:
-      final args = settings.arguments as Map<String, dynamic>?;
-      final email = args?['email'] ?? '';
+      final args = settings.arguments as VerifyEmailArguments?;
+      final email = args?.email ?? '';
       return MaterialPageRoute(builder: (_) => VerifyEmailScreen(email: email));
 
     case Routes.userHomeScreen:
@@ -65,6 +69,14 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
     case Routes.termsAndConditionsScreen:
       return MaterialPageRoute(
         builder: (_) => const TermsAndConditionsScreen(),
+      );
+
+    // Chat
+    case Routes.chatDetailsScreen:
+      final args = settings.arguments as ChatDetailsArguments?;
+      final conversationId = args?.conversationId ?? '';
+      return MaterialPageRoute(
+        builder: (_) => ChatDetailsScreen(conversationId: conversationId),
       );
 
     default:
