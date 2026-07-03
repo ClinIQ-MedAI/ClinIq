@@ -10,6 +10,8 @@ class Routes {
   // home
   static const String userHomeScreen = '/userHomeScreen';
 
+
+
   // user profile
   static const String editProfileScreen = '/editProfileScreen';
   static const String completeUserProfileScreen = '/completeUserProfileScreen';
@@ -21,4 +23,5 @@ class Routes {
 
   // chat
   static const String chatDetailsScreen = '/chatDetailsScreen';
+  static const String aiChatScreen = '/aiChatScreen';
 }

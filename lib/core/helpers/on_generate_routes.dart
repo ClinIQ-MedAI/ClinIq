@@ -18,6 +18,7 @@ import 'package:cliniq/features/settings/presentation/screens/privacy_policy_scr
 import 'package:cliniq/features/settings/presentation/screens/settings_screen.dart';
 import 'package:cliniq/features/settings/presentation/screens/terms_and_services_screen.dart';
 import 'package:cliniq/features/user/presentation/screens/edit_profile_screen.dart';
+import 'package:cliniq/features/ai/presentation/screens/ai_chat_screen.dart';
 
 Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
   log("Navigating to ${settings.name}");
@@ -72,6 +73,8 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
       );
 
     // Chat
+    case Routes.aiChatScreen:
+      return MaterialPageRoute(builder: (_) => const AiChatScreen());
     case Routes.chatDetailsScreen:
       final args = settings.arguments as ChatDetailsArguments?;
       final conversationId = args?.conversationId ?? '';

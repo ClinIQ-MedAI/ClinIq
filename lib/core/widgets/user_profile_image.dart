@@ -31,7 +31,7 @@ class UserProfileImage extends ConsumerWidget {
       onTap: !isEnabled
           ? null
           : () {
-              ref.read(bottomNavIndexProvider.notifier).setIndex(4);
+              ref.read(bottomNavIndexProvider.notifier).setIndex(3);
             },
       child: Container(
         width: (circleAvatarRadius + borderWidth) * 2,

@@ -226,6 +226,9 @@ abstract class LocaleKeys {
   static const homeSpecializationsDesc = "home.specializations_desc";
   static const homeDoctorsDesc = "home.doctors_desc";
   static const homeNewsDesc = "home.news_desc";
+  static const homeAiAssistantTitle = "home.ai_assistant.title";
+  static const homeAiAssistantDescription = "home.ai_assistant.description";
+  static const homeAiAssistantStartChat = "home.ai_assistant.start_chat";
 
   // chat
   static const chatDoctorTitle = "chat.doctor.title";
@@ -306,6 +309,8 @@ abstract class LocaleKeys {
   static const settingsUserEnglish = "settings.user.english";
   static const settingsUserArabic = "settings.user.arabic";
   static const settingsUserGeneral = "settings.user.general";
+  static const settingsUserNotifications = "settings.user.notifications";
+  static const settingsUserSecurityPrivacy = "settings.user.security_privacy";
 
   // booking
   static const String bookingTitle = "booking.title";

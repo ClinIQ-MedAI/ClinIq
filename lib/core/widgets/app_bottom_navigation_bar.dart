@@ -63,10 +63,8 @@ class AppBottomNavigationBar extends StatelessWidget {
       case 1:
         return LocaleKeys.homeExaminationAppointments;
       case 2:
-        return LocaleKeys.bottomNavigationBarAiChat;
-      case 3:
         return LocaleKeys.bottomNavigationBarDoctorChat;
-      case 4:
+      case 3:
         return LocaleKeys.profileUserTitle;
       default:
         return '';
@@ -75,7 +73,6 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   Widget _buildIcon(BuildContext context, int index, bool isSelected) {
     IconData icon;
-    bool isAi = index == 2;
     switch (index) {
       case 0:
         icon = isSelected ? Icons.dashboard_rounded : Icons.dashboard_outlined;
@@ -86,12 +83,9 @@ class AppBottomNavigationBar extends StatelessWidget {
             : Icons.calendar_month_outlined;
         break;
       case 2:
-        icon = Icons.auto_awesome_rounded;
-        break;
-      case 3:
         icon = isSelected ? Icons.chat_rounded : Icons.chat_outlined;
         break;
-      case 4:
+      case 3:
         icon = isSelected ? Icons.person_rounded : Icons.person_outline_rounded;
         break;
       default:
@@ -99,27 +93,17 @@ class AppBottomNavigationBar extends StatelessWidget {
     }
 
     return Container(
-      padding: EdgeInsets.all(isAi ? 10.w : 6.w),
-      decoration: BoxDecoration(
-        color: isAi && !isSelected
-            ? context.colorScheme.primary.withValues(alpha: 0.12)
-            : Colors.transparent,
+      padding: EdgeInsets.all(6.w),
+      decoration: const BoxDecoration(
+        color: Colors.transparent,
         shape: BoxShape.circle,
-        border: isAi && !isSelected
-            ? Border.all(
-                color: context.colorScheme.primary.withValues(alpha: 0.25),
-                width: 1.5,
-              )
-            : null,
       ),
       child: Icon(
         icon,
-        size: isSelected ? (isAi ? 34.sp : 30.sp) : (isAi ? 28.sp : 26.sp),
+        size: isSelected ? 30.sp : 26.sp,
         color: isSelected
             ? Colors.white
-            : (isAi
-                  ? context.colorScheme.primary
-                  : context.colorScheme.onSurface.withValues(alpha: 0.75)),
+            : context.colorScheme.onSurface.withValues(alpha: 0.75),
       ),
     );
   }

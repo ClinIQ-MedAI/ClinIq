@@ -11,6 +11,7 @@ import 'package:cliniq/features/home/presentation/widgets/home_news_widget.dart'
 import 'package:cliniq/features/home/presentation/widgets/home_section_header.dart';
 import 'package:cliniq/features/home/presentation/widgets/home_specializations_widget.dart';
 import 'package:cliniq/features/home/presentation/widgets/see_all_button.dart';
+import 'package:cliniq/features/home/presentation/widgets/ai_assistant_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,9 +42,14 @@ class UserHomeView extends ConsumerWidget {
                             padding: const EdgeInsets.only(top: 24, bottom: 40),
                             child: Column(
                               children: [
-                                _buildQuickActions(context)
+                                const AiAssistantSection()
                                     .animate()
                                     .fadeIn(delay: 50.ms)
+                                    .slideY(begin: 0.1),
+                                const VerticalGap(32),
+                                _buildQuickActions(context)
+                                    .animate()
+                                    .fadeIn(delay: 150.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(32),
                                 HomeSectionHeader(
@@ -54,7 +60,7 @@ class UserHomeView extends ConsumerWidget {
                                       icon: Icons.calendar_today_rounded,
                                     )
                                     .animate()
-                                    .fadeIn(delay: 100.ms)
+                                    .fadeIn(delay: 250.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(20),
                                 HomeAppointmentsWidget(
@@ -62,7 +68,7 @@ class UserHomeView extends ConsumerWidget {
                                           homeData.examinationAppointments,
                                     )
                                     .animate()
-                                    .fadeIn(delay: 200.ms)
+                                    .fadeIn(delay: 350.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(32),
                                 HomeSectionHeader(
@@ -73,14 +79,14 @@ class UserHomeView extends ConsumerWidget {
                                       trailing: SeeAllButton(onPressed: () {}),
                                     )
                                     .animate()
-                                    .fadeIn(delay: 300.ms)
+                                    .fadeIn(delay: 450.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(20),
                                 HomeSpecializationsWidget(
                                       specializations: homeData.specializations,
                                     )
                                     .animate()
-                                    .fadeIn(delay: 400.ms)
+                                    .fadeIn(delay: 550.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(32),
                                 HomeSectionHeader(
@@ -90,14 +96,14 @@ class UserHomeView extends ConsumerWidget {
                                       trailing: SeeAllButton(onPressed: () {}),
                                     )
                                     .animate()
-                                    .fadeIn(delay: 500.ms)
+                                    .fadeIn(delay: 650.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(20),
                                 HomeDoctorsWidget(
                                       doctors: homeData.suggestedDoctors,
                                     )
                                     .animate()
-                                    .fadeIn(delay: 600.ms)
+                                    .fadeIn(delay: 750.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(32),
                                 HomeSectionHeader(
@@ -107,12 +113,12 @@ class UserHomeView extends ConsumerWidget {
                                       trailing: SeeAllButton(onPressed: () {}),
                                     )
                                     .animate()
-                                    .fadeIn(delay: 700.ms)
+                                    .fadeIn(delay: 850.ms)
                                     .slideY(begin: 0.1),
                                 const VerticalGap(20),
                                 HomeNewsWidget(news: homeData.news)
                                     .animate()
-                                    .fadeIn(delay: 800.ms)
+                                    .fadeIn(delay: 950.ms)
                                     .slideY(begin: 0.1),
                               ],
                             ),

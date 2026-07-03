@@ -175,7 +175,12 @@
         "appointments_desc": "Track and manage your scheduled medical appointments.",
         "specializations_desc": "Browse through our wide range of medical specialties.",
         "doctors_desc": "Expert physicians handpicked for your health needs.",
-        "news_desc": "Discover insights and updates for a healthier lifestyle."
+        "news_desc": "Discover insights and updates for a healthier lifestyle.",
+        "ai_assistant": {
+            "title": "AI Medical Assistant",
+            "description": "Describe your symptoms and get instant guidance before you consult a doctor.",
+            "start_chat": "Start Chat"
+        }
     },
     "chat": {
         "doctor": {
@@ -258,7 +263,9 @@
             "language": "Language",
             "english": "English",
             "arabic": "Arabic",
-            "general": "General"
+            "general": "General",
+            "notifications": "Notifications",
+            "security_privacy": "Security & Privacy"
         }
     },
     "booking": {

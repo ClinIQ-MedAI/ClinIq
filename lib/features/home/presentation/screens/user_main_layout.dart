@@ -1,5 +1,4 @@
 import 'package:cliniq/core/widgets/app_bottom_navigation_bar.dart';
-import 'package:cliniq/features/ai/presentation/widgets/ai_chat_view.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/user_appoinments_view.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chats_view.dart';
 import 'package:cliniq/features/home/presentation/providers/bottom_nav_index_provider.dart';
@@ -21,7 +20,6 @@ class UserMainLayout extends ConsumerWidget {
         children: [
           UserHomeView(),
           UserAppointmentsView(),
-          AiChatView(),
           ChatsView(),
           UserProfileView(),
         ],

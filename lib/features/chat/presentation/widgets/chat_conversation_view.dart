@@ -10,9 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatConversationView extends ConsumerWidget {
-  const ChatConversationView({super.key, required this.type});
+  const ChatConversationView({
+    super.key,
+    required this.type,
+    this.showBackButton = true,
+  });
 
   final ChatType type;
+  final bool showBackButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +27,10 @@ class ChatConversationView extends ConsumerWidget {
     return conversationAsync.when(
       data: (conversation) => Scaffold(
         backgroundColor: context.colorScheme.surface,
-        appBar: ProfileAppBar(title: conversation.title, showBackButton: false),
+        appBar: ProfileAppBar(
+          title: conversation.title,
+          showBackButton: showBackButton,
+        ),
         body: ChatConversationBody(
           conversation: conversation,
           onMessageSubmitted: ref
