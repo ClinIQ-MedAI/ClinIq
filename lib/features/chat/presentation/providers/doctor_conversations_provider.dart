@@ -29,7 +29,7 @@ class DoctorConversationsNotifier
       }
     });
 
-    return _repo.getDoctorConversations();
+    return _repo.getConversations();
   }
 
   void _subscribe() {

@@ -15,17 +15,7 @@ class ChatRepoImpl extends ChatRepo {
   final SocketConsumer socket;
 
   @override
-  Future<ChatConversationEntity> getConversation(ChatType type) async {
-    final response = await api.get(
-      EndPoints.getConversation,
-      queryParameters: {'type': type.name},
-    );
-
-    return ChatConversationModel.fromJson(response['data']);
-  }
-
-  @override
-  Future<List<ChatConversationEntity>> getDoctorConversations() async {
+  Future<List<ChatConversationEntity>> getConversations() async {
     final response = await api.get(EndPoints.getConversations);
 
     return (response['data'] as List)
@@ -34,10 +24,22 @@ class ChatRepoImpl extends ChatRepo {
   }
 
   @override
-  Future<ChatConversationEntity> getDoctorConversationById(String id) async {
+  Future<List<ChatMessageEntity>> getConversationMessages(String conversationId) async {
     final response = await api.get(
-      EndPoints.getConversationById,
-      queryParameters: {'id': id},
+      EndPoints.getConversationById(conversationId),
+    );
+
+    return (response['data'] as List)
+        .map((message) => ChatMessageModel.fromJson(message))
+        .toList();
+  }
+
+  @override
+  Future<ChatConversationEntity> createConversation(String doctorId) async {
+    final response = await api.post(
+      EndPoints.createConversation,
+      queryParameters: {'doctorId': doctorId},
+      data: {'doctorId': doctorId},
     );
 
     return ChatConversationModel.fromJson(response['data']);

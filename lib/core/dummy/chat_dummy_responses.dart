@@ -1,6 +1,5 @@
 import 'package:cliniq/core/api/end_points.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
-import 'package:cliniq/core/dummy/ai_dummy_responses.dart';
 
 abstract final class ChatDummyResponses {
   static dynamic getResponse(
@@ -9,33 +8,36 @@ abstract final class ChatDummyResponses {
   }) {
     switch (path) {
       case EndPoints.getConversations:
+        final doctorId = queryParameters?['doctorId'] as String?;
+        if (doctorId != null) {
+          final conversation = _doctorConversations.firstWhere(
+            (c) => c['id'] == doctorId,
+            orElse: () => _doctorConversations.first,
+          );
+          return {
+            "success": true,
+            "message": "Conversation created successfully",
+            "data": conversation,
+          };
+        }
         return {
           "success": true,
           "message": "Conversations fetched successfully",
           "data": _doctorConversations,
-        };
-
-      case EndPoints.getConversation:
-        final type = queryParameters?['type'] as String?;
-        return {
-          "success": true,
-          "message": "Conversation fetched successfully",
-          "data": type == "ai"
-              ? AiDummyResponses.aiConversation
-              : _doctorConversations.first,
         };
     }
 
     final conversationId = _conversationIdFromPath(path);
     if (conversationId != null) {
       final id = queryParameters?['id'] as String? ?? conversationId;
+      final conversation = _doctorConversations.firstWhere(
+        (c) => c['id'] == id,
+        orElse: () => _doctorConversations.first,
+      );
       return {
         "success": true,
-        "message": "Conversation fetched successfully",
-        "data": _doctorConversations.firstWhere(
-          (conversation) => conversation['id'] == id,
-          orElse: () => _doctorConversations.first,
-        ),
+        "message": "Messages fetched successfully",
+        "data": conversation['messages'],
       };
     }
 

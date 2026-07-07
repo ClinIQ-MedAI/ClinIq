@@ -4,11 +4,11 @@ import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 typedef ChatRealtimeSubscription = void Function();
 
 abstract class ChatRepo {
-  Future<ChatConversationEntity> getConversation(ChatType type);
+  Future<List<ChatConversationEntity>> getConversations();
 
-  Future<List<ChatConversationEntity>> getDoctorConversations();
+  Future<List<ChatMessageEntity>> getConversationMessages(String conversationId);
 
-  Future<ChatConversationEntity> getDoctorConversationById(String id);
+  Future<ChatConversationEntity> createConversation(String doctorId);
 
   Future<void> connectRealtime();
 

@@ -15,7 +15,7 @@ class ChatDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final request = ChatConversationRequest.byId(conversationId);
+    final request = ChatConversationRequest(conversationId: conversationId);
     final conversationAsync = ref.watch(chatConversationProvider(request));
 
     return conversationAsync.when(

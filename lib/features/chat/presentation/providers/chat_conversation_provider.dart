@@ -4,6 +4,7 @@ import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.da
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
 import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
+import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatConversationProvider =
@@ -14,25 +15,18 @@ final chatConversationProvider =
     >((request) => ChatConversationNotifier(request));
 
 class ChatConversationRequest {
-  const ChatConversationRequest._({this.type, this.conversationId});
+  const ChatConversationRequest({required this.conversationId});
 
-  const ChatConversationRequest.byType(ChatType type) : this._(type: type);
-
-  const ChatConversationRequest.byId(String conversationId)
-    : this._(conversationId: conversationId);
-
-  final ChatType? type;
-  final String? conversationId;
+  final String conversationId;
 
   @override
   bool operator ==(Object other) {
     return other is ChatConversationRequest &&
-        other.type == type &&
         other.conversationId == conversationId;
   }
 
   @override
-  int get hashCode => Object.hash(type, conversationId);
+  int get hashCode => conversationId.hashCode;
 }
 
 class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
@@ -206,12 +200,30 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     return '$hour:$minute';
   }
 
-  Future<ChatConversationEntity> _getConversation() {
+  Future<ChatConversationEntity> _getConversation() async {
     final conversationId = _request.conversationId;
-    if (conversationId != null) {
-      return _repo.getDoctorConversationById(conversationId);
+
+    final conversationsState = ref.read(doctorConversationsProvider);
+    ChatConversationEntity? baseConversation;
+    if (conversationsState.hasValue) {
+      for (final conversation in conversationsState.value!) {
+        if (conversation.id == conversationId) {
+          baseConversation = conversation;
+          break;
+        }
+      }
     }
 
-    return _repo.getConversation(_request.type ?? ChatType.doctor);
+    if (baseConversation == null) {
+      final conversations = await _repo.getConversations();
+      baseConversation = conversations.firstWhere(
+        (c) => c.id == conversationId,
+        orElse: () => throw Exception('Conversation not found'),
+      );
+    }
+
+    final messages = await _repo.getConversationMessages(conversationId);
+
+    return baseConversation.copyWith(messages: messages);
   }
 }

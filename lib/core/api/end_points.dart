@@ -36,9 +36,10 @@ class EndPoints {
   static const String bookAppointment = "api/bookings";
 
   // chats
-  static const String getConversations = "api/chat/conversations";
-  static const String getConversation = "Chats/GetConversation";
-  static const String getConversationById =
-      "api/chat/conversations/{conversationId}/messages";
-  static const String sendChatMessage = "Chats/SendMessage";
+  static const String getConversations = "chat/conversations";
+  static const String createConversation = "chat/conversations";
+  static String getConversationById(String conversationId) =>
+      "chat/conversations/$conversationId/messages";
+  static String sendChatMessage(String conversationId) =>
+      "chat/conversations/$conversationId/messages";
 }
