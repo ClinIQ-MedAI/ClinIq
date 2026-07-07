@@ -193,7 +193,7 @@ class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
                       ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.05),
                       const VerticalGap(24),
                       const FormSectionHeader(
-                        title: LocaleKeys.settingsUserChangePassword,
+                        title: LocaleKeys.signupUserPasswordsTitle,
                         icon: Icons.lock_outline_rounded,
                       ).animate().fadeIn(delay: 700.ms),
                       const VerticalGap(12),

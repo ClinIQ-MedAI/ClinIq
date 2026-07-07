@@ -1,17 +1,15 @@
 class EndPoints {
   // Auth
   static const String refreshToken = "Auth/RefreshToken/refresh-token";
-  static const String login = "Auth/Login/login";
-  static const String userSignUp = "Auth/RegisterCustomer/register/customer";
-  static const String doctorSignUp = "Auth/RegisterDoctor/register/doctor";
+  static const String login = "auth/login";
+  static const String userSignUp = "auth/register";
   static const String logOut = "Auth/Logout/logout";
 
-  static const String verifyEmail = "Auth/VerifyEmail/verify";
-  static const String resendVerifyEmail =
-      "Auth/ResendVerification/resend-verification";
+  static const String verifyEmail = "auth/verify-email";
+  static const String resendVerifyEmail = "auth/send-email-otp";
 
-  static const String forgetPassword = "Auth/ForgotPassword/forgot-password";
-  static const String resetPassword = "Auth/ResetPassword/reset-password";
+  static const String forgetPassword = "auth/forgot-password";
+  static const String resetPassword = "auth/reset-password";
   static const String verifyResetCode =
       "Auth/VerifyResetCode/verify-reset-code";
   static const String resendResetCode =
@@ -31,18 +29,16 @@ class EndPoints {
   static const String news = "Home/News/news";
 
   // appointments
-  static const String availableDoctors =
-      "Appointments/AvailableDoctors/available-doctors";
+  static const String availableDoctors = "api/bookings/doctors";
   static const String doctorWorkingHours =
-      "Appointments/WorkingHours/working-hours";
-  static const String getDoctorById =
-      "Appointments/GetDoctorById/get-doctor-by-id";
-  static const String bookAppointment =
-      "Appointments/BookAppointment/book-appointment";
+      "api/bookings/doctors/{doctorId}/schedules";
+  static const String getDoctorById = "api/bookings/doctors/{doctorId}";
+  static const String bookAppointment = "api/bookings";
 
   // chats
-  static const String getConversations = "Chats/GetConversations";
+  static const String getConversations = "api/chat/conversations";
   static const String getConversation = "Chats/GetConversation";
-  static const String getConversationById = "Chats/GetConversationById";
+  static const String getConversationById =
+      "api/chat/conversations/{conversationId}/messages";
   static const String sendChatMessage = "Chats/SendMessage";
 }

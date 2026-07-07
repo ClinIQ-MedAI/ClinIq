@@ -12,14 +12,20 @@ class UserSignUpRequestModel extends UserSignUpRequestEntity {
   });
 
   Map<String, dynamic> toJson() {
+    final nameParts = name.trim().split(RegExp(r'\s+'));
+    final firstName = nameParts.isEmpty ? name : nameParts.first;
+    final lastName = nameParts.length > 1
+        ? nameParts.sublist(1).join(' ')
+        : nameParts.first;
+
     return {
-      'fullName': name,
       'email': email,
-      'password': password,
-      'confirmPassword': passwordConfirm,
       'phone': phone,
-      'gender': gender.name,
-      'birthDate': birthDate,
+      'firstName': firstName,
+      'lastName': lastName,
+      'password': password,
+      'dateOfBirth': birthDate.toIso8601String().split('T').first,
+      'gender': gender.name[0].toUpperCase() + gender.name.substring(1),
     };
   }
 

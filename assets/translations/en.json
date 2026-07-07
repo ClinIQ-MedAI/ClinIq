@@ -9,17 +9,21 @@
         },
         "failures": {
             "incorrect_credentials": "Incorrect email or password. Please try again.",
-            "inactive_user": "A new verification link has been sent to your email, Please go and verify your email",
+            "inactive_user": "Please verify your email or phone before logging in",
             "unexpected_error": "An unexpected error occurred. Please try again later.",
-            "national_id_already_exists": "National ID already exists.",
             "account_already_exists": "An account with this email already exists.",
-            "username_already_exists": "This username is already linked to an existing account.",
-            "invalid_or_expired_code": "The code you entered is Invalid or expired. Please try again.",
+            "phone_already_exists": "This phone number is already linked to an existing account.",
+            "invalid_or_expired_code": "The otp you entered is Invalid or expired. Please try again.",
             "invalid_email": "We couldn’t find an account with this email.",
             "user_already_active": "Your account is already active. No further action is needed.",
             "verification_code_not_found": "Verification code not found. Please request a new one.",
             "reset_token_expired": "Reset token has expired. Please request a new one.",
-            "invalid_verification_code": "Invalid verification code. Please try again."
+            "invalid_verification_code": "Invalid verification code. Please try again.",
+            "password_too_short": "Passwords must be at least 8 characters.",
+            "password_requires_special_character": "Passwords must have at least one special character.",
+            "password_requires_lowercase": "Passwords must have at least one lowercase letter.",
+            "password_requires_uppercase": "Passwords must have at least one uppercase letter.",
+            "invalid_email_format": "Invalid email address."
         }
     },
     "validation": {
@@ -106,6 +110,7 @@
             "name_hint": "Enter Name",
             "email": "Email",
             "email_hint": "Enter Email",
+            "passwords_title": "Passwords",
             "password": "Password",
             "password_hint": "Enter Password",
             "confirm_password": "Confirm Password",

@@ -8,7 +8,10 @@ class ApiKeys {
   static const String otp = "otp";
   static const String token = 'token';
   static const String emailOrUsername = 'emailOrUsername';
+  static const String otpCode = 'otpCode';
   static const String resetToken = 'resetToken';
   static const String newPassword = 'newPassword';
   static const String confirmPassword = 'confirmPassword';
+  static const String errors = 'errors';
+  static const String description = 'description';
 }

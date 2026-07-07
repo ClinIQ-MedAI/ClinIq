@@ -11,7 +11,8 @@ class ErrorModel {
     log(jsonData.toString());
     return ErrorModel(
       code: int.parse((jsonData[ApiKeys.code] ?? "404").toString()),
-      message: jsonData[ApiKeys.message] ?? "unknown error",
+      message:
+          jsonData[ApiKeys.errors]?[0][ApiKeys.description] ?? "unknown error",
     );
   }
 }

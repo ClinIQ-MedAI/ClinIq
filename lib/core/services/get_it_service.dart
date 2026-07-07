@@ -1,5 +1,6 @@
-import 'package:cliniq/core/api/api_config.dart';
-import 'package:cliniq/core/api/dummy_api_consumer.dart';
+import 'package:cliniq/core/api/api_consumer.dart';
+import 'package:cliniq/core/api/api_features.dart';
+import 'package:cliniq/core/api/api_selector.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/core/socket/socket_io_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
@@ -9,10 +10,7 @@ import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
 import 'package:cliniq/features/home/data/repos_impl/home_repo_impl.dart';
 import 'package:cliniq/features/home/domain/repos/home_repo.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:cliniq/core/api/api_consumer.dart';
-import 'package:cliniq/core/api/dio_consumer.dart';
 import 'package:cliniq/features/auth/data/repos_impl/auth_repo_impl.dart';
 import 'package:cliniq/features/auth/domain/repos/auth_repo.dart';
 
@@ -25,28 +23,27 @@ Future<void> setupGetIt() async {
   socketConsumer.init();
   getIt.registerSingleton<SocketConsumer>(socketConsumer);
 
-  // Decide API source
-  if (ApiConfig.useDummyApi) {
-    getIt.registerSingleton<ApiConsumer>(DummyApiConsumer());
-  } else {
-    final dio = Dio();
-    final dioConsumer = DioConsumer(dio: dio);
-    await dioConsumer.init();
+  ApiSelector.init();
 
-    getIt.registerSingleton<Dio>(dio);
-    getIt.registerSingleton<ApiConsumer>(dioConsumer);
-  }
+  getIt.registerSingleton<ApiConsumer>(ApiSelector.get(ApiFeatures.auth));
 
   // Repos
-  getIt.registerSingleton<AuthRepo>(AuthRepoImpl(api: getIt<ApiConsumer>()));
+  getIt.registerSingleton<AuthRepo>(
+    AuthRepoImpl(api: ApiSelector.get(ApiFeatures.auth)),
+  );
 
-  getIt.registerSingleton<HomeRepo>(HomeRepoImpl(api: getIt<ApiConsumer>()));
+  getIt.registerSingleton<HomeRepo>(
+    HomeRepoImpl(api: ApiSelector.get(ApiFeatures.home)),
+  );
 
   getIt.registerSingleton<AppointmentsRepo>(
-    AppointmentsRepoImpl(api: getIt<ApiConsumer>()),
+    AppointmentsRepoImpl(api: ApiSelector.get(ApiFeatures.appointments)),
   );
 
   getIt.registerSingleton<ChatRepo>(
-    ChatRepoImpl(api: getIt<ApiConsumer>(), socket: getIt<SocketConsumer>()),
+    ChatRepoImpl(
+      api: ApiSelector.get(ApiFeatures.chat),
+      socket: getIt<SocketConsumer>(),
+    ),
   );
 }

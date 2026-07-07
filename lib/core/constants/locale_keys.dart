@@ -17,12 +17,10 @@ abstract class LocaleKeys {
   static const messagesFailuresInactiveUser = "messages.failures.inactive.user";
   static const messagesFailuresUnexpectedError =
       "messages.failures.unexpected_error";
-  static const messagesFailuresNationalIdAlreadyExists =
-      "messages.failures.national_id_already_exists";
   static const messagesFailuresAccountAlreadyExists =
       "messages.failures.account_already_exists";
-  static const messagesFailuresUsernameAlreadyExists =
-      "messages.failures.username_already_exists";
+  static const messagesFailuresPhoneAlreadyExists =
+      "messages.failures.phone_already_exists";
   static const messagesFailuresInvalidOrExpiredCode =
       "messages.failures.invalid_or_expired_code";
   static const messagesFailuresInvalidEmail = "messages.failures.invalid_email";
@@ -34,6 +32,16 @@ abstract class LocaleKeys {
       "messages.failures.reset_token_expired";
   static const messagesFailuresInvalidVerificationCode =
       "messages.failures.invalid_verification_code";
+  static const messagesFailuresPasswordTooShort =
+      "messages.failures.password_too_short";
+  static const messagesFailuresPasswordRequiresSpecialCharacter =
+      "messages.failures.password_requires_special_character";
+  static const messagesFailuresPasswordRequiresLowercase =
+      "messages.failures.password_requires_lowercase";
+  static const messagesFailuresPasswordRequiresUppercase =
+      "messages.failures.password_requires_uppercase";
+  static const messagesFailuresInvalidEmailFormat =
+      "messages.failures.invalid_email_format";
 
   // validation
   static const validationFieldIsRequired = "validation.field_is_required";
@@ -112,6 +120,7 @@ abstract class LocaleKeys {
   static const signupUserPhoneHint = "signup.user.phone_hint";
   static const signupUserBirthDate = "signup.user.birth_date";
   static const signupUserBirthDateHint = "signup.user.birth_date_hint";
+  static const signupUserPasswordsTitle = "signup.user.passwords_title";
   static const signupUserPassword = "signup.user.password";
   static const signupUserPasswordHint = "signup.user.password_hint";
   static const signupUserConfirmPassword = "signup.user.confirm_password";

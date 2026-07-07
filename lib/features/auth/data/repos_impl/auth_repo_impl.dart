@@ -22,11 +22,15 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
     return handleApi(
       () => api.post(
         EndPoints.login,
-        data: {ApiKeys.emailOrUsername: email, ApiKeys.password: password},
+        data: {
+          ApiKeys.email: email,
+          ApiKeys.password: password,
+          ApiKeys.otpCode: null,
+        },
       ),
       backendMessageMapping: {
-        "Invalid credentials": LocaleKeys.messagesFailuresIncorrectCredentials,
-        "Email verification required. A new verification link has been sent to your email.":
+        "Invalid email or password": LocaleKeys.messagesFailuresIncorrectCredentials,
+        "Please verify your email or phone before logging in":
             LocaleKeys.messagesFailuresInactiveUser,
       },
     ).onSuccess((data) async {
@@ -57,13 +61,21 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
   Future<Either<Failure, void>> signUp({
     required Map<String, dynamic> data,
   }) async {
+    final email = data[ApiKeys.email];
+
     return handleApi(
       () => api.post(EndPoints.userSignUp, data: data),
       backendMessageMapping: {
-        'National ID already exists':
-            LocaleKeys.messagesFailuresNationalIdAlreadyExists,
-        'Username \'${data['email'].split('@')[0]}\' is already taken.':
+        'Passwords must be at least 8 characters.':LocaleKeys.messagesFailuresPasswordTooShort,
+        'Passwords must have at least one non alphanumeric character.':LocaleKeys.messagesFailuresPasswordRequiresSpecialCharacter,
+        'Passwords must have at least one lowercase (\'a\'-\'z\').':LocaleKeys.messagesFailuresPasswordRequiresLowercase,
+        'Passwords must have at least one uppercase (\'A\'-\'Z\').':LocaleKeys.messagesFailuresPasswordRequiresUppercase,
+        'Invalid email address.':LocaleKeys.messagesFailuresInvalidEmailFormat,
+        'Email \'$email\' is invalid.':LocaleKeys.messagesFailuresInvalidEmail,
+        'Another user With the same Email exists':
             LocaleKeys.messagesFailuresAccountAlreadyExists,
+        'Phone number is already in use':
+            LocaleKeys.messagesFailuresPhoneAlreadyExists,
       },
     ).asVoid();
   }
@@ -79,10 +91,8 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
         data: {ApiKeys.email: email, ApiKeys.code: code},
       ),
       backendMessageMapping: {
-        "Verification code has expired":
+        "Invalid or expired OTP":
             LocaleKeys.messagesFailuresInvalidOrExpiredCode,
-        "Invalid or expired verification code":
-            LocaleKeys.messagesFailuresVerificationCodeNotFound,
       },
     ).onSuccess((result) async {
       // TODO: update later after back update it
