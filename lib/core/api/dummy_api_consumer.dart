@@ -48,4 +48,15 @@ class DummyApiConsumer extends ApiConsumer {
     await Future.delayed(const Duration(seconds: 1));
     return DummyResponses.getResponse(path, queryParameters: queryParameters);
   }
+
+  @override
+  Future put(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    bool isFromData = false,
+  }) async {
+    await Future.delayed(const Duration(seconds: 1));
+    return DummyResponses.getResponse(path, queryParameters: queryParameters);
+  }
 }

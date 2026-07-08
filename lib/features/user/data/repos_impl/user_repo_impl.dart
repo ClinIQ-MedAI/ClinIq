@@ -32,7 +32,7 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
     required Map<String, dynamic> data,
   }) {
     return handleApi(() async {
-      final response = await api.patch(EndPoints.updateMe, data: data);
+      final response = await api.put(EndPoints.updateMe, data: data);
       final user = UserProfileModel.fromJson(response["data"]);
       await saveJsonDataLocally(
         storageKey: StorageKeys.currentUser,

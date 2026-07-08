@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/widgets/custom_card_section.dart';
 import 'package:cliniq/core/widgets/form_section_header.dart';
@@ -11,6 +13,7 @@ class EditMedicalInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log(ailmentsController.text.toString());
     return Column(
       children: [
         const FormSectionHeader(

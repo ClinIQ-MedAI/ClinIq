@@ -6,7 +6,8 @@
             "account_created_successfully": "تم إنشاء الحساب بنجاح",
             "account_verified_successfully": "تم التحقق من حسابك بنجاح",
             "appointment_booked_successfully": "تم حجز الموعد بنجاح!",
-            "password_reset_link_sent":"تم إرسال رابط إعادة تعيين كلمة المرور بنجاح."
+            "password_reset_link_sent":"تم إرسال رابط إعادة تعيين كلمة المرور بنجاح.",
+            "profile_updated_successfully":"تم تحديث الملف الشخصي بنجاح."
         },
         "failures": {
             "incorrect_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",

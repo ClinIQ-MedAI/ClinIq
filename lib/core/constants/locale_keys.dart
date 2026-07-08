@@ -12,6 +12,8 @@ abstract class LocaleKeys {
       "messages.success.appointment_booked_successfully";
   static const messagesSuccessPasswordResetLinkSent =
       "messages.success.password_reset_link_sent";
+  static const messagesSuccessProfileUpdatedSuccessfully =
+      "messages.success.profile_updated_successfully";
 
   // messages.failures
   static const messagesFailuresIncorrectCredentials =

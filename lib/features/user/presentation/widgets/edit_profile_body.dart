@@ -2,34 +2,70 @@ import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/widgets/custom_button.dart';
 import 'package:cliniq/core/widgets/user_profile_image.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
+import 'package:cliniq/features/user/presentation/providers/update_profile_provider.dart';
 import 'package:cliniq/features/user/presentation/widgets/edit_medical_info_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/edit_personal_info_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/edit_physical_metrics_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class EditProfileBody extends StatelessWidget {
-  const EditProfileBody({
-    super.key,
-    required this.firstNameController,
-    required this.lastNameController,
-    required this.emailController,
-    required this.mobileController,
-    required this.heightController,
-    required this.weightController,
-    required this.ailmentsController,
-    required this.onSave,
-  });
+class EditProfileBody extends ConsumerStatefulWidget {
+  const EditProfileBody({super.key});
 
-  final TextEditingController firstNameController;
-  final TextEditingController lastNameController;
-  final TextEditingController emailController;
-  final TextEditingController mobileController;
-  final TextEditingController heightController;
-  final TextEditingController weightController;
-  final TextEditingController ailmentsController;
-  final VoidCallback onSave;
+  @override
+  ConsumerState<EditProfileBody> createState() => _EditProfileBodyState();
+}
+
+class _EditProfileBodyState extends ConsumerState<EditProfileBody> {
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController emailController;
+  late TextEditingController mobileController;
+  late TextEditingController heightController;
+  late TextEditingController weightController;
+  late TextEditingController ailmentsController;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = ref.read(currentUserProvider);
+    firstNameController = TextEditingController(text: user?.firstName ?? '');
+    lastNameController = TextEditingController(text: user?.lastName ?? '');
+    emailController = TextEditingController(text: user?.email ?? '');
+    mobileController = TextEditingController(text: user?.phoneNumber ?? '');
+    heightController = TextEditingController(text: user?.height ?? '');
+    weightController = TextEditingController(text: user?.weight ?? '');
+    ailmentsController = TextEditingController(text: user?.ailments ?? '');
+  }
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    mobileController.dispose();
+    heightController.dispose();
+    weightController.dispose();
+    ailmentsController.dispose();
+    super.dispose();
+  }
+
+  Future<void> onSave() async {
+    final data = { 
+      'firstName': firstNameController.text,
+      'lastName': lastNameController.text,
+      'email': emailController.text,
+      'mobile': mobileController.text,
+      'height': heightController.text,
+      'weight': weightController.text,
+      'ailments': ailmentsController.text,
+    };
+
+    await ref.read(updateProfileProvider.notifier).updateProfile(data);
+  }
 
   @override
   Widget build(BuildContext context) {

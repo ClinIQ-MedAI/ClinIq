@@ -6,7 +6,8 @@
             "account_created_successfully": "Account created successfully",
             "account_verified_successfully": "Your account has been verified successfully",
             "appointment_booked_successfully": "Appointment Booked Successfully!",
-            "password_reset_link_sent": "If the email exists, a password reset link has been sent."
+            "password_reset_link_sent": "If the email exists, a password reset link has been sent.",
+            "profile_updated_successfully": "Profile updated successfully"
         },
         "failures": {
             "incorrect_credentials": "Incorrect email or password. Please try again.",
@@ -243,15 +244,15 @@
             "change_photo": "Change Photo",
             "physical_metrics": "Physical Metrics",
             "medical_id": "Medical ID",
-        "personal_info": "Personal Information",
-        "medical_info": "Medical Information",
-        "gender": "Gender",
-        "cm": "cm",
-        "kg": "kg",
-        "complete_profile_title": "Complete your profile",
-        "complete_profile_description": "Complete your medical profile to unlock the full CliniQ experience.",
-        "complete_profile_button": "Complete Profile",
-        "phone": "Phone"
+            "personal_info": "Personal Information",
+            "medical_info": "Medical Information",
+            "gender": "Gender",
+            "cm": "cm",
+            "kg": "kg",
+            "complete_profile_title": "Complete your profile",
+            "complete_profile_description": "Complete your medical profile to unlock the full CliniQ experience.",
+            "complete_profile_button": "Complete Profile",
+            "phone": "Phone"
         }
     },
     "settings": {

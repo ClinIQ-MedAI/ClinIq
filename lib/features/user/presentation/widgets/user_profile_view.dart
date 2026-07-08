@@ -82,9 +82,7 @@ class UserProfileView extends ConsumerWidget {
                     .slideY(begin: 0.1),
               ],
 
-              if (isProfileCompleted &&
-                  userProfile != null &&
-                  userProfile.hasMedicalInfo) ...[
+              if (isProfileCompleted && userProfile != null) ...[
                 const VerticalGap(32),
                 MedicalInfoSection(
                   user: userProfile,
