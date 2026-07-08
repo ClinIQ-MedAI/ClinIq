@@ -23,18 +23,10 @@ class CurrentUserNotifier extends Notifier<UserProfileEntity?> {
       try {
         final decoded = jsonDecode(json);
         final user = UserProfileModel.fromJson(decoded);
-        _syncProfileCompletedFlag(user);
         return user;
       } catch (_) {}
     }
     return null;
-  }
-
-  void _syncProfileCompletedFlag(UserProfileEntity user) {
-    AppStorageHelper.setBool(
-      StorageKeys.isProfileCompleted,
-      user.hasMedicalInfo,
-    );
   }
 
   void updateUser(UserProfileEntity user) {
@@ -45,7 +37,6 @@ class CurrentUserNotifier extends Notifier<UserProfileEntity?> {
       storageKey: StorageKeys.currentUser,
       json: model.toJson(),
     );
-    _syncProfileCompletedFlag(user);
     state = user;
   }
 
