@@ -1,5 +1,6 @@
 import 'package:cliniq/features/auth/domain/repos/auth_repo.dart';
 import 'package:cliniq/features/auth/presentation/providers/get_auth_repo_provider.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cliniq/core/extensions/either_extensions.dart';
 import 'package:cliniq/core/utils/success.dart';
@@ -24,6 +25,10 @@ class CompleteProfileNotifier extends AsyncNotifier<Success?> {
     await _repository
         .completeUserProfile(data: data)
         .onSuccess((_) async {
+          await ref
+              .read(currentUserProvider.notifier)
+              .setProfileCompleted(true);
+          ref.read(currentUserProvider.notifier).reloadFromCache();
           state = AsyncData(Success(data: data));
         })
         .onFailure((error) {

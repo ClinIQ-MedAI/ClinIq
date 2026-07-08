@@ -1,4 +1,5 @@
 import 'package:cliniq/core/helpers/save_json_data_locally.dart';
+import 'package:cliniq/features/user/data/models/user_profile_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:cliniq/core/api/api_keys.dart';
 import 'package:cliniq/core/api/end_points.dart';
@@ -203,10 +204,19 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
     required Map<String, dynamic> data,
   }) {
     return handleApi(
-      () => api.post(EndPoints.completeUserProfile, data: data),
+      () => api.post(EndPoints.completeProfile, data: data),
       backendMessageMapping: {
         "Invalid email": LocaleKeys.messagesFailuresInvalidEmail,
       },
-    ).asVoid();
+    ).onSuccess((result) async {
+      await AppStorageHelper.setBool(StorageKeys.isProfileCompleted, true);
+      if (result["data"] != null) {
+        final user = UserProfileModel.fromJson(result["data"]);
+        await saveJsonDataLocally(
+          storageKey: StorageKeys.currentUser,
+          json: user.toJson(),
+        );
+      }
+    }).asVoid();
   }
 }

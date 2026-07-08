@@ -2,6 +2,7 @@ import 'package:cliniq/core/enums/gender.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/birth_date_pick_widget.dart';
 import 'package:cliniq/core/widgets/custom_card_section.dart';
+import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/labeled_dropdown_form_field.dart';
 import 'package:cliniq/core/widgets/labeled_form_field.dart';
 import 'package:cliniq/features/auth/presentation/widgets/auth_header.dart';
@@ -27,7 +28,8 @@ class UserSignUpBody extends ConsumerStatefulWidget {
 }
 
 class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
@@ -43,7 +45,8 @@ class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
   @override
   void initState() {
     super.initState();
-    nameController.addListener(checkFormFilled);
+    firstNameController.addListener(checkFormFilled);
+    lastNameController.addListener(checkFormFilled);
     emailController.addListener(checkFormFilled);
     passwordController.addListener(checkFormFilled);
     confirmPasswordController.addListener(checkFormFilled);
@@ -55,7 +58,8 @@ class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
         emailController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         confirmPasswordController.text.isNotEmpty &&
-        nameController.text.isNotEmpty &&
+        firstNameController.text.isNotEmpty &&
+        lastNameController.text.isNotEmpty &&
         phoneController.text.isNotEmpty &&
         selectedGender != null &&
         birthDate != null;
@@ -70,7 +74,8 @@ class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
     if (formKey.currentState!.validate()) {
       final UserSignUpRequestEntity customerSignUpRequestEntity =
           UserSignUpRequestEntity(
-            name: nameController.text,
+            firstName: firstNameController.text,
+            lastName: lastNameController.text,
             email: emailController.text,
             password: passwordController.text,
             passwordConfirm: confirmPasswordController.text,
@@ -92,7 +97,8 @@ class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
 
   @override
   void dispose() {
-    nameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
@@ -129,16 +135,36 @@ class UserSignUpBodyState extends ConsumerState<UserSignUpBody> {
                       const VerticalGap(12),
                       CustomCardSection(
                         children: [
-                          LabeledFormField(
-                            controller: nameController,
-                            validator: Validators.validateNormalText,
-                            label: LocaleKeys.signupUserName,
-                            hint: LocaleKeys.signupUserNameHint,
-                            keyboardType: TextInputType.name,
-                            prefixIcon: Icon(
-                              Icons.person_outline,
-                              color: context.colorScheme.primary,
-                            ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: LabeledFormField(
+                                  controller: firstNameController,
+                                  validator: Validators.validateNormalText,
+                                  label: LocaleKeys.signupUserFirstName,
+                                  hint: LocaleKeys.signupUserFirstNameHint,
+                                  keyboardType: TextInputType.name,
+                                  prefixIcon: Icon(
+                                    Icons.person_outline,
+                                    color: context.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                              const HorizontalGap(16),
+                              Expanded(
+                                child: LabeledFormField(
+                                  controller: lastNameController,
+                                  validator: Validators.validateNormalText,
+                                  label: LocaleKeys.signupUserLastName,
+                                  hint: LocaleKeys.signupUserLastNameHint,
+                                  keyboardType: TextInputType.name,
+                                  prefixIcon: Icon(
+                                    Icons.person_outline,
+                                    color: context.colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const VerticalGap(16),
                           LabeledFormField(

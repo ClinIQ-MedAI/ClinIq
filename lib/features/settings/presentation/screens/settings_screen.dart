@@ -1,4 +1,6 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
+import 'package:cliniq/core/constants/storage_keys.dart';
+import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -14,15 +16,17 @@ import 'package:cliniq/core/widgets/custom_card_section.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _pushNotifications = true;
   bool _smsNotifications = false;
   bool _emailNotifications = true;
@@ -166,7 +170,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SettingsActionTile(
                   title: LocaleKeys.settingsUserLogout.tr(),
                   icon: Icons.logout,
-                  onTap: () {},
+                  onTap: () async {
+                    await AppStorageHelper.deleteSecureData(
+                      StorageKeys.accessToken,
+                    );
+                    await AppStorageHelper.deleteSecureData(
+                      StorageKeys.refreshToken,
+                    );
+                    await AppStorageHelper.setBool(
+                      StorageKeys.isLoggedIn,
+                      false,
+                    );
+                    AppStorageHelper.remove(StorageKeys.currentUser);
+                    AppStorageHelper.remove(StorageKeys.isProfileCompleted);
+                    ref.read(currentUserProvider.notifier).clearUser();
+                    if (context.mounted) {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        Routes.loginScreen,
+                        (route) => false,
+                      );
+                    }
+                  },
                   textColor: context.colorScheme.error,
                   iconColor: context.colorScheme.error,
                 ),

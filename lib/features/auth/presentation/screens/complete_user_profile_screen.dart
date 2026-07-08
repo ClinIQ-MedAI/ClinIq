@@ -1,6 +1,5 @@
 import 'package:cliniq/core/helpers/navigate_to_home_screen.dart';
 import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
-import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/success.dart';
 import 'package:cliniq/core/widgets/custom_modal_progress_hud.dart';
 import 'package:cliniq/features/auth/presentation/providers/complete_profile_provider.dart';
@@ -16,7 +15,7 @@ class CompleteUserProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(completeProfileProvider, (prev, next) {
       if (next is AsyncData && next.value is Success) {
-        Navigator.pushReplacementNamed(context, Routes.userHomeScreen);
+        navigateToHomeScreen(context);
       } else if (next is AsyncError) {
         showCustomSnackBar(context, next.error.toString());
       }

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cliniq/features/auth/presentation/screens/complete_user_profile_screen.dart';
 import 'package:cliniq/features/auth/presentation/screens/login_screen.dart';
 import 'package:cliniq/features/home/presentation/screens/user_main_layout.dart';
 import 'package:flutter/material.dart';

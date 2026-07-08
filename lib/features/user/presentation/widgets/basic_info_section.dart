@@ -3,43 +3,21 @@ import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
-import 'package:cliniq/features/user/domain/entities/user_profile_entity.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_info_row.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class MedicalInfoSection extends StatelessWidget {
-  const MedicalInfoSection({super.key, required this.user});
+class BasicInfoSection extends StatelessWidget {
+  const BasicInfoSection({super.key, required this.phone});
 
-  final UserProfileEntity user;
+  final String? phone;
 
   @override
   Widget build(BuildContext context) {
-    final rows = <Widget>[];
-
-    void addRow(String title, String? value, IconData icon, {Color? iconColor}) {
-      if (value == null || value.isEmpty) return;
-      if (rows.isNotEmpty) {
-        rows.add(const Divider(height: 32, thickness: 1, color: Color(0xFFF1F5F9)));
-      }
-      rows.add(ProfileInfoRow(
-        title: title,
-        value: value,
-        icon: icon,
-        iconColor: iconColor,
-      ));
+    if (phone == null || phone!.isEmpty) {
+      return const SizedBox.shrink();
     }
-
-    addRow(LocaleKeys.profileUserGender, user.gender, Icons.person_outline_rounded);
-    addRow(LocaleKeys.profileUserBloodGroup, user.bloodGroup, Icons.bloodtype_rounded,
-        iconColor: Colors.redAccent);
-    addRow(LocaleKeys.profileUserHeight, user.height, Icons.height);
-    addRow(LocaleKeys.profileUserWeight, user.weight, Icons.monitor_weight_outlined);
-    addRow(LocaleKeys.profileUserAilments, user.ailments, Icons.health_and_safety_rounded,
-        iconColor: Colors.orangeAccent);
-
-    if (rows.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,13 +28,13 @@ class MedicalInfoSection extends StatelessWidget {
               width: 4.w,
               height: 20.h,
               decoration: BoxDecoration(
-                color: context.colorScheme.secondary,
+                color: context.colorScheme.primary,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
             const HorizontalGap(12),
             Text(
-              LocaleKeys.profileUserMedicalInfo.tr(),
+              LocaleKeys.profileUserPersonalInfo.tr(),
               style: AppTextStyles.getTextStyle(18).copyWith(
                 fontWeight: FontWeight.w800,
                 color: context.textPalette.primaryColor,
@@ -73,16 +51,20 @@ class MedicalInfoSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(28.r),
             boxShadow: [
               BoxShadow(
-                color: context.colorScheme.secondary.withValues(alpha: 0.05),
+                color: context.colorScheme.primary.withValues(alpha: 0.05),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               ),
             ],
             border: Border.all(
-              color: context.colorScheme.secondary.withValues(alpha: 0.05),
+              color: context.colorScheme.primary.withValues(alpha: 0.05),
             ),
           ),
-          child: Column(children: rows),
+          child: ProfileInfoRow(
+            title: LocaleKeys.profileUserPhone,
+            value: phone!,
+            icon: Icons.phone_android_rounded,
+          ),
         ),
       ],
     );

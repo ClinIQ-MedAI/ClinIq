@@ -108,8 +108,10 @@
         "title": "إنشاء حساب",
         "description": "انضم إلى ClinIq اليوم وابدأ في إدارة صحتك بذكاء أكبر.",
         "user": {
-            "name": "الاسم",
-            "name_hint": "أدخل الاسم",
+            "fname": "الاسم",
+            "fname_hint": "أدخل الاسم",
+            "lname": "اللقب",
+            "lname_hint": "أدخل اللقب",
             "email": "البريد الإلكتروني",
             "email_hint": "أدخل البريد الإلكتروني",
             "passwords_title": "كلمات المرور",
@@ -241,15 +243,15 @@
             "change_photo": "تغيير الصورة",
             "physical_metrics": "المقاييس البدنية",
             "medical_id": "المعرف الطبي",
-            "health_stats": "الإحصائيات الصحية",
-            "fitness_overview": "نظرة عامة على اللياقة",
-            "personal_info": "المعلومات الشخصية",
-            "medical_info": "المعلومات الطبية",
-            "gender": "الجنس",
-            "age": "العمر",
-            "years": "سنوات",
-            "cm": "سم",
-            "kg": "كجم"
+        "personal_info": "المعلومات الشخصية",
+        "medical_info": "المعلومات الطبية",
+        "gender": "الجنس",
+        "cm": "سم",
+        "kg": "كجم",
+        "complete_profile_title": "أكمل ملفك الشخصي",
+        "complete_profile_description": "أكمل ملفك الطبي لفتح تجربة CliniQ الكاملة.",
+        "complete_profile_button": "إكمال الملف الشخصي",
+        "phone": "الهاتف"
         }
     },
     "settings": {

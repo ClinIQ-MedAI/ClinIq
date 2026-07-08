@@ -6,17 +6,21 @@ import 'package:cliniq/core/widgets/custom_text_form_field.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/user_profile_image.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class HomeHeader extends StatelessWidget {
+class HomeHeader extends ConsumerWidget {
   const HomeHeader({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userProfile = ref.watch(currentUserProvider);
+    final userName = userProfile?.fullName ?? 'User';
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -36,7 +40,6 @@ class HomeHeader extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Decorative circles for a more premium look
           Positioned(
             top: -50.h,
             right: -50.w,
@@ -100,7 +103,7 @@ class HomeHeader extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              'Mohamed Ahmed',
+                              userName,
                               style: AppTextStyles.getTextStyle(22).copyWith(
                                 fontWeight: FontWeight.w800,
                                 color: context.colorScheme.onPrimary,

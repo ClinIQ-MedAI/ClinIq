@@ -46,6 +46,8 @@ class ApiInterceptor extends Interceptor {
     debugPrint("response status code: ${err.response?.statusCode}");
 
     final data = err.response?.data;
+    final statusMessage = err.response?.statusMessage;
+    final statusCode = err.response?.statusCode;
 
     String? message;
 
@@ -55,16 +57,16 @@ class ApiInterceptor extends Interceptor {
       message = data;
     }
 
-    if (message == "Invalid or expired token, please login again.") {
-      try {
-        await handleUnAuthorizedException(err, handler);
-        return;
-      } catch (e) {
-        debugPrint("error in get refresh token part: ${e.toString()}");
-        await forcesUserLogOut(handler, err);
-        return;
-      }
-    }
+    // if (statusMessage == 'Unauthorized' && statusCode == 401) {
+    //   try {
+    //     await handleUnAuthorizedException(err, handler);
+    //     return;
+    //   } catch (e) {
+    //     debugPrint("error in get refresh token part: ${e.toString()}");
+    //     await forcesUserLogOut(handler, err);
+    //     return;
+    //   }
+    // }
 
     if (message == "You are not logged in! please login to get access.") {
       await handleNoRefreshTokenFound(handler, err);

@@ -6,10 +6,16 @@ import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:flutter/material.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.name, required this.email});
+  const ProfileHeader({
+    super.key,
+    required this.name,
+    required this.email,
+    this.profilePic,
+  });
 
   final String name;
   final String email;
+  final String? profilePic;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,10 @@ class ProfileHeader extends StatelessWidget {
                   width: 3,
                 ),
               ),
-              child: const UserProfileImage(circleAvatarRadius: 60),
+              child: UserProfileImage(
+                circleAvatarRadius: 60,
+                profilePicUrl: profilePic,
+              ),
             ),
             Container(
               padding: const EdgeInsets.all(6),

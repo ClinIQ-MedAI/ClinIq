@@ -1,7 +1,8 @@
 import 'package:cliniq/core/enums/gender.dart';
 
 class UserSignUpRequestEntity {
-  final String name;
+  final String firstName;
+  final String lastName;
   final String email;
   final String password;
   final String passwordConfirm;
@@ -10,7 +11,8 @@ class UserSignUpRequestEntity {
   final DateTime birthDate;
 
   const UserSignUpRequestEntity({
-    required this.name,
+    required this.firstName,
+    required this.lastName,
     required this.email,
     required this.password,
     required this.passwordConfirm,

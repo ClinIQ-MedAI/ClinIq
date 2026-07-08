@@ -108,8 +108,10 @@
         "title": "Create Account",
         "description": "Join ClinIq today and start managing your health smarter.",
         "user": {
-            "name": "Name",
-            "name_hint": "Enter Name",
+            "fname": "First Name",
+            "fname_hint": "Enter FName",
+            "lname": "Last Name",
+            "lname_hint": "Enter LName",
             "email": "Email",
             "email_hint": "Enter Email",
             "passwords_title": "Passwords",
@@ -241,15 +243,15 @@
             "change_photo": "Change Photo",
             "physical_metrics": "Physical Metrics",
             "medical_id": "Medical ID",
-            "health_stats": "Health Stats",
-            "fitness_overview": "Fitness Overview",
-            "personal_info": "Personal Information",
-            "medical_info": "Medical Information",
-            "gender": "Gender",
-            "age": "Age",
-            "years": "Years",
-            "cm": "cm",
-            "kg": "kg"
+        "personal_info": "Personal Information",
+        "medical_info": "Medical Information",
+        "gender": "Gender",
+        "cm": "cm",
+        "kg": "kg",
+        "complete_profile_title": "Complete your profile",
+        "complete_profile_description": "Complete your medical profile to unlock the full CliniQ experience.",
+        "complete_profile_button": "Complete Profile",
+        "phone": "Phone"
         }
     },
     "settings": {

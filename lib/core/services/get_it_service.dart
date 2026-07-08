@@ -13,6 +13,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cliniq/features/auth/data/repos_impl/auth_repo_impl.dart';
 import 'package:cliniq/features/auth/domain/repos/auth_repo.dart';
+import 'package:cliniq/features/user/data/repos_impl/user_repo_impl.dart';
+import 'package:cliniq/features/user/domain/repos/user_repo.dart';
 
 final getIt = GetIt.instance;
 
@@ -45,5 +47,9 @@ Future<void> setupGetIt() async {
       api: ApiSelector.get(ApiFeatures.chat),
       socket: getIt<SocketConsumer>(),
     ),
+  );
+
+  getIt.registerSingleton<UserRepo>(
+    UserRepoImpl(api: ApiSelector.get(ApiFeatures.profile)),
   );
 }

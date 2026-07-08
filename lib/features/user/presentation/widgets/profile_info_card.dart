@@ -1,14 +1,14 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
-import 'package:cliniq/features/user/data/models/user_profile_model.dart';
+import 'package:cliniq/features/user/domain/entities/user_profile_entity.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_info_row.dart';
 import 'package:flutter/material.dart';
 
 class ProfileInfoCard extends StatelessWidget {
   const ProfileInfoCard({super.key, required this.userProfile});
 
-  final UserProfileModel userProfile;
+  final UserProfileEntity userProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class ProfileInfoCard extends StatelessWidget {
         children: [
           ProfileInfoRow(
             title: LocaleKeys.profileUserBloodGroup,
-            value: userProfile.bloodGroup,
+            value: userProfile.bloodGroup ?? '',
             icon: Icons.bloodtype_outlined,
             iconColor: context.colorScheme.error,
           ),
@@ -42,25 +42,25 @@ class ProfileInfoCard extends StatelessWidget {
           const VerticalGap(20),
           ProfileInfoRow(
             title: LocaleKeys.profileUserMobile,
-            value: userProfile.mobile,
+            value: userProfile.phoneNumber ?? '',
             icon: Icons.phone_iphone_outlined,
           ),
           const VerticalGap(20),
           ProfileInfoRow(
             title: LocaleKeys.profileUserHeight,
-            value: userProfile.height,
+            value: userProfile.height ?? '',
             icon: Icons.height,
           ),
           const VerticalGap(20),
           ProfileInfoRow(
             title: LocaleKeys.profileUserWeight,
-            value: userProfile.weight,
+            value: userProfile.weight ?? '',
             icon: Icons.monitor_weight_outlined,
           ),
           const VerticalGap(20),
           ProfileInfoRow(
             title: LocaleKeys.profileUserAilments,
-            value: userProfile.ailments,
+            value: userProfile.ailments ?? '',
             icon: Icons.medical_services_outlined,
           ),
         ],

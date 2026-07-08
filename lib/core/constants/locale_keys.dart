@@ -114,8 +114,10 @@ abstract class LocaleKeys {
   // signup/user
   static const signupTitle = "signup.title";
   static const signupDescription = "signup.description";
-  static const signupUserName = "signup.user.name";
-  static const signupUserNameHint = "signup.user.name_hint";
+  static const signupUserFirstName = "signup.user.fname";
+  static const signupUserFirstNameHint = "signup.user.fname_hint";
+  static const signupUserLastName = "signup.user.lname";
+  static const signupUserLastNameHint = "signup.user.lname_hint";
   static const signupUserEmail = "signup.user.email";
   static const signupUserEmailHint = "signup.user.email_hint";
   static const signupUserGender = "signup.user.gender";
@@ -291,15 +293,15 @@ abstract class LocaleKeys {
   static const profileUserChangePhoto = "profile.user.change_photo";
   static const profileUserPhysicalMetrics = "profile.user.physical_metrics";
   static const profileUserMedicalId = "profile.user.medical_id";
-  static const profileUserHealthStats = "profile.user.health_stats";
-  static const profileUserFitnessOverview = "profile.user.fitness_overview";
   static const profileUserPersonalInfo = "profile.user.personal_info";
   static const profileUserMedicalInfo = "profile.user.medical_info";
   static const profileUserGender = "profile.user.gender";
-  static const profileUserAge = "profile.user.age";
-  static const profileUserYears = "profile.user.years";
   static const profileUserCm = "profile.user.cm";
   static const profileUserKg = "profile.user.kg";
+  static const profileUserCompleteProfileTitle = "profile.user.complete_profile_title";
+  static const profileUserCompleteProfileDescription = "profile.user.complete_profile_description";
+  static const profileUserCompleteProfileButton = "profile.user.complete_profile_button";
+  static const profileUserPhone = "profile.user.phone";
 
   // settings
   static const settingsUserTitle = "settings.user.title";

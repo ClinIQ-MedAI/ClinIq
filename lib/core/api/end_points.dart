@@ -15,11 +15,7 @@ class EndPoints {
       "Auth/VerifyResetCode/verify-reset-code";
   static const String resendResetCode =
       "Auth/ResendResetCode/resend-reset-code";
-  static const String changePassword = "Auth/ChangePassword/change-password";
-  static const String completeUserProfile =
-      "Auth/CompleteUserProfile/complete-user-profile";
-
-  static const String getMe = "Auth/GetCurrentUser/me";
+  static const String changePassword = "patient/me/change-password";
 
   // home
   static const String examinationAppointments =
@@ -43,4 +39,9 @@ class EndPoints {
       "chat/conversations/$conversationId/messages";
   static String sendChatMessage(String conversationId) =>
       "chat/conversations/$conversationId/messages";
+
+  // profile
+  static const String getMe = "patient/me";
+  static const String updateMe = "patient/me";
+  static const String completeProfile = "patient/Survey";
 }

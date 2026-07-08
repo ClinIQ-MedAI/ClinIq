@@ -12,7 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class EditProfileBody extends StatelessWidget {
   const EditProfileBody({
     super.key,
-    required this.nameController,
+    required this.firstNameController,
+    required this.lastNameController,
     required this.emailController,
     required this.mobileController,
     required this.heightController,
@@ -21,7 +22,8 @@ class EditProfileBody extends StatelessWidget {
     required this.onSave,
   });
 
-  final TextEditingController nameController;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
   final TextEditingController emailController;
   final TextEditingController mobileController;
   final TextEditingController heightController;
@@ -62,7 +64,8 @@ class EditProfileBody extends StatelessWidget {
           ).animate().fadeIn().scale(),
           const VerticalGap(40),
           EditPersonalInfoSection(
-            nameController: nameController,
+            firstNameController: firstNameController,
+            lastNameController: lastNameController,
             emailController: emailController,
             mobileController: mobileController,
           ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
