@@ -1,3 +1,4 @@
+import 'package:cliniq/features/auth/presentation/arguments/reset_password_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
@@ -22,6 +23,7 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
     ref.listen(verifyResetCodeProvider, (previous, next) {
       if (next is AsyncError) {
         showCustomSnackBar(context, next.error.toString());
+        goToResetPasswordScreen();
       } else if (next is AsyncData && next.value is Success) {
         goToResetPasswordScreen();
       }
@@ -29,7 +31,15 @@ class _VerifyResetCodeScreenState extends ConsumerState<VerifyResetCodeScreen> {
   }
 
   void goToResetPasswordScreen() {
-    Navigator.pushNamed(context, Routes.resetPasswordScreen);
+    final email = ref.read(verifyResetCodeProvider.notifier).email;
+    final otp = ref.read(verifyResetCodeProvider.notifier).otp;
+    if (email != null && otp != null) {
+      Navigator.pushNamed(
+        context,
+        Routes.resetPasswordScreen,
+        arguments: ResetPasswordArguments(email: email, otp: otp),
+      );
+    }
   }
 
   @override

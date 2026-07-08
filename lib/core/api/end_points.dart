@@ -7,6 +7,7 @@ class EndPoints {
 
   static const String verifyEmail = "auth/verify-email";
   static const String resendVerifyEmail = "auth/send-email-otp";
+  static const String sendEmailOtp = "auth/send-email-otp";
 
   static const String forgetPassword = "auth/forgot-password";
   static const String resetPassword = "auth/reset-password";

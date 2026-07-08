@@ -8,7 +8,13 @@ import 'package:cliniq/features/auth/presentation/providers/reset_password_provi
 import 'package:cliniq/features/auth/presentation/widgets/reset_password_body.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen({
+    super.key,
+    required this.email,
+    required this.otp,
+  });
+  final String email;
+  final String otp;
 
   @override
   ConsumerState<ResetPasswordScreen> createState() =>
@@ -40,7 +46,10 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     listenOnResetPasswordProvider();
     return CustomModalProgressHUD(
       inAsyncCall: ref.watch(resetPasswordProvider).isLoading,
-      child: ResetPasswordBody(),
+      child: ResetPasswordBody(
+        email: widget.email,
+        otp: widget.otp,
+      ),
     );
   }
 }

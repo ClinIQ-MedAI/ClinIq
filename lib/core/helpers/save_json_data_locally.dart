@@ -8,7 +8,7 @@ Future<void> saveJsonDataLocally({
   required Map<String, dynamic> json,
 }) async {
   try {
-    log('save user data in prefs');
+    log('save data in prefs');
     var jsonData = jsonEncode(json);
     log("new user data after save it: ${jsonData.toString()}");
     await AppStorageHelper.setString(storageKey, jsonData);

@@ -9,6 +9,8 @@ final loginProvider =
     );
 
 class LoginNotifier extends AsyncNotifier<Success?> {
+  String? email;
+
   @override
   Future<Success?> build() async {
     return null;
@@ -18,6 +20,8 @@ class LoginNotifier extends AsyncNotifier<Success?> {
     required String email,
     required String password,
   }) async {
+    this.email = email;
+
     state = const AsyncLoading();
     await ref
         .read(getAuthRepoProvider)

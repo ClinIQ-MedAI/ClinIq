@@ -10,6 +10,8 @@ abstract class LocaleKeys {
       "messages.success.account_verified_successfully";
   static const messagesSuccessAppointmentBookedSuccessfully =
       "messages.success.appointment_booked_successfully";
+  static const messagesSuccessPasswordResetLinkSent =
+      "messages.success.password_reset_link_sent";
 
   // messages.failures
   static const messagesFailuresIncorrectCredentials =
@@ -26,6 +28,8 @@ abstract class LocaleKeys {
   static const messagesFailuresInvalidEmail = "messages.failures.invalid_email";
   static const messagesFailuresUserAlreadyActive =
       "messages.failures.user_already_active";
+  static const messagesFailuresUserNotFound =
+      "messages.failures.user_not_found";
   static const messagesFailuresVerificationCodeNotFound =
       "messages.failures.verification_code_not_found";
   static const messagesFailuresResetTokenExpired =

@@ -5,7 +5,8 @@
             "new_verification_code_sent": "تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني.",
             "account_created_successfully": "تم إنشاء الحساب بنجاح",
             "account_verified_successfully": "تم التحقق من حسابك بنجاح",
-            "appointment_booked_successfully": "تم حجز الموعد بنجاح!"
+            "appointment_booked_successfully": "تم حجز الموعد بنجاح!",
+            "password_reset_link_sent":"تم إرسال رابط إعادة تعيين كلمة المرور بنجاح."
         },
         "failures": {
             "incorrect_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
@@ -15,6 +16,7 @@
             "phone_already_exists": "هذا الرقم مرتبط بالفعل بحساب موجود.",
             "invalid_or_expired_code": "الرمز الذي أدخلته غير صالح أو منتهي الصلاحية. يرجى المحاولة مرة أخرى.",
             "invalid_email": "لم نتمكن من العثور على حساب بهذا البريد الإلكتروني.",
+            "user_not_found":"هذا الحساب غير مسجل. يرجى إنشاء حساب للمتابعة.",
             "user_already_active": "حسابك نشط بالفعل. لا يلزم اتخاذ أي إجراء آخر.",
             "verification_code_not_found": "رمز التحقق غير موجود. يرجى طلب رمز جديد.",
             "reset_token_expired": "انتهت صلاحية رمز إعادة التعيين. يرجى طلب رمز جديد.",

@@ -18,7 +18,7 @@ class VerifyEmailScreen extends ConsumerWidget {
       if (next is AsyncData && next.value is Success) {
         Navigator.pushNamedAndRemoveUntil(
           context,
-          Routes.completeUserProfileScreen,
+          Routes.loginScreen,
           (route) => false,
         );
       } else if (next is AsyncError) {

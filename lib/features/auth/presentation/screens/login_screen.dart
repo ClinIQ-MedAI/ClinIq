@@ -1,3 +1,4 @@
+import 'package:cliniq/features/auth/presentation/arguments/verify_email_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
@@ -21,7 +22,13 @@ class LoginScreen extends ConsumerWidget {
         if (next.error != null) {
           if (next.error.toString() ==
               LocaleKeys.messagesFailuresInactiveUser) {
-            Navigator.pushNamed(context, Routes.verifyEmailScreen);
+            Navigator.pushNamed(
+              context,
+              Routes.verifyEmailScreen,
+              arguments: VerifyEmailArguments(
+                email: ref.read(loginProvider.notifier).email ?? '',
+              ),
+            );
           } else {
             showCustomSnackBar(context, next.error.toString());
           }

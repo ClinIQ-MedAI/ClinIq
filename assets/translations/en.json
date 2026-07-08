@@ -5,7 +5,8 @@
             "new_verification_code_sent": "A new verification code has been sent to your email.",
             "account_created_successfully": "Account created successfully",
             "account_verified_successfully": "Your account has been verified successfully",
-            "appointment_booked_successfully": "Appointment Booked Successfully!"
+            "appointment_booked_successfully": "Appointment Booked Successfully!",
+            "password_reset_link_sent": "If the email exists, a password reset link has been sent."
         },
         "failures": {
             "incorrect_credentials": "Incorrect email or password. Please try again.",
@@ -15,6 +16,7 @@
             "phone_already_exists": "This phone number is already linked to an existing account.",
             "invalid_or_expired_code": "The otp you entered is Invalid or expired. Please try again.",
             "invalid_email": "We couldn’t find an account with this email.",
+            "user_not_found": "This account is not registered yet. Please sign up to continue.",
             "user_already_active": "Your account is already active. No further action is needed.",
             "verification_code_not_found": "Verification code not found. Please request a new one.",
             "reset_token_expired": "Reset token has expired. Please request a new one.",

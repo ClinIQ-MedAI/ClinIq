@@ -14,7 +14,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cliniq/features/auth/presentation/providers/reset_password_provider.dart';
 
 class ResetPasswordBody extends ConsumerStatefulWidget {
-  const ResetPasswordBody({super.key});
+  const ResetPasswordBody({super.key, required this.email, required this.otp});
+  final String email;
+  final String otp;
 
   @override
   ConsumerState<ResetPasswordBody> createState() => _ResetPasswordBodyState();
@@ -59,7 +61,8 @@ class _ResetPasswordBodyState extends ConsumerState<ResetPasswordBody> {
           .read(resetPasswordProvider.notifier)
           .resetPassword(
             newPassword: passwordController.text,
-            confirmPassword: confirmPasswordController.text,
+            email: widget.email,
+            otp: widget.otp,
           );
     }
   }

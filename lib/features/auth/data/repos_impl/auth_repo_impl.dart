@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:cliniq/core/helpers/save_json_data_locally.dart';
 import 'package:dartz/dartz.dart';
 import 'package:cliniq/core/api/api_keys.dart';
 import 'package:cliniq/core/api/end_points.dart';
@@ -29,29 +28,28 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
         },
       ),
       backendMessageMapping: {
-        "Invalid email or password": LocaleKeys.messagesFailuresIncorrectCredentials,
+        "Invalid email or password":
+            LocaleKeys.messagesFailuresIncorrectCredentials,
         "Please verify your email or phone before logging in":
             LocaleKeys.messagesFailuresInactiveUser,
       },
-    ).onSuccess((data) async {
-      log("user data: ${data.toString()}");
-      final accessToken = data['data'][ApiKeys.token];
+    ).onSuccess((result) async {
       await AppStorageHelper.setSecureData(
         StorageKeys.accessToken,
-        accessToken,
+        result[ApiKeys.accessToken],
       );
 
       await AppStorageHelper.setSecureData(
         StorageKeys.refreshToken,
-        data['data'][ApiKeys.refreshToken],
+        result[ApiKeys.refreshToken],
       );
 
       await AppStorageHelper.setBool(StorageKeys.isLoggedIn, true);
 
-      // await saveJsonDataLocally(
-      //   storageKey: StorageKeys.currentUser,
-      //   json: result["data"]["account"],
-      // );
+      await saveJsonDataLocally(
+        storageKey: StorageKeys.currentUser,
+        json: result["user"],
+      );
 
       await AppStorageHelper.deleteSecureData(StorageKeys.resetToken);
     }).asVoid();
@@ -66,12 +64,16 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
     return handleApi(
       () => api.post(EndPoints.userSignUp, data: data),
       backendMessageMapping: {
-        'Passwords must be at least 8 characters.':LocaleKeys.messagesFailuresPasswordTooShort,
-        'Passwords must have at least one non alphanumeric character.':LocaleKeys.messagesFailuresPasswordRequiresSpecialCharacter,
-        'Passwords must have at least one lowercase (\'a\'-\'z\').':LocaleKeys.messagesFailuresPasswordRequiresLowercase,
-        'Passwords must have at least one uppercase (\'A\'-\'Z\').':LocaleKeys.messagesFailuresPasswordRequiresUppercase,
-        'Invalid email address.':LocaleKeys.messagesFailuresInvalidEmailFormat,
-        'Email \'$email\' is invalid.':LocaleKeys.messagesFailuresInvalidEmail,
+        'Passwords must be at least 8 characters.':
+            LocaleKeys.messagesFailuresPasswordTooShort,
+        'Passwords must have at least one non alphanumeric character.':
+            LocaleKeys.messagesFailuresPasswordRequiresSpecialCharacter,
+        'Passwords must have at least one lowercase (\'a\'-\'z\').':
+            LocaleKeys.messagesFailuresPasswordRequiresLowercase,
+        'Passwords must have at least one uppercase (\'A\'-\'Z\').':
+            LocaleKeys.messagesFailuresPasswordRequiresUppercase,
+        'Invalid email address.': LocaleKeys.messagesFailuresInvalidEmailFormat,
+        'Email \'$email\' is invalid.': LocaleKeys.messagesFailuresInvalidEmail,
         'Another user With the same Email exists':
             LocaleKeys.messagesFailuresAccountAlreadyExists,
         'Phone number is already in use':
@@ -81,11 +83,22 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
   }
 
   @override
+  Future<Either<Failure, void>> sendEmailOtp({required String email}) {
+    return handleApi(
+      () => api.post(EndPoints.sendEmailOtp, data: {ApiKeys.email: email}),
+      backendMessageMapping: {
+        "User not found": LocaleKeys.messagesFailuresUserNotFound,
+      },
+    ).asVoid();
+  }
+
+  @override
   Future<Either<Failure, void>> verifyEmail({
     required String email,
     required String code,
   }) async {
-    await handleApi(
+    await sendEmailOtp(email: email);
+    return await handleApi(
       () => api.post(
         EndPoints.verifyEmail,
         data: {ApiKeys.email: email, ApiKeys.code: code},
@@ -95,18 +108,8 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
             LocaleKeys.messagesFailuresInvalidOrExpiredCode,
       },
     ).onSuccess((result) async {
-      // TODO: update later after back update it
-      // final accessToken = result[ApiKeys.accessToken];
-      // await AppStorageHelper.setSecureData(
-      //   StorageKeys.accessToken,
-      //   accessToken,
-      // );
-
       await AppStorageHelper.deleteSecureData(StorageKeys.resetToken);
-      await AppStorageHelper.setBool(StorageKeys.isLoggedIn, true);
-    }).asVoid();
-
-    return const Right(null);
+    });
   }
 
   @override
@@ -129,6 +132,10 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
   Future<Either<Failure, void>> forgetPassword({required String email}) {
     return handleApi(
       () => api.post(EndPoints.forgetPassword, data: {ApiKeys.email: email}),
+      backendMessageMapping: {
+        "If the email exists, a password reset link has been sent.":
+            LocaleKeys.messagesSuccessPasswordResetLinkSent,
+      },
     ).asVoid();
   }
 
@@ -168,18 +175,23 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
   @override
   Future<Either<Failure, void>> resetPassword({
     required String newPassword,
-    required String confirmPassword,
+    required String email,
+    required String otp,
   }) {
     return handleApi(
       () => api.post(
         EndPoints.resetPassword,
         data: {
+          ApiKeys.email: email,
+          ApiKeys.code: otp,
           ApiKeys.newPassword: newPassword,
-          ApiKeys.confirmPassword: confirmPassword,
         },
       ),
       backendMessageMapping: {
-        "Reset token has expired": LocaleKeys.messagesFailuresResetTokenExpired,
+        "The user with the specified ID was not found.":
+            LocaleKeys.messagesFailuresUserNotFound,
+        "Invalid or expired reset code.":
+            LocaleKeys.messagesFailuresResetTokenExpired,
       },
     ).onSuccess((value) async {
       await AppStorageHelper.deleteSecureData(StorageKeys.resetToken);

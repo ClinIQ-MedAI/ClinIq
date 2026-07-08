@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cliniq/features/auth/presentation/arguments/reset_password_arguments.dart';
 import 'package:cliniq/features/auth/presentation/arguments/verify_email_arguments.dart';
 import 'package:cliniq/features/auth/presentation/arguments/verify_reset_code_arguments.dart';
 import 'package:cliniq/features/auth/presentation/screens/complete_user_profile_screen.dart';
@@ -34,7 +35,12 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
       return MaterialPageRoute(builder: (_) => const ForgetPasswordScreen());
 
     case Routes.resetPasswordScreen:
-      return MaterialPageRoute(builder: (_) => const ResetPasswordScreen());
+      final args = settings.arguments as ResetPasswordArguments?;
+      final email = args?.email ?? '';
+      final otp = args?.otp ?? '';
+      return MaterialPageRoute(
+        builder: (_) => ResetPasswordScreen(email: email, otp: otp),
+      );
 
     case Routes.verifyResetCodeScreen:
       final args = settings.arguments as VerifyResetCodeArguments?;

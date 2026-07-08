@@ -1,6 +1,6 @@
 class StorageKeys {
   static const String isOnboardingCompleted = "isOnboardingCompleted";
-  static const String accessToken = "accessToken";
+  static const String accessToken = "token";
   static const String refreshToken = "refreshToken";
   static const String themeMode = "themeMode";
   static const String isArabic = "isArabic";

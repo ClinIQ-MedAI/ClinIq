@@ -16,14 +16,16 @@ class ResetPasswordNotifier extends AsyncNotifier<Success?> {
 
   Future<void> resetPassword({
     required String newPassword,
-    required String confirmPassword,
+    required String email,
+    required String otp,
   }) async {
     state = const AsyncLoading();
     await ref
         .read(getAuthRepoProvider)
         .resetPassword(
           newPassword: newPassword,
-          confirmPassword: confirmPassword,
+          email: email,
+          otp: otp,
         )
         .onSuccess((_) async {
           state = const AsyncData(Success());

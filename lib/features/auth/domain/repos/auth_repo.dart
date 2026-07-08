@@ -16,6 +16,8 @@ abstract class AuthRepo {
   });
   Future<Either<Failure, void>> resendVerifyEmail({required String email});
 
+  Future<Either<Failure,void>> sendEmailOtp({required String email});
+
   // forget password
   Future<Either<Failure, void>> forgetPassword({required String email});
 
@@ -28,7 +30,8 @@ abstract class AuthRepo {
 
   Future<Either<Failure, void>> resetPassword({
     required String newPassword,
-    required String confirmPassword,
+    required String email,
+    required String otp,
   });
 
   Future<Either<Failure, void>> completeUserProfile({
