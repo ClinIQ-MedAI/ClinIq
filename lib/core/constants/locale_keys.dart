@@ -279,6 +279,22 @@ abstract class LocaleKeys {
   static const chatAiMessage3 = "chat.ai.message_3";
   static const chatInputHint = "chat.input_hint";
   static const chatToday = "chat.today";
+  static const chatAttachmentPickerTitle = "chat.attachment_picker_title";
+  static const chatDentalXRay = "chat.dental_x_ray";
+  static const chatDentalXRayDesc = "chat.dental_x_ray_desc";
+  static const chatBoneXRay = "chat.bone_x_ray";
+  static const chatBoneXRayDesc = "chat.bone_x_ray_desc";
+  static const chatChestXRay = "chat.chest_x_ray";
+  static const chatChestXRayDesc = "chat.chest_x_ray_desc";
+  static const chatDentalPhoto = "chat.dental_photo";
+  static const chatDentalPhotoDesc = "chat.dental_photo_desc";
+  static const chatMedicalPrescription = "chat.medical_prescription";
+  static const chatMedicalPrescriptionDesc = "chat.medical_prescription_desc";
+  static const chatPdfReport = "chat.pdf_report";
+  static const chatPdfReportDesc = "chat.pdf_report_desc";
+  static const chatAttachmentUploading = "chat.attachment_uploading";
+  static const chatAttachmentRemove = "chat.attachment_remove";
+  static const chatAttachmentRetry = "chat.attachment_retry";
 
   // profile
   static const profileUserTitle = "profile.user.title";

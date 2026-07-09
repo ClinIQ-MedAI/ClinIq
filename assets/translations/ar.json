@@ -226,7 +226,23 @@
             "message_3": "تابع وقت الأعراض وشدتها والأدوية والنوم والوجبات وكل ما يجعل الأعراض تتحسن أو تسوء."
         },
         "input_hint": "اكتب رسالتك...",
-        "today": "اليوم"
+        "today": "اليوم",
+        "attachment_picker_title": "اختر نوع المرفق",
+        "dental_x_ray": "الأشعة السينية للأسنان",
+        "dental_x_ray_desc": "صور أشعة الأسنان للتشخيص",
+        "bone_x_ray": "الأشعة السينية للعظام",
+        "bone_x_ray_desc": "صور أشعة العظام والمفاصل",
+        "chest_x_ray": "الأشعة السينية للصدر",
+        "chest_x_ray_desc": "صور أشعة الصدر والرئتين",
+        "dental_photo": "صورة أسنان",
+        "dental_photo_desc": "صور فوتوغرافية للأسنان",
+        "medical_prescription": "وصفة طبية",
+        "medical_prescription_desc": "تحميل صورة الوصفة الطبية",
+        "pdf_report": "تقرير PDF",
+        "pdf_report_desc": "تحميل التقارير الطبية بصيغة PDF",
+        "attachment_uploading": "جاري رفع المرفق...",
+        "attachment_remove": "إزالة",
+        "attachment_retry": "إعادة المحاولة"
     },
     "profile": {
         "user": {

@@ -11,7 +11,7 @@ class ChatIconButton extends StatelessWidget {
   });
 
   final IconData icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isPrimary;
 
   @override
@@ -19,21 +19,24 @@ class ChatIconButton extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(18.r),
-      child: Container(
-        width: 42.w,
-        height: 42.w,
-        decoration: BoxDecoration(
-          color: isPrimary
-              ? context.colorScheme.primary
-              : context.colorScheme.primary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(18.r),
-        ),
-        child: Icon(
-          icon,
-          color: isPrimary
-              ? context.colorScheme.onPrimary
-              : context.colorScheme.primary,
-          size: 21.sp,
+      child: Opacity(
+        opacity: onPressed != null ? 1.0 : 0.4,
+        child: Container(
+          width: 42.w,
+          height: 42.w,
+          decoration: BoxDecoration(
+            color: isPrimary
+                ? context.colorScheme.primary
+                : context.colorScheme.primary.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(18.r),
+          ),
+          child: Icon(
+            icon,
+            color: isPrimary
+                ? context.colorScheme.onPrimary
+                : context.colorScheme.primary,
+            size: 21.sp,
+          ),
         ),
       ),
     );

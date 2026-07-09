@@ -5,7 +5,9 @@ import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/core/socket/socket_io_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
+import 'package:cliniq/features/chat/data/repos_impl/attachment_repo_impl.dart';
 import 'package:cliniq/features/chat/data/repos_impl/chat_repo_impl.dart';
+import 'package:cliniq/features/chat/domain/repos/attachment_repo.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
 import 'package:cliniq/features/home/data/repos_impl/home_repo_impl.dart';
 import 'package:cliniq/features/home/domain/repos/home_repo.dart';
@@ -51,5 +53,9 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<UserRepo>(
     UserRepoImpl(api: ApiSelector.get(ApiFeatures.profile)),
+  );
+
+  getIt.registerSingleton<AttachmentRepo>(
+    AttachmentRepoImpl(api: ApiSelector.get(ApiFeatures.chat)),
   );
 }

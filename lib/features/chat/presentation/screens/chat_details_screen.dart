@@ -1,6 +1,9 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
+import 'package:cliniq/features/chat/domain/entities/attachment_type.dart';
+import 'package:cliniq/features/chat/presentation/providers/attachment_provider.dart';
 import 'package:cliniq/features/chat/presentation/providers/chat_conversation_provider.dart';
+import 'package:cliniq/features/chat/presentation/widgets/attachment_picker_sheet.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_body.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
@@ -13,23 +16,59 @@ class ChatDetailsScreen extends ConsumerWidget {
 
   final String conversationId;
 
+  void _handleAttachmentTap(BuildContext context, WidgetRef ref) {
+    AttachmentPickerSheet.show(
+      context,
+      onTypeSelected: (AttachmentType type) {
+        ref.read(attachmentUploadProvider.notifier).pickFile(type);
+      },
+    );
+  }
+
+  void _handleSendMessage(
+    BuildContext context,
+    WidgetRef ref,
+    ChatConversationRequest request,
+    String text,
+  ) async {
+    final uploadState = ref.read(attachmentUploadProvider);
+    final attachmentUrl = uploadState.uploadedFile?.url;
+
+    ref.read(chatConversationProvider(request).notifier).sendMessage(
+          text,
+          attachmentUrl: attachmentUrl,
+        );
+
+    if (attachmentUrl != null) {
+      ref.read(attachmentUploadProvider.notifier).resetAfterSend();
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final request = ChatConversationRequest(conversationId: conversationId);
     final conversationAsync = ref.watch(chatConversationProvider(request));
-
+    final uploadState = ref.watch(attachmentUploadProvider);
+    
     return conversationAsync.when(
       data: (conversation) => Scaffold(
         backgroundColor: context.colorScheme.surface,
         appBar: ProfileAppBar(title: conversation.title),
         body: ChatConversationBody(
           conversation: conversation,
-          onMessageSubmitted: ref
-              .read(chatConversationProvider(request).notifier)
-              .sendMessage,
+          onMessageSubmitted: (text) =>
+              _handleSendMessage(context, ref, request, text),
           onTypingChanged: ref
               .read(chatConversationProvider(request).notifier)
               .updateTypingStatus,
+          onAttachmentTap: () => _handleAttachmentTap(context, ref),
+          attachmentFileName: uploadState.pickedFile?.fileName,
+          attachmentFilePath: uploadState.pickedFile?.filePath,
+          isAttachmentUploading: uploadState.isUploading,
+          attachmentFileSize: uploadState.pickedFile?.fileSize,
+          onRemoveAttachment:
+              () => ref.read(attachmentUploadProvider.notifier).removeAttachment(),
+          isSendDisabled: uploadState.isUploading,
         ),
       ),
       error: (error, stackTrace) => Scaffold(

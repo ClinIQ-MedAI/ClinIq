@@ -9,6 +9,7 @@ class ChatMessageEntity {
     required this.sentAt,
     required this.sender,
     required this.status,
+    this.attachmentUrl,
   });
 
   final String id;
@@ -16,6 +17,7 @@ class ChatMessageEntity {
   final String sentAt;
   final ChatMessageSender sender;
   final ChatMessageStatus status;
+  final String? attachmentUrl;
 
   ChatMessageEntity copyWith({
     String? id,
@@ -23,6 +25,8 @@ class ChatMessageEntity {
     String? sentAt,
     ChatMessageSender? sender,
     ChatMessageStatus? status,
+    String? attachmentUrl,
+    bool clearAttachmentUrl = false,
   }) {
     return ChatMessageEntity(
       id: id ?? this.id,
@@ -30,6 +34,8 @@ class ChatMessageEntity {
       sentAt: sentAt ?? this.sentAt,
       sender: sender ?? this.sender,
       status: status ?? this.status,
+      attachmentUrl:
+          clearAttachmentUrl ? null : (attachmentUrl ?? this.attachmentUrl),
     );
   }
 }

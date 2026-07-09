@@ -39,6 +39,7 @@ class EndPoints {
       "chat/conversations/$conversationId/messages";
   static String sendChatMessage(String conversationId) =>
       "chat/conversations/$conversationId/messages";
+  static const String uploadAttachment = "chat/upload";
 
   // profile
   static const String getMe = "patient/me";

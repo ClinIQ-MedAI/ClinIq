@@ -63,10 +63,10 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     return conversation.copyWith(unreadCount: 0);
   }
 
-  void sendMessage(String content) {
+  void sendMessage(String content, {String? attachmentUrl}) {
     final text = content.trim();
     final conversation = state.value;
-    if (text.isEmpty || conversation == null) return;
+    if ((text.isEmpty && attachmentUrl == null) || conversation == null) return;
 
     final message = ChatMessageEntity(
       id: 'local-${DateTime.now().microsecondsSinceEpoch}',
@@ -74,6 +74,7 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
       sentAt: _currentTimeLabel(),
       sender: ChatMessageSender.user,
       status: ChatMessageStatus.sending,
+      attachmentUrl: attachmentUrl,
     );
 
     _upsertMessage(conversation.id, message);

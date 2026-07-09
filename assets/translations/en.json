@@ -226,7 +226,23 @@
             "message_3": "Track symptom timing, severity, medications, sleep, meals, and anything that makes symptoms better or worse."
         },
         "input_hint": "Type your message...",
-        "today": "Today"
+        "today": "Today",
+        "attachment_picker_title": "Choose attachment type",
+        "dental_x_ray": "Dental X-Ray",
+        "dental_x_ray_desc": "Dental X-ray images for diagnosis",
+        "bone_x_ray": "Bone X-Ray",
+        "bone_x_ray_desc": "Bone and joint X-ray images",
+        "chest_x_ray": "Chest X-Ray",
+        "chest_x_ray_desc": "Chest and lung X-ray images",
+        "dental_photo": "Dental Photo",
+        "dental_photo_desc": "Intraoral dental photographs",
+        "medical_prescription": "Medical Prescription",
+        "medical_prescription_desc": "Upload a prescription image",
+        "pdf_report": "PDF Report",
+        "pdf_report_desc": "Upload medical reports as PDF",
+        "attachment_uploading": "Uploading attachment...",
+        "attachment_remove": "Remove",
+        "attachment_retry": "Retry"
     },
     "profile": {
         "user": {

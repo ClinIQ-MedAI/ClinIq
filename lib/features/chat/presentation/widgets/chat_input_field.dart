@@ -12,11 +12,15 @@ class ChatInputField extends StatefulWidget {
     super.key,
     required this.onMessageSubmitted,
     required this.onTypingChanged,
+    this.onAttachmentTap,
+    this.isSendDisabled = false,
     this.bottomSpacing = 16,
   });
 
   final ValueChanged<String> onMessageSubmitted;
   final ValueChanged<bool> onTypingChanged;
+  final VoidCallback? onAttachmentTap;
+  final bool isSendDisabled;
   final double bottomSpacing;
 
   @override
@@ -71,7 +75,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
         ),
         child: Row(
           children: [
-            ChatIconButton(icon: Icons.add_rounded, onPressed: () {}),
+            ChatIconButton(
+              icon: Icons.add_rounded,
+              onPressed: widget.onAttachmentTap ?? () {},
+            ),
             const HorizontalGap(10),
             Expanded(
               child: TextField(
@@ -122,9 +129,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
             ChatIconButton(icon: Icons.mic_none_rounded, onPressed: () {}),
             const HorizontalGap(8),
             ChatIconButton(
-              icon: Icons.send_rounded,
+              icon: widget.isSendDisabled
+                  ? Icons.hourglass_top_rounded
+                  : Icons.send_rounded,
               isPrimary: true,
-              onPressed: _submitMessage,
+              onPressed: widget.isSendDisabled ? null : _submitMessage,
             ),
           ],
         ),

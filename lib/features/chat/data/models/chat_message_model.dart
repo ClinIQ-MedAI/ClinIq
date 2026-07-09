@@ -7,6 +7,7 @@ class ChatMessageModel extends ChatMessageEntity {
     required super.sentAt,
     required super.sender,
     required super.status,
+    super.attachmentUrl,
   });
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class ChatMessageModel extends ChatMessageEntity {
         (status) => status.name == json['status'],
         orElse: () => ChatMessageStatus.delivered,
       ),
+      attachmentUrl: json['attachmentUrl'] as String?,
     );
   }
 
@@ -32,6 +34,7 @@ class ChatMessageModel extends ChatMessageEntity {
       'sentAt': sentAt,
       'sender': sender.name,
       'status': status.name,
+      if (attachmentUrl != null) 'attachmentUrl': attachmentUrl,
     };
   }
 
@@ -42,6 +45,8 @@ class ChatMessageModel extends ChatMessageEntity {
     String? sentAt,
     ChatMessageSender? sender,
     ChatMessageStatus? status,
+    String? attachmentUrl,
+    bool clearAttachmentUrl = false,
   }) {
     return ChatMessageModel(
       id: id ?? this.id,
@@ -49,6 +54,8 @@ class ChatMessageModel extends ChatMessageEntity {
       sentAt: sentAt ?? this.sentAt,
       sender: sender ?? this.sender,
       status: status ?? this.status,
+      attachmentUrl:
+          clearAttachmentUrl ? null : (attachmentUrl ?? this.attachmentUrl),
     );
   }
 }
