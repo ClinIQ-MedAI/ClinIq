@@ -9,8 +9,11 @@ class Routes {
 
   // home
   static const String userHomeScreen = '/userHomeScreen';
-
-
+  static const String appointmentsScreen = '/appointmentsScreen';
+  static const String specializationsScreen = '/specializationsScreen';
+  static const String doctorsScreen = '/doctorsScreen';
+  static const String newsScreen = '/newsScreen';
+  static const String doctorDetailsScreen = '/doctorDetailsScreen';
 
   // user profile
   static const String editProfileScreen = '/editProfileScreen';

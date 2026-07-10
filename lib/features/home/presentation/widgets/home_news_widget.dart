@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/home/domain/entities/news_entity.dart';
+import 'package:cliniq/features/home/presentation/widgets/home_section_empty_state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,15 +17,25 @@ class HomeNewsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (news.isEmpty) {
+      return HomeSectionEmptyState(
+        icon: Icons.newspaper_rounded,
+        title: LocaleKeys.homeNoNews.tr(),
+        description: LocaleKeys.homeNoNewsDesc.tr(),
+      );
+    }
+
+    final items = news.take(4).toList();
+
     return SizedBox(
       height: 300.h,
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         scrollDirection: Axis.horizontal,
-        itemCount: news.length,
+        itemCount: items.length,
         separatorBuilder: (context, index) => const HorizontalGap(20),
         itemBuilder: (context, index) {
-          final item = news[index];
+          final item = items[index];
           return Container(
             width: 280.w,
             decoration: BoxDecoration(
@@ -34,7 +47,7 @@ class HomeNewsWidget extends StatelessWidget {
                   blurRadius: 25,
                   offset: const Offset(0, 12),
                 ),
-              ], 
+              ],
               border: Border.all(
                 color: context.colorScheme.primary.withValues(alpha: 0.08),
               ),
@@ -58,7 +71,8 @@ class HomeNewsWidget extends StatelessWidget {
                           placeholder: (context, url) => Container(
                             color: context.colorScheme.surfaceContainerHigh,
                             child: const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2),
                             ),
                           ),
                           errorWidget: (context, url, error) => Container(
@@ -85,7 +99,8 @@ class HomeNewsWidget extends StatelessWidget {
                             ),
                             child: Text(
                               'HEALTH',
-                              style: AppTextStyles.getTextStyle(10).copyWith(
+                              style:
+                                  AppTextStyles.getTextStyle(10).copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: 0.5,

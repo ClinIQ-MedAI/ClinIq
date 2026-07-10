@@ -2,10 +2,8 @@ import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_svgs.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
-import 'package:cliniq/core/widgets/custom_text_form_field.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/user_profile_image.dart';
-import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +19,7 @@ class HomeHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userProfile = ref.watch(currentUserProvider);
     final userName = userProfile?.fullName ?? 'User';
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -66,7 +65,8 @@ class HomeHeader extends ConsumerWidget {
           ),
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -77,7 +77,8 @@ class HomeHeader extends ConsumerWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.2),
+                                color:
+                                    Colors.white.withValues(alpha: 0.2),
                                 width: 2,
                               ),
                             ),
@@ -86,7 +87,10 @@ class HomeHeader extends ConsumerWidget {
                             ),
                           )
                           .animate()
-                          .scale(duration: 600.ms, curve: Curves.easeOutBack)
+                          .scale(
+                            duration: 600.ms,
+                            curve: Curves.easeOutBack,
+                          )
                           .fadeIn(),
                       const HorizontalGap(16),
                       Expanded(
@@ -95,23 +99,26 @@ class HomeHeader extends ConsumerWidget {
                           children: [
                             Text(
                               LocaleKeys.homeWelcomeBack.tr(),
-                              style: AppTextStyles.getTextStyle(14).copyWith(
-                                color: context.colorScheme.onPrimary.withValues(
-                                  alpha: 0.7,
-                                ),
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: AppTextStyles.getTextStyle(14)
+                                  .copyWith(
+                                    color: context.colorScheme.onPrimary
+                                        .withValues(alpha: 0.7),
+                                    fontWeight: FontWeight.w500,
+                                  ),
                             ),
                             Text(
                               userName,
-                              style: AppTextStyles.getTextStyle(22).copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: context.colorScheme.onPrimary,
-                                letterSpacing: -0.5,
-                              ),
+                              style: AppTextStyles.getTextStyle(22)
+                                  .copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: context.colorScheme.onPrimary,
+                                    letterSpacing: -0.5,
+                                  ),
                             ),
                           ],
-                        ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
+                        ).animate().fadeIn(delay: 200.ms).slideX(
+                              begin: -0.1,
+                            ),
                       ),
                       Container(
                         height: 50.h,
@@ -120,12 +127,14 @@ class HomeHeader extends ConsumerWidget {
                           color: Colors.white.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(16.r),
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.1),
+                            color:
+                                Colors.white.withValues(alpha: 0.1),
                           ),
                         ),
                         child: IconButton(
                           icon: Badge(
-                            backgroundColor: context.colorScheme.secondary,
+                            backgroundColor:
+                                context.colorScheme.secondary,
                             smallSize: 8,
                             child: SvgPicture.asset(
                               AppSvgs.notificationIcon,
@@ -141,27 +150,6 @@ class HomeHeader extends ConsumerWidget {
                       ).animate().fadeIn(delay: 400.ms).scale(),
                     ],
                   ),
-                  const VerticalGap(28),
-                  CustomTextFormField(
-                    backgroundColor: Colors.white.withValues(alpha: 0.15),
-                    borderRadius: 20,
-                    borderColor: Colors.transparent,
-                    focusedBorderColor: Colors.white.withValues(alpha: 0.4),
-                    prefixIcon: const Icon(
-                      Icons.search_rounded,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                    hintText: LocaleKeys.homeSearchHint.tr(),
-                    hintStyle: AppTextStyles.getTextStyle(
-                      16,
-                    ).copyWith(color: Colors.white.withValues(alpha: 0.5)),
-                    textStyle: AppTextStyles.getTextStyle(
-                      16,
-                    ).copyWith(color: Colors.white),
-                    contentHorizontalPadding: 24,
-                    contentVerticalPadding: 18,
-                  ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2),
                 ],
               ),
             ),

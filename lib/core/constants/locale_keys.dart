@@ -246,6 +246,77 @@ abstract class LocaleKeys {
   static const homeAiAssistantTitle = "home.ai_assistant.title";
   static const homeAiAssistantDescription = "home.ai_assistant.description";
   static const homeAiAssistantStartChat = "home.ai_assistant.start_chat";
+  static const homeNoAppointments = "home.no_appointments";
+  static const homeNoAppointmentsDesc = "home.no_appointments_desc";
+  static const homeBookAppointment = "home.book_appointment";
+  static const homeNoSpecializations = "home.no_specializations";
+  static const homeNoSpecializationsDesc = "home.no_specializations_desc";
+  static const homeNoDoctors = "home.no_doctors";
+  static const homeNoDoctorsDesc = "home.no_doctors_desc";
+  static const homeNoNews = "home.no_news";
+  static const homeNoNewsDesc = "home.no_news_desc";
+  static const homeAppointmentsScreenTitle = "home.appointments_screen_title";
+  static const homeSpecializationsScreenTitle =
+      "home.specializations_screen_title";
+  static const homeDoctorsScreenTitle = "home.doctors_screen_title";
+  static const homeNewsScreenTitle = "home.news_screen_title";
+  static const homeDoctorDetailsTitle = "home.doctor_details_title";
+  static const homeStartChat = "home.start_chat";
+  static const homeChatWithDoctorDesc = "home.chat_with_doctor_desc";
+  static const homeConsultationFee = "home.consultation_fee";
+  static const homeAvailability = "home.availability";
+  static const homeAvailable = "home.available";
+  static const homeUnavailable = "home.unavailable";
+  static const homeYearsExp = "home.years_exp";
+  static const homeQuickActionsUrgentCare = "home.quick_actions.urgent_care";
+  static const homeQuickActionsHomeVisit = "home.quick_actions.home_visit";
+  static const homeQuickActionsPharmacies = "home.quick_actions.pharmacies";
+  static const homeQuickActionsConsultation =
+      "home.quick_actions.consultation";
+  static const homeDoctorsSearchHint = "home.doctors_search_hint";
+  static const homeNoSearchResults = "home.no_search_results";
+  static const homeNoSearchResultsDesc = "home.no_search_results_desc";
+  static const homeAbout = "home.about";
+  static const homeDetails = "home.details";
+  static const homeEducation = "home.education";
+  static const homeWorkingHours = "home.working_hours";
+  static const homeLocation = "home.location";
+  static const homeViewProfile = "home.view_profile";
+  static const homeProfessional = "home.professional";
+  static const homePatients = "home.patients";
+  static const homeReviews = "home.reviews";
+  static const homeRating = "home.rating";
+  static const homeExperience = "home.experience";
+  static const homeSpeciality = "home.speciality";
+  static const homeAvailableToday = "home.available_today";
+  static const homeOffline = "home.offline";
+
+  // specialities
+  static const specialitiesCardiology = "specialities.cardiology";
+  static const specialitiesNeurology = "specialities.neurology";
+  static const specialitiesPediatrics = "specialities.pediatrics";
+  static const specialitiesDentistry = "specialities.dentistry";
+  static const specialitiesDermatology = "specialities.dermatology";
+  static const specialitiesOrthopedics = "specialities.orthopedics";
+  static const specialitiesOphthalmology = "specialities.ophthalmology";
+  static const specialitiesEnt = "specialities.ent";
+  static const specialitiesPsychiatry = "specialities.psychiatry";
+  static const specialitiesGeneralSurgery = "specialities.general_surgery";
+  static const specialitiesInternalMedicine = "specialities.internal_medicine";
+  static const specialitiesObstetricsGynecology = "specialities.obstetrics_gynecology";
+  static const specialitiesRadiology = "specialities.radiology";
+  static const specialitiesAnesthesia = "specialities.anesthesia";
+  static const specialitiesEmergencyMedicine = "specialities.emergency_medicine";
+  static const specialitiesFamilyMedicine = "specialities.family_medicine";
+  static const specialitiesGastroenterology = "specialities.gastroenterology";
+  static const specialitiesNephrology = "specialities.nephrology";
+  static const specialitiesOncology = "specialities.oncology";
+  static const specialitiesPulmonology = "specialities.pulmonology";
+  static const specialitiesRheumatology = "specialities.rheumatology";
+  static const specialitiesUrology = "specialities.urology";
+  static const specialitiesEndocrinology = "specialities.endocrinology";
+  static const specialitiesHematology = "specialities.hematology";
+  static const specialitiesInfectiousDisease = "specialities.infectious_disease";
 
   // chat
   static const chatDoctorTitle = "chat.doctor.title";

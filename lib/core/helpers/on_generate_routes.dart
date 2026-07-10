@@ -6,6 +6,12 @@ import 'package:cliniq/features/auth/presentation/screens/complete_user_profile_
 import 'package:cliniq/features/auth/presentation/screens/user_sign_up_screen.dart';
 import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
 import 'package:cliniq/features/chat/presentation/screens/chat_details_screen.dart';
+import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
+import 'package:cliniq/features/home/presentation/screens/appointments_screen.dart';
+import 'package:cliniq/features/home/presentation/screens/doctor_details_screen.dart';
+import 'package:cliniq/features/home/presentation/screens/doctors_screen.dart';
+import 'package:cliniq/features/home/presentation/screens/news_screen.dart';
+import 'package:cliniq/features/home/presentation/screens/specializations_screen.dart';
 import 'package:cliniq/features/home/presentation/screens/user_main_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:cliniq/core/widgets/undefined_route_page.dart';
@@ -78,6 +84,21 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
     case Routes.termsAndConditionsScreen:
       return MaterialPageRoute(
         builder: (_) => const TermsAndConditionsScreen(),
+      );
+
+    // Home - See All
+    case Routes.appointmentsScreen:
+      return MaterialPageRoute(builder: (_) => const AppointmentsScreen());
+    case Routes.specializationsScreen:
+      return MaterialPageRoute(builder: (_) => const SpecializationsScreen());
+    case Routes.doctorsScreen:
+      return MaterialPageRoute(builder: (_) => const DoctorsScreen());
+    case Routes.newsScreen:
+      return MaterialPageRoute(builder: (_) => const NewsScreen());
+    case Routes.doctorDetailsScreen:
+      final doctor = settings.arguments as DoctorEntity?;
+      return MaterialPageRoute(
+        builder: (_) => DoctorDetailsScreen(doctor: doctor!),
       );
 
     // Chat

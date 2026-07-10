@@ -1,17 +1,26 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
+import 'package:cliniq/core/widgets/custom_button.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
+import 'package:cliniq/features/home/presentation/widgets/home_section_empty_state.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeAppointmentsWidget extends StatefulWidget {
-  const HomeAppointmentsWidget({super.key, required this.appointments});
+  const HomeAppointmentsWidget({
+    super.key,
+    required this.appointments,
+    this.onBookAppointment,
+  });
 
   final List<ExaminationAppointmentEntity> appointments;
+  final VoidCallback? onBookAppointment;
 
   @override
   State<HomeAppointmentsWidget> createState() => _HomeAppointmentsWidgetState();
@@ -40,7 +49,25 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.appointments.isEmpty) return const SizedBox.shrink();
+    if (widget.appointments.isEmpty) {
+      return HomeSectionEmptyState(
+        icon: Icons.calendar_month_rounded,
+        title: LocaleKeys.homeNoAppointments.tr(),
+        description: LocaleKeys.homeNoAppointmentsDesc.tr(),
+        action: widget.onBookAppointment != null
+            ? CustomButton(
+                text: LocaleKeys.homeBookAppointment.tr(),
+                onPressed: widget.onBookAppointment,
+                width: 200,
+                height: 44,
+                borderRadius: 14,
+                textFontSize: 14,
+              )
+            : null,
+      );
+    }
+
+    final appointments = widget.appointments.take(4).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,10 +76,10 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
           height: 200.h,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: widget.appointments.length,
+            itemCount: appointments.length,
             clipBehavior: Clip.none,
             itemBuilder: (context, index) {
-              final appointment = widget.appointments[index];
+              final appointment = appointments[index];
               final delta = index - _currentPage;
 
               final double scale = (1 - (delta.abs() * 0.1)).clamp(0.8, 1.0);
@@ -61,10 +88,10 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
 
               return Opacity(
                 opacity: opacity,
-                child: Transform(
-                  transform: Matrix4.identity()
-                    ..translate(translation)
-                    ..scale(scale),
+                  child: Transform(
+                    transform: Matrix4.identity()
+                      ..translate(translation)
+                      ..scale(scale),
                   alignment: Alignment.center,
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -173,39 +200,33 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                           ),
                         ),
                         const HorizontalGap(8),
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              width: 4,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.3),
-                                blurRadius: 20,
-                              ),
-                            ],
-                          ),
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: appointment.doctorImage,
-                              width: 90.w,
-                              height: 90.w,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => Container(
-                                color: Colors.white10,
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
+                        ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: appointment.doctorImage,
+                            width: 90.w,
+                            height: 90.w,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: Colors.white10,
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
                                 ),
                               ),
-                              errorWidget: (context, url, error) => const Icon(
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              width: 90.w,
+                              height: 90.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: context.colorScheme.onPrimary
+                                    .withValues(alpha: 0.15),
+                              ),
+                              child: Icon(
                                 Icons.person,
-                                color: Colors.white,
-                                size: 40,
+                                color: context.colorScheme.onPrimary,
+                                size: 36.sp,
                               ),
                             ),
                           ),
@@ -218,12 +239,12 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
             },
           ),
         ),
-        if (widget.appointments.length > 1) ...[
+        if (appointments.length > 1) ...[
           const VerticalGap(20),
           Center(
             child: SmoothPageIndicator(
               controller: _pageController,
-              count: widget.appointments.length,
+              count: appointments.length,
               effect: ExpandingDotsEffect(
                 dotHeight: 8.h,
                 dotWidth: 8.h,

@@ -18,12 +18,10 @@ class EndPoints {
   static const String changePassword = "patient/me/change-password";
 
   // home
-  static const String examinationAppointments =
-      "Home/ExaminationAppointments/examination-appointments";
-  static const String specializations = "Home/Specializations/specializations";
-  static const String suggestedDoctors =
-      "Home/SuggestedDoctors/suggested-doctors";
-  static const String news = "Home/News/news";
+  static const String examinationAppointments = "patient/appointments";
+  static const String specializations = "patient/home/specializations";
+  static const String suggestedDoctors = "patient/home/suggested-doctors";
+  static const String news = "patient/home/news";
 
   // appointments
   static const String availableDoctors = "api/bookings/doctors";

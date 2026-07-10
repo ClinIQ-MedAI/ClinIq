@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/home/domain/entities/specialization_entity.dart';
+import 'package:cliniq/features/home/presentation/widgets/home_section_empty_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,79 +17,101 @@ class HomeSpecializationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (specializations.isEmpty) {
+      return HomeSectionEmptyState(
+        icon: Icons.grid_view_rounded,
+        title: LocaleKeys.homeNoSpecializations.tr(),
+        description: LocaleKeys.homeNoSpecializationsDesc.tr(),
+      );
+    }
+
+    final items = specializations.take(4).toList();
+
     return SizedBox(
-      height: 130.h,
+      height: 160.h,
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
         scrollDirection: Axis.horizontal,
-        itemCount: specializations.length,
-        separatorBuilder: (context, index) => const HorizontalGap(20),
+        itemCount: items.length,
+        separatorBuilder: (_, __) => const HorizontalGap(16),
         itemBuilder: (context, index) {
-          final specialization = specializations[index];
+          final spec = items[index];
           return Column(
             children: [
-              Container(
-                width: 80.w,
-                height: 80.w,
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(24.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.colorScheme.primary.withValues(
-                        alpha: 0.08,
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {},
+                  borderRadius: BorderRadius.circular(28.r),
+                  child: Container(
+                    width: 100.w,
+                    height: 100.w,
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surface,
+                      borderRadius: BorderRadius.circular(28.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.colorScheme.primary
+                              .withValues(alpha: 0.08),
+                          blurRadius: 25,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: context.colorScheme.primary
+                            .withValues(alpha: 0.08),
                       ),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
                     ),
-                  ],
-                  border: Border.all(
-                    color: context.colorScheme.primary.withValues(alpha: 0.1),
-                  ),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24.r),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: -10,
-                        right: -10,
-                        child: Icon(
-                          Icons.medical_services_rounded,
-                          size: 40,
-                          color: context.colorScheme.primary.withValues(
-                            alpha: 0.05,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(28.r),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: -8,
+                            right: -8,
+                            child: Icon(
+                              Icons.medical_services_rounded,
+                              size: 56,
+                              color: context.colorScheme.primary
+                                  .withValues(alpha: 0.06),
+                            ),
                           ),
-                        ),
+                          Padding(
+                            padding: EdgeInsets.all(22.w),
+                            child: CachedNetworkImage(
+                              imageUrl: spec.image,
+                              fit: BoxFit.contain,
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.category_rounded,
+                                color: context.textPalette.secondaryColor,
+                                size: 32.sp,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(18),
-                        child: CachedNetworkImage(
-                          imageUrl: specialization.image,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Center(
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.category_rounded,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-              const VerticalGap(12),
-              Text(
-                specialization.name.tr(),
-                style: AppTextStyles.getTextStyle(13).copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: context.textPalette.primaryColor,
-                  letterSpacing: -0.2,
+              const VerticalGap(14),
+              SizedBox(
+                width: 100.w,
+                child: Text(
+                  spec.name.tr(),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.getTextStyle(14).copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: context.textPalette.primaryColor,
+                    letterSpacing: -0.2,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           );
