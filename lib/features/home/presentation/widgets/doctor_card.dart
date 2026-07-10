@@ -1,12 +1,14 @@
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
-import 'package:cliniq/features/home/presentation/widgets/doctor_action_buttons.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_avatar.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_rating_row.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_speciality_chip.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_stats.dart';
+import 'package:cliniq/features/home/presentation/widgets/start_chat_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,12 +16,10 @@ class DoctorCard extends StatelessWidget {
   const DoctorCard({
     super.key,
     required this.doctor,
-    required this.onChat,
     required this.onTap,
   });
 
   final DoctorEntity doctor;
-  final VoidCallback onChat;
   final VoidCallback onTap;
 
   @override
@@ -62,9 +62,9 @@ class DoctorCard extends StatelessWidget {
                         doctor.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.getTextStyle(
-                          18,
-                        ).copyWith(fontWeight: FontWeight.w800),
+                        style: AppTextStyles.getTextStyle(18).copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       SizedBox(height: 8.h),
                       DoctorSpecialityChip(speciality: doctor.speciality),
@@ -80,7 +80,37 @@ class DoctorCard extends StatelessWidget {
             const VerticalGap(18),
             DoctorStats(experience: doctor.experience),
             const VerticalGap(20),
-            DoctorActionButtons(onViewProfile: onTap, onChat: onChat),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: onTap,
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 14.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      side: BorderSide(
+                        color: scheme.outline.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      LocaleKeys.homeViewProfile.tr(),
+                      style: AppTextStyles.getTextStyle(13).copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: StartChatButton(
+                    doctorId: doctor.id,
+                    doctorName: doctor.name,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

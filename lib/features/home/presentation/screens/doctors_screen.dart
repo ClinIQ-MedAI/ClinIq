@@ -1,11 +1,8 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
-import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/custom_text_form_field.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
-import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
-import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_card.dart';
@@ -32,32 +29,6 @@ class _DoctorsScreenState extends ConsumerState<DoctorsScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  Future<void> _startChat(
-    BuildContext context,
-    WidgetRef ref,
-    DoctorEntity doctor,
-  ) async {
-    final repo = ref.read(chatRepoProvider);
-
-    try {
-      final conversation = await repo.createConversation(doctorId: doctor.id);
-
-      if (!context.mounted) return;
-
-      Navigator.pushNamed(
-        context,
-        Routes.chatDetailsScreen,
-        arguments: ChatDetailsArguments(conversationId: conversation.id),
-      );
-    } catch (e) {
-      if (!context.mounted) return;
-      showCustomSnackBar(
-        context,
-        LocaleKeys.messagesFailuresUnexpectedError.tr(),
-      );
-    }
   }
 
   @override
@@ -143,7 +114,6 @@ class _DoctorsScreenState extends ConsumerState<DoctorsScreen> {
                     final doctor = filteredDoctors[index];
                     return DoctorCard(
                           doctor: doctor,
-                          onChat: () => _startChat(context, ref, doctor),
                           onTap: () => Navigator.pushNamed(
                             context,
                             Routes.doctorDetailsScreen,

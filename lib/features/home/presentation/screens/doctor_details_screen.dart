@@ -1,13 +1,15 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/extensions/doctor_speciality_extension.dart';
+import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
-import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
+import 'package:cliniq/features/chat/presentation/providers/start_chat_provider.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
+import 'package:cliniq/features/home/presentation/providers/bottom_nav_index_provider.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_avatar.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,13 +18,22 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DoctorDetailsScreen extends ConsumerWidget {
+class DoctorDetailsScreen extends ConsumerStatefulWidget {
   const DoctorDetailsScreen({super.key, required this.doctor});
 
   final DoctorEntity doctor;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DoctorDetailsScreen> createState() => _DoctorDetailsScreenState();
+}
+
+class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
+  bool _isChatLoading = false;
+
+  DoctorEntity get doctor => widget.doctor;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
       appBar: ProfileAppBar(
@@ -468,38 +479,56 @@ class DoctorDetailsScreen extends ConsumerWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: () => _startChat(context, ref),
+                  onTap: _isChatLoading ? null : () => _startChat(context, ref),
                   borderRadius: BorderRadius.circular(20.r),
-                  child: Container(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          context.colorScheme.primary,
-                          context.colorScheme.primaryContainer,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                      gradient: _isChatLoading
+                          ? null
+                          : LinearGradient(
+                              colors: [
+                                context.colorScheme.primary,
+                                context.colorScheme.primaryContainer,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                      color: _isChatLoading
+                          ? context.colorScheme.primary.withValues(alpha: 0.5)
+                          : null,
                       borderRadius: BorderRadius.circular(20.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.colorScheme.primary.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
+                      boxShadow: _isChatLoading
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: context.colorScheme.primary.withValues(alpha: 0.3),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.chat_bubble_outline_rounded,
-                          color: context.colorScheme.onPrimary,
-                          size: 20.sp,
-                        ),
+                        if (_isChatLoading)
+                          SizedBox(
+                            width: 20.sp,
+                            height: 20.sp,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: context.colorScheme.onPrimary,
+                            ),
+                          )
+                        else
+                          Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            color: context.colorScheme.onPrimary,
+                            size: 20.sp,
+                          ),
                         const HorizontalGap(10),
                         Text(
-                          LocaleKeys.homeStartChat.tr(),
+                          _isChatLoading ? '' : LocaleKeys.homeStartChat.tr(),
                           style: AppTextStyles.getTextStyle(16).copyWith(
                             color: context.colorScheme.onPrimary,
                             fontWeight: FontWeight.w700,
@@ -518,12 +547,20 @@ class DoctorDetailsScreen extends ConsumerWidget {
   }
 
   Future<void> _startChat(BuildContext context, WidgetRef ref) async {
-    final repo = ref.read(chatRepoProvider);
+    if (_isChatLoading) return;
+    setState(() => _isChatLoading = true);
+
+    final useCase = ref.read(startChatUseCaseProvider);
 
     try {
-      final conversation = await repo.createConversation(doctorId: doctor.id);
+      final conversation = await useCase(
+        doctorId: doctor.id,
+        doctorName: doctor.name,
+      );
 
-      if (!context.mounted) return;
+      if (!mounted) return;
+
+      ref.read(bottomNavIndexProvider.notifier).setIndex(2);
 
       Navigator.pushNamed(
         context,
@@ -533,10 +570,10 @@ class DoctorDetailsScreen extends ConsumerWidget {
         ),
       );
     } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocaleKeys.messagesFailuresUnexpectedError.tr())),
-      );
+      if (!mounted) return;
+      showCustomSnackBar(context, e.toString());
+    } finally {
+      if (mounted) setState(() => _isChatLoading = false);
     }
   }
 }

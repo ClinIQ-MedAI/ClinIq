@@ -21,19 +21,26 @@ class ChatRepoImpl extends ChatRepo {
     final response = await api.get(EndPoints.getConversations);
     final list = response as List<dynamic>;
     return list
-        .map((item) => ChatConversationModel.fromJson(item as Map<String, dynamic>))
+        .map(
+          (item) =>
+              ChatConversationModel.fromJson(item as Map<String, dynamic>),
+        )
         .toList();
   }
 
   @override
   Future<List<ChatMessageEntity>> getConversationMessages(
-      String conversationId) async {
+    String conversationId,
+  ) async {
     final response = await api.get(
       EndPoints.getConversationById(conversationId),
     );
     final list = response as List<dynamic>;
     return list
-        .map((message) => ChatMessageModel.fromJson(message as Map<String, dynamic>))
+        .map(
+          (message) =>
+              ChatMessageModel.fromJson(message as Map<String, dynamic>),
+        )
         .toList();
   }
 
@@ -44,10 +51,7 @@ class ChatRepoImpl extends ChatRepo {
   }) async {
     final response = await api.post(
       EndPoints.createConversation,
-      data: {
-        'doctorId': doctorId,
-        if (initialMessage != null) 'initialMessage': initialMessage,
-      },
+      data: {'doctorId': doctorId, 'initialMessage': initialMessage ?? ''},
     );
     return ChatConversationModel.fromJson(response as Map<String, dynamic>);
   }
@@ -74,9 +78,7 @@ class ChatRepoImpl extends ChatRepo {
     log('Chat HTTP: Sending message to conversation $conversationId');
     final response = await api.post(
       EndPoints.sendMessage(conversationId),
-      data: {
-        'content': message.content,
-      },
+      data: {'content': message.content},
     );
     log('Chat HTTP: Send response received: $response');
     return ChatMessageModel.fromJson(response as Map<String, dynamic>);
@@ -100,10 +102,7 @@ class ChatRepoImpl extends ChatRepo {
       final conversationId = data['conversationId']?.toString() ?? '';
       final message = ChatMessageModel.fromJson(data);
 
-      handler(
-        conversationId: conversationId,
-        message: message,
-      );
+      handler(conversationId: conversationId, message: message);
     }
 
     socket.on(SocketEvents.receiveMessage, listener);
