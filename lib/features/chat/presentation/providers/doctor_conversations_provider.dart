@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cliniq/core/services/get_it_service.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
@@ -22,8 +21,6 @@ class DoctorConversationsNotifier
   FutureOr<List<ChatConversationEntity>> build() async {
     _repo = ref.read(chatRepoProvider);
 
-    final jwtToken = getIt<String>(instanceName: 'jwtToken');
-    await _repo.connectRealtime(jwtToken: jwtToken);
     _subscribe();
 
     ref.onDispose(() {

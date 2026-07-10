@@ -13,12 +13,6 @@ abstract class ChatRepo {
     String? initialMessage,
   });
 
-  Future<void> connectRealtime({String? jwtToken});
-
-  Future<void> disconnectRealtime();
-
-  Future<void> reconnectRealtime({String? jwtToken});
-
   Future<void> joinConversation(int conversationId);
 
   Future<void> leaveConversation(int conversationId);

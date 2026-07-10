@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:cliniq/core/providers/socket_repo_provider.dart';
+import 'package:cliniq/core/repos/socket_repo/socket_repo.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -35,21 +39,55 @@ Future<void> main() async {
   );
 }
 
-class ClinIq extends StatefulWidget {
+class ClinIq extends ConsumerStatefulWidget {
   const ClinIq({super.key});
 
   @override
-  State<ClinIq> createState() => _ClinIqState();
+  ConsumerState<ClinIq> createState() => _ClinIqState();
 }
 
-class _ClinIqState extends State<ClinIq> {
+class _ClinIqState extends ConsumerState<ClinIq> {
   late AppThemeCubit appThemeCubit;
+  late final AppLifecycleListener _lifecycleListener;
+  late SocketRepo socketRepo;
 
   @override
   void initState() {
     super.initState();
     appThemeCubit = AppThemeCubit();
     FlutterNativeSplash.remove();
+
+    socketRepo = ref.read(socketRepoProvider);
+
+    log("socket connect in app initState");
+    if (checkLoginState()) {
+      socketRepo.connect();
+    }
+
+    _lifecycleListener = AppLifecycleListener(
+      onResume: () {
+        if (checkLoginState()) {
+          log("App resumed -> connect socket");
+          socketRepo.connect();
+        }
+      },
+      onPause: () {
+        log("App paused -> disconnect socket");
+        socketRepo.disconnect();
+      },
+      onDetach: () {
+        log("App detached -> dispose socket");
+        socketRepo.disconnect();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    log("socket dispose in app initState");
+    socketRepo.dispose();
+    super.dispose();
   }
 
   @override

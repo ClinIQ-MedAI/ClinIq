@@ -7,11 +7,11 @@ abstract class SocketConsumer {
 
   bool get isConnected;
 
-  Future<void> connect({String? jwtToken});
+  Future<void> connect();
 
   Future<void> disconnect();
 
-  Future<void> reconnect({String? jwtToken});
+  Future<void> reconnect();
 
   Future<void> invoke(String method, List<dynamic> args);
 

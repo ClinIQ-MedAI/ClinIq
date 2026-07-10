@@ -7,6 +7,12 @@ import 'package:cliniq/core/constants/storage_keys.dart';
 import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/features/onboarding/presentation/screens/onboarding_screen.dart';
 
+
+bool checkLoginState() {
+  log("check login state");
+  return AppStorageHelper.getBool(StorageKeys.isLoggedIn.toString()) ?? false;
+}
+
 Widget getInitialRoute() {
   final bool isOnboardingCompleted =
       AppStorageHelper.getBool(StorageKeys.isOnboardingCompleted) ?? false;

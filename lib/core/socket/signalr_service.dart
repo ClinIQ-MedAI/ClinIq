@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cliniq/core/constants/storage_keys.dart';
+import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/core/socket/socket_config.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/core/socket/socket_status.dart';
@@ -27,13 +29,15 @@ class SignalRService implements SocketConsumer {
   bool get isConnected => _status == SocketStatus.connected;
 
   @override
-  Future<void> connect({String? jwtToken}) async {
+  Future<void> connect() async {
     if (isConnected) {
       log('SignalR: Already connected');
       return;
     }
 
-    _currentJwtToken = jwtToken;
+    _currentJwtToken = await AppStorageHelper.getSecureData(
+      StorageKeys.accessToken,
+    );
     await _disconnectIfNeeded();
     _setStatus(SocketStatus.connecting);
 
@@ -84,7 +88,7 @@ class SignalRService implements SocketConsumer {
   Future<void> reconnect({String? jwtToken}) async {
     if (jwtToken != null) _currentJwtToken = jwtToken;
     await disconnect();
-    await connect(jwtToken: _currentJwtToken);
+    await connect();
   }
 
   @override

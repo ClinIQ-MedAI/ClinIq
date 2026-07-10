@@ -53,21 +53,6 @@ class ChatRepoImpl extends ChatRepo {
   }
 
   @override
-  Future<void> connectRealtime({String? jwtToken}) async {
-    await socket.connect(jwtToken: jwtToken);
-  }
-
-  @override
-  Future<void> disconnectRealtime() {
-    return socket.disconnect();
-  }
-
-  @override
-  Future<void> reconnectRealtime({String? jwtToken}) async {
-    await socket.reconnect(jwtToken: jwtToken);
-  }
-
-  @override
   Future<void> joinConversation(int conversationId) async {
     log('Chat Socket: Joining conversation $conversationId');
     await socket.invoke(SocketEvents.joinConversation, [conversationId]);
