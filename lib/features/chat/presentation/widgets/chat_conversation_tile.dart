@@ -99,7 +99,7 @@ class ChatConversationTile extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          conversation.lastMessage.tr(),
+                          conversation.lastMessage,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.getTextStyle(13).copyWith(

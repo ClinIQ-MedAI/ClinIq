@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/helpers/image_source_resolver.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
@@ -94,9 +93,15 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
                 onInteractionEnd: _onScaleEnd,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16.r),
-                  child: widget.message.localFilePath != null
-                      ? _localImage(scheme)
-                      : _networkImage(scheme),
+                  child: buildImageWidget(
+                    url: widget.message.resolvedAttachmentUrl,
+                    localFilePath: widget.message.localFilePath,
+                    fit: BoxFit.contain,
+                    placeholderBuilder: (_, __) => Center(
+                      child: CircularProgressIndicator(color: scheme.primary),
+                    ),
+                    errorBuilder: (_, __, ___) => _errorPlaceholder(scheme),
+                  ),
                 ),
               ),
             ),
@@ -106,30 +111,12 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
     );
   }
 
-  Widget _localImage(ColorScheme scheme) {
-    return Image.file(
-      File(widget.message.localFilePath!),
-      fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) => _errorPlaceholder(scheme),
-    );
-  }
-
-  Widget _networkImage(ColorScheme scheme) {
-    return CachedNetworkImage(
-      imageUrl: widget.message.resolvedAttachmentUrl,
-      fit: BoxFit.contain,
-      placeholder: (_, __) =>
-          Center(child: CircularProgressIndicator(color: scheme.primary)),
-      errorWidget: (_, __, ___) => _errorPlaceholder(scheme),
-    );
-  }
-
   Widget _errorPlaceholder(ColorScheme scheme) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.broken_image_outlined, size: 48.sp, color: Colors.white54),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Text(
           'Unable to load image',
           style: AppTextStyles.getTextStyle(14).copyWith(

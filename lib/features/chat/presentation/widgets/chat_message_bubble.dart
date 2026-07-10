@@ -6,7 +6,6 @@ import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_message_status_icon.dart';
 import 'package:cliniq/features/chat/presentation/widgets/file_message_bubble.dart';
 import 'package:cliniq/features/chat/presentation/widgets/image_message_bubble.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -104,7 +103,7 @@ class ChatMessageBubble extends StatelessWidget {
             ),
           if (_hasText)
             Text(
-              message.content.tr(),
+              message.content,
               style: AppTextStyles.getTextStyle(14).copyWith(
                 color: textColor,
                 fontWeight: FontWeight.w500,

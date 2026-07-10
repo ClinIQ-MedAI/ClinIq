@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/helpers/image_source_resolver.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
@@ -30,29 +29,16 @@ class ImageMessageBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(18.r),
           child: SizedBox(
             width: 240.w,
-            child: message.localFilePath != null
-                ? _localImage(scheme)
-                : _networkImage(scheme),
+            child: buildImageWidget(
+              url: message.resolvedAttachmentUrl,
+              localFilePath: message.localFilePath,
+              fit: BoxFit.cover,
+              placeholderBuilder: (_, __) => _placeholder(scheme),
+              errorBuilder: (_, __, ___) => _errorPlaceholder(scheme),
+            ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _localImage(ColorScheme scheme) {
-    return Image.file(
-      File(message.localFilePath!),
-      fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => _errorPlaceholder(scheme),
-    );
-  }
-
-  Widget _networkImage(ColorScheme scheme) {
-    return CachedNetworkImage(
-      imageUrl: message.resolvedAttachmentUrl,
-      fit: BoxFit.cover,
-      placeholder: (_, __) => _placeholder(scheme),
-      errorWidget: (_, __, ___) => _errorPlaceholder(scheme),
     );
   }
 
@@ -81,7 +67,7 @@ class ImageMessageBubble extends StatelessWidget {
             size: 36.sp,
             color: scheme.onSurface.withValues(alpha: 0.4),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Text(
             'Unable to load image',
             style: AppTextStyles.getTextStyle(11).copyWith(

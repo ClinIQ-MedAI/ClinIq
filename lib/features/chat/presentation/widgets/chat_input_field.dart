@@ -32,9 +32,17 @@ class ChatInputField extends StatefulWidget {
 class _ChatInputFieldState extends State<ChatInputField> {
   final TextEditingController _controller = TextEditingController();
   bool _isTyping = false;
+  bool _hasText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_onControllerChanged);
+  }
 
   @override
   void dispose() {
+    _controller.removeListener(_onControllerChanged);
     if (_isTyping) {
       widget.onTypingChanged(false);
     }
@@ -42,16 +50,22 @@ class _ChatInputFieldState extends State<ChatInputField> {
     super.dispose();
   }
 
-  void _handleTextChanged(String value) {
-    final isTyping = value.trim().isNotEmpty;
-    if (_isTyping == isTyping) return;
-
-    _isTyping = isTyping;
-    widget.onTypingChanged(isTyping);
+  void _onControllerChanged() {
+    final hasText = _controller.text.isNotEmpty;
+    if (_hasText != hasText) {
+      setState(() => _hasText = hasText);
+    }
   }
 
-  bool get _canSend =>
-      _controller.text.trim().isNotEmpty || widget.hasAttachment;
+  void _handleTextChanged(String value) {
+    final isTyping = value.trim().isNotEmpty;
+    if (_isTyping != isTyping) {
+      _isTyping = isTyping;
+      widget.onTypingChanged(isTyping);
+    }
+  }
+
+  bool get _canSend => _hasText || widget.hasAttachment;
 
   void _submitMessage() {
     if (widget.isSendDisabled) return;
@@ -60,6 +74,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
     widget.onMessageSubmitted(text);
     _controller.clear();
+    _hasText = false;
     _handleTextChanged('');
   }
 
@@ -139,8 +154,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   ? Icons.hourglass_top_rounded
                   : Icons.send_rounded,
               isPrimary: true,
-              onPressed:
-                  _canSend && !widget.isSendDisabled ? _submitMessage : null,
+              onPressed: _canSend && !widget.isSendDisabled
+                  ? _submitMessage
+                  : null,
             ),
           ],
         ),
