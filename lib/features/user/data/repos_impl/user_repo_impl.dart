@@ -18,11 +18,7 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
     return handleApi(() async {
       final response = await api.get(EndPoints.getMe);
       final user = UserProfileModel.fromJson(response["data"]);
-      await saveJsonDataLocally(
-        storageKey: StorageKeys.currentUser,
-        json: user.toJson(),
-      );
-      await _syncProfileCompletedFlag(user);
+      await saveCurrentUserData(user);
       return user;
     });
   }
@@ -34,20 +30,9 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
     return handleApi(() async {
       final response = await api.put(EndPoints.updateMe, data: data);
       final user = UserProfileModel.fromJson(response["data"]);
-      await saveJsonDataLocally(
-        storageKey: StorageKeys.currentUser,
-        json: user.toJson(),
-      );
-      await _syncProfileCompletedFlag(user);
+      await saveCurrentUserData(user);
       return user;
     });
-  }
-
-  Future<void> _syncProfileCompletedFlag(UserProfileEntity user) async {
-    await AppStorageHelper.setBool(
-      StorageKeys.isProfileCompleted,
-      user.hasMedicalInfo,
-    );
   }
 
   @override
@@ -60,10 +45,7 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
       await AppStorageHelper.setBool(StorageKeys.isProfileCompleted, true);
       if (result["data"] != null) {
         final user = UserProfileModel.fromJson(result["data"]);
-        await saveJsonDataLocally(
-          storageKey: StorageKeys.currentUser,
-          json: user.toJson(),
-        );
+        await saveCurrentUserData(user);
       }
     }).asVoid();
   }

@@ -4,6 +4,7 @@ import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/core/helpers/save_json_data_locally.dart';
 import 'package:cliniq/features/user/data/models/user_profile_model.dart';
 import 'package:cliniq/features/user/domain/entities/user_profile_entity.dart';
+import 'package:cliniq/features/user/presentation/providers/get_user_repo_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final currentUserProvider =
@@ -14,37 +15,41 @@ final currentUserProvider =
 class CurrentUserNotifier extends Notifier<UserProfileEntity?> {
   @override
   UserProfileEntity? build() {
-    return _loadCachedUser();
+    _initFromCache();
+    return null;
   }
 
-  UserProfileEntity? _loadCachedUser() {
+  void _initFromCache() {
     final json = AppStorageHelper.getString(StorageKeys.currentUser);
     if (json != null && json.isNotEmpty) {
       try {
         final decoded = jsonDecode(json);
-        final user = UserProfileModel.fromJson(decoded);
-        return user;
+        state = UserProfileModel.fromJson(decoded);
       } catch (_) {}
     }
-    return null;
   }
 
-  void updateUser(UserProfileEntity user) {
+  Future<void> loadUser() async {
+    if (state != null) return;
+    await refreshUser();
+  }
+
+  Future<void> refreshUser() async {
+    final result = await ref.read(getUserRepoProvider).getMe();
+    result.fold((_) => null, (user) => state = user);
+  }
+
+  Future<void> updateUser(UserProfileEntity user) async {
     final model = user is UserProfileModel
         ? user
         : UserProfileModel.fromEntity(user);
-    saveJsonDataLocally(
-      storageKey: StorageKeys.currentUser,
-      json: model.toJson(),
-    );
+    await saveCurrentUserData(model);
     state = user;
   }
 
-  void reloadFromCache() {
-    state = _loadCachedUser();
-  }
-
-  void clearUser() {
+  Future<void> clearUser() async {
+    await AppStorageHelper.remove(StorageKeys.currentUser);
+    await AppStorageHelper.remove(StorageKeys.currentUserId);
     state = null;
   }
 

@@ -28,7 +28,7 @@ class CompleteProfileNotifier extends AsyncNotifier<Success?> {
           await ref
               .read(currentUserProvider.notifier)
               .setProfileCompleted(true);
-          ref.read(currentUserProvider.notifier).reloadFromCache();
+          ref.read(currentUserProvider.notifier).refreshUser();
           state = AsyncData(Success(data: data));
         })
         .onFailure((error) {

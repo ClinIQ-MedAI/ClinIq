@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cliniq/core/constants/storage_keys.dart';
+import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
@@ -35,6 +37,12 @@ class DoctorConversationsNotifier
   void _subscribe() {
     _subscriptions.add(
       _repo.onMessageReceived(({required conversationId, required message}) {
+        final currentUserId =
+            AppStorageHelper.getString(StorageKeys.currentUserId) ?? '';
+        if (message.senderId != null && message.senderId == currentUserId) {
+          return;
+        }
+
         _updateConversation(conversationId, (conversation) {
           final messages = [...conversation.messages];
           final index = messages.indexWhere((item) => item.id == message.id);

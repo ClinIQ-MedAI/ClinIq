@@ -11,6 +11,7 @@ class ChatMessageEntity {
     required this.sentAt,
     required this.sender,
     required this.status,
+    this.senderId,
     this.attachmentUrl,
     this.attachmentName,
     this.attachmentSize,
@@ -22,6 +23,7 @@ class ChatMessageEntity {
   final String content;
   final String sentAt;
   final ChatMessageSender sender;
+  final String? senderId;
   final ChatMessageStatus status;
   final String? attachmentUrl;
   final String? attachmentName;
@@ -79,6 +81,7 @@ class ChatMessageEntity {
     String? content,
     String? sentAt,
     ChatMessageSender? sender,
+    String? senderId,
     ChatMessageStatus? status,
     String? attachmentUrl,
     String? attachmentName,
@@ -90,12 +93,14 @@ class ChatMessageEntity {
     bool clearAttachmentSize = false,
     bool clearAttachmentMimeType = false,
     bool clearLocalFilePath = false,
+    bool clearSenderId = false,
   }) {
     return ChatMessageEntity(
       id: id ?? this.id,
       content: content ?? this.content,
       sentAt: sentAt ?? this.sentAt,
       sender: sender ?? this.sender,
+      senderId: clearSenderId ? null : (senderId ?? this.senderId),
       status: status ?? this.status,
       attachmentUrl:
           clearAttachmentUrl ? null : (attachmentUrl ?? this.attachmentUrl),

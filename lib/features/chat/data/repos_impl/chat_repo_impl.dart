@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:cliniq/core/api/api_consumer.dart';
 import 'package:cliniq/core/api/end_points.dart';
+import 'package:cliniq/core/constants/storage_keys.dart';
+import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/core/socket/socket_events.dart';
 import 'package:cliniq/features/chat/data/models/chat_conversation_model.dart';
@@ -93,11 +95,15 @@ class ChatRepoImpl extends ChatRepo {
     handler,
   ) {
     void listener(List<dynamic>? arguments) {
-      if (arguments == null || arguments.isEmpty) return;
-      final data = arguments.first;
+      final data = arguments?.first;
       if (data is! Map<String, dynamic>) return;
 
       log('Chat Socket: ReceiveMessage payload: $data');
+      final currentUserId = AppStorageHelper.getString(
+        StorageKeys.currentUserId,
+      );
+      if (currentUserId == data['senderId']) return;
+      if (arguments == null || arguments.isEmpty) return;
 
       final conversationId = data['conversationId']?.toString() ?? '';
       final message = ChatMessageModel.fromJson(data);

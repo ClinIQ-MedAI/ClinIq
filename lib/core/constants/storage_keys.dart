@@ -6,6 +6,7 @@ class StorageKeys {
   static const String isArabic = "isArabic";
   static const String isLoggedIn = "isLoggedIn";
   static const String currentUser = "currentUser";
+  static const String currentUserId = "currentUserId";
   static const String userEmail = "userEmail";
   static const String userRole = "userRole";
   static const String resetToken = "resetToken";

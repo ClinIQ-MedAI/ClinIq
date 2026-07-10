@@ -39,25 +39,19 @@ class UserProfileModel extends UserProfileEntity {
     }
 
     return UserProfileModel(
-      id: json['id'] is int
-          ? json['id']
-          : int.tryParse(json['id']?.toString() ?? ''),
+      id: json['id'],
       firstName: parseFirstName(json),
       lastName: parseLastName(json),
       email: json['email'] ?? '',
       userName: json['userName'],
-      phoneNumber: json['mobile'] ??
-          json['phoneNumber'] ??
-          json['phone'] ??
-          '',
+      phoneNumber: json['mobile'] ?? json['phoneNumber'] ?? json['phone'] ?? '',
       gender: json['gender'],
       dateOfBirth: json['dateOfBirth'] ?? json['birthDate'],
       bloodGroup: json['bloodGroup'] ?? json['bloodType'],
       height: json['height']?.toString(),
       weight: json['weight']?.toString(),
       ailments: json['ailments'] ?? json['chronicConditions'],
-      profilePic:
-          json['profilePic'] ?? json['profilePicUrl'] ?? json['avatar'],
+      profilePic: json['profilePic'] ?? json['profilePicUrl'] ?? json['avatar'],
       role: json['role'],
       emailConfirmed: json['emailConfirmed'],
       phoneNumberConfirmed: json['phoneNumberConfirmed'],
@@ -133,7 +127,7 @@ class UserProfileModel extends UserProfileEntity {
   }
 
   UserProfileModel copyWith({
-    int? id,
+    String? id,
     String? firstName,
     String? lastName,
     String? email,
@@ -166,8 +160,7 @@ class UserProfileModel extends UserProfileEntity {
       profilePic: profilePic ?? this.profilePic,
       role: role ?? this.role,
       emailConfirmed: emailConfirmed ?? this.emailConfirmed,
-      phoneNumberConfirmed:
-          phoneNumberConfirmed ?? this.phoneNumberConfirmed,
+      phoneNumberConfirmed: phoneNumberConfirmed ?? this.phoneNumberConfirmed,
     );
   }
 }

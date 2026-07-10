@@ -7,6 +7,7 @@ class ChatMessageModel extends ChatMessageEntity {
     required super.sentAt,
     required super.sender,
     required super.status,
+    super.senderId,
     super.attachmentUrl,
     super.attachmentName,
     super.attachmentSize,
@@ -25,6 +26,7 @@ class ChatMessageModel extends ChatMessageEntity {
       content: json['content'] as String? ?? '',
       sentAt: sentAt,
       sender: sender,
+      senderId: json['senderId']?.toString(),
       status: status,
     );
   }
@@ -35,6 +37,7 @@ class ChatMessageModel extends ChatMessageEntity {
       'content': content,
       'sentAt': sentAt,
       'sender': sender.name,
+      if (senderId != null) 'senderId': senderId,
       'status': status.name,
       if (attachmentUrl != null) 'attachmentUrl': attachmentUrl,
       if (attachmentName != null) 'attachmentName': attachmentName,
@@ -49,6 +52,7 @@ class ChatMessageModel extends ChatMessageEntity {
     String? content,
     String? sentAt,
     ChatMessageSender? sender,
+    String? senderId,
     ChatMessageStatus? status,
     String? attachmentUrl,
     String? attachmentName,
@@ -60,12 +64,14 @@ class ChatMessageModel extends ChatMessageEntity {
     bool clearAttachmentSize = false,
     bool clearAttachmentMimeType = false,
     bool clearLocalFilePath = false,
+    bool clearSenderId = false,
   }) {
     return ChatMessageModel(
       id: id ?? this.id,
       content: content ?? this.content,
       sentAt: sentAt ?? this.sentAt,
       sender: sender ?? this.sender,
+      senderId: clearSenderId ? null : (senderId ?? this.senderId),
       status: status ?? this.status,
       attachmentUrl:
           clearAttachmentUrl ? null : (attachmentUrl ?? this.attachmentUrl),
