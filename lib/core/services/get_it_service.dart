@@ -1,8 +1,8 @@
 import 'package:cliniq/core/api/api_consumer.dart';
 import 'package:cliniq/core/api/api_features.dart';
 import 'package:cliniq/core/api/api_selector.dart';
+import 'package:cliniq/core/socket/signalr_service.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
-import 'package:cliniq/core/socket/socket_io_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
 import 'package:cliniq/features/chat/data/repos_impl/attachment_repo_impl.dart';
@@ -23,9 +23,12 @@ final getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   // Connectivity
   getIt.registerSingleton<Connectivity>(Connectivity());
-  final socketConsumer = SocketIoConsumer();
-  socketConsumer.init();
-  getIt.registerSingleton<SocketConsumer>(socketConsumer);
+
+  // JWT token (updated at login, read by SignalR and providers)
+  getIt.registerSingleton<String>('', instanceName: 'jwtToken');
+
+  // SignalR service
+  getIt.registerSingleton<SocketConsumer>(SignalRService());
 
   ApiSelector.init();
 

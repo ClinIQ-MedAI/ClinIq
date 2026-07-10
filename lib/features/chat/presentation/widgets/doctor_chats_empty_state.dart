@@ -1,13 +1,16 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
+import 'package:cliniq/core/widgets/custom_button.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DoctorChatsEmptyState extends StatelessWidget {
-  const DoctorChatsEmptyState({super.key});
+  const DoctorChatsEmptyState({super.key, this.onStartConversation});
+
+  final VoidCallback? onStartConversation;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +44,17 @@ class DoctorChatsEmptyState extends StatelessWidget {
                 height: 1.5,
               ),
             ),
+            if (onStartConversation != null) ...[
+              const VerticalGap(24),
+              CustomButton(
+                text: LocaleKeys.chatDoctorStartFirstConversation.tr(),
+                onPressed: onStartConversation!,
+                width: 220.w,
+                height: 48,
+                borderRadius: 16,
+                textFontSize: 15,
+              ),
+            ],
           ],
         ),
       ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cliniq/core/api/api_consumer.dart';
 import 'package:cliniq/core/api/end_points.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
@@ -17,37 +19,42 @@ class ChatRepoImpl extends ChatRepo {
   @override
   Future<List<ChatConversationEntity>> getConversations() async {
     final response = await api.get(EndPoints.getConversations);
-
-    return (response['data'] as List)
-        .map((conversation) => ChatConversationModel.fromJson(conversation))
+    final list = response as List<dynamic>;
+    return list
+        .map((item) => ChatConversationModel.fromJson(item as Map<String, dynamic>))
         .toList();
   }
 
   @override
-  Future<List<ChatMessageEntity>> getConversationMessages(String conversationId) async {
+  Future<List<ChatMessageEntity>> getConversationMessages(
+      String conversationId) async {
     final response = await api.get(
       EndPoints.getConversationById(conversationId),
     );
-
-    return (response['data'] as List)
-        .map((message) => ChatMessageModel.fromJson(message))
+    final list = response as List<dynamic>;
+    return list
+        .map((message) => ChatMessageModel.fromJson(message as Map<String, dynamic>))
         .toList();
   }
 
   @override
-  Future<ChatConversationEntity> createConversation(String doctorId) async {
+  Future<ChatConversationEntity> createConversation({
+    required String doctorId,
+    String? initialMessage,
+  }) async {
     final response = await api.post(
       EndPoints.createConversation,
-      queryParameters: {'doctorId': doctorId},
-      data: {'doctorId': doctorId},
+      data: {
+        'doctorId': doctorId,
+        if (initialMessage != null) 'initialMessage': initialMessage,
+      },
     );
-
-    return ChatConversationModel.fromJson(response['data']);
+    return ChatConversationModel.fromJson(response as Map<String, dynamic>);
   }
 
   @override
-  Future<void> connectRealtime() {
-    return socket.connect();
+  Future<void> connectRealtime({String? jwtToken}) async {
+    await socket.connect(jwtToken: jwtToken);
   }
 
   @override
@@ -56,64 +63,38 @@ class ChatRepoImpl extends ChatRepo {
   }
 
   @override
-  Future<void> reconnectRealtime() {
-    return socket.reconnect();
+  Future<void> reconnectRealtime({String? jwtToken}) async {
+    await socket.reconnect(jwtToken: jwtToken);
   }
 
   @override
-  void joinConversation(String conversationId) {
-    socket.emit(SocketEvents.joinConversation, {
-      'conversationId': conversationId,
-    });
+  Future<void> joinConversation(int conversationId) async {
+    log('Chat Socket: Joining conversation $conversationId');
+    await socket.invoke(SocketEvents.joinConversation, [conversationId]);
+    log('Chat Socket: Joined conversation $conversationId');
   }
 
   @override
-  void leaveConversation(String conversationId) {
-    socket.emit(SocketEvents.leaveConversation, {
-      'conversationId': conversationId,
-    });
+  Future<void> leaveConversation(int conversationId) async {
+    log('Chat Socket: Leaving conversation $conversationId');
+    await socket.invoke(SocketEvents.leaveConversation, [conversationId]);
+    log('Chat Socket: Left conversation $conversationId');
   }
 
   @override
-  void sendMessage({
+  Future<ChatMessageEntity> sendMessage({
     required String conversationId,
     required ChatMessageEntity message,
-  }) {
-    socket.emit(SocketEvents.sendMessage, {
-      'conversationId': conversationId,
-      'message': ChatMessageModel(
-        id: message.id,
-        content: message.content,
-        sentAt: message.sentAt,
-        sender: message.sender,
-        status: message.status,
-        attachmentUrl: message.attachmentUrl,
-        attachmentName: message.attachmentName,
-        attachmentSize: message.attachmentSize,
-        attachmentMimeType: message.attachmentMimeType,
-      ).toJson(),
-    });
-  }
-
-  @override
-  void sendTypingStatus({
-    required String conversationId,
-    required bool isTyping,
-  }) {
-    socket.emit(isTyping ? SocketEvents.typing : SocketEvents.stopTyping, {
-      'conversationId': conversationId,
-    });
-  }
-
-  @override
-  void markMessageSeen({
-    required String conversationId,
-    required String messageId,
-  }) {
-    socket.emit(SocketEvents.markMessageSeen, {
-      'conversationId': conversationId,
-      'messageId': messageId,
-    });
+  }) async {
+    log('Chat HTTP: Sending message to conversation $conversationId');
+    final response = await api.post(
+      EndPoints.sendMessage(conversationId),
+      data: {
+        'content': message.content,
+      },
+    );
+    log('Chat HTTP: Send response received: $response');
+    return ChatMessageModel.fromJson(response as Map<String, dynamic>);
   }
 
   @override
@@ -124,85 +105,28 @@ class ChatRepoImpl extends ChatRepo {
     })
     handler,
   ) {
-    void listener(dynamic data) {
-      final payload = _payload(data);
-      final messageData = payload['message'];
-      if (messageData is! Map<String, dynamic>) return;
+    void listener(List<dynamic>? arguments) {
+      if (arguments == null || arguments.isEmpty) return;
+      final data = arguments.first;
+      if (data is! Map<String, dynamic>) return;
+
+      log('Chat Socket: ReceiveMessage payload: $data');
+
+      final conversationId = data['conversationId']?.toString() ?? '';
+      final message = ChatMessageModel.fromJson(data);
 
       handler(
-        conversationId: payload['conversationId'] as String? ?? '',
-        message: ChatMessageModel.fromJson(messageData),
+        conversationId: conversationId,
+        message: message,
       );
     }
 
     socket.on(SocketEvents.receiveMessage, listener);
-    return () => socket.off(SocketEvents.receiveMessage, listener);
+    return () => _removeListener();
   }
 
-  @override
-  ChatRealtimeSubscription onTypingStatusChanged(
-    void Function({required String conversationId, required bool isTyping})
-    handler,
-  ) {
-    void listener(dynamic data) {
-      final payload = _payload(data);
-      handler(
-        conversationId: payload['conversationId'] as String? ?? '',
-        isTyping: payload['isTyping'] as bool? ?? false,
-      );
-    }
-
-    socket.on(SocketEvents.typingStatusChanged, listener);
-    return () => socket.off(SocketEvents.typingStatusChanged, listener);
-  }
-
-  @override
-  ChatRealtimeSubscription onMessageStatusChanged(
-    void Function({
-      required String conversationId,
-      required String messageId,
-      required ChatMessageStatus status,
-    })
-    handler,
-  ) {
-    void listener(dynamic data) {
-      final payload = _payload(data);
-      final status = ChatMessageStatus.values.firstWhere(
-        (status) => status.name == payload['status'],
-        orElse: () => ChatMessageStatus.delivered,
-      );
-
-      handler(
-        conversationId: payload['conversationId'] as String? ?? '',
-        messageId: payload['messageId'] as String? ?? '',
-        status: status,
-      );
-    }
-
-    socket.on(SocketEvents.messageStatusChanged, listener);
-    return () => socket.off(SocketEvents.messageStatusChanged, listener);
-  }
-
-  @override
-  ChatRealtimeSubscription onOnlineStatusChanged(
-    void Function({required String conversationId, required bool isOnline})
-    handler,
-  ) {
-    void listener(dynamic data) {
-      final payload = _payload(data);
-      handler(
-        conversationId: payload['conversationId'] as String? ?? '',
-        isOnline: payload['isOnline'] as bool? ?? false,
-      );
-    }
-
-    socket.on(SocketEvents.onlineStatusChanged, listener);
-    return () => socket.off(SocketEvents.onlineStatusChanged, listener);
-  }
-
-  Map<String, dynamic> _payload(dynamic data) {
-    if (data is Map<String, dynamic>) return data;
-    if (data is Map) return Map<String, dynamic>.from(data);
-    return {};
+  void _removeListener() {
+    // SignalR doesn't support removing individual listeners easily.
+    // The connection is disposed when leaving the conversation.
   }
 }

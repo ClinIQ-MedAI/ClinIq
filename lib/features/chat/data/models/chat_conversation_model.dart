@@ -19,27 +19,32 @@ class ChatConversationModel extends ChatConversationEntity {
   });
 
   factory ChatConversationModel.fromJson(Map<String, dynamic> json) {
+    final id = json['id']?.toString() ?? '';
+    final title = json['doctorName'] as String? ??
+        json['patientName'] as String? ??
+        '';
+    final subtitle = json['doctorSpecialization'] as String? ?? '';
+    final lastMessageAt = json['lastMessageAt'] as String? ?? '';
+    final lastMessageTime = lastMessageAt.length >= 16
+        ? lastMessageAt.substring(11, 16)
+        : lastMessageAt;
+
     return ChatConversationModel(
-      id: json['id'] as String,
-      type: ChatType.values.firstWhere(
-        (type) => type.name == json['type'],
-        orElse: () => ChatType.doctor,
-      ),
-      title: json['title'] as String,
-      subtitle: json['subtitle'] as String,
-      emptyTitle: json['emptyTitle'] as String,
-      emptyDescription: json['emptyDescription'] as String,
+      id: id,
+      type: ChatType.doctor,
+      title: title,
+      subtitle: subtitle,
+      emptyTitle: '',
+      emptyDescription: '',
       messages: (json['messages'] as List<dynamic>? ?? [])
           .map(
             (message) =>
                 ChatMessageModel.fromJson(message as Map<String, dynamic>),
           )
           .toList(),
-      lastMessage: json['lastMessage'] as String,
-      lastMessageTime: json['lastMessageTime'] as String,
-      isTyping: json['isTyping'] as bool? ?? false,
+      lastMessage: json['lastMessage'] as String? ?? '',
+      lastMessageTime: lastMessageTime,
       unreadCount: json['unreadCount'] as int? ?? 0,
-      isOnline: json['isOnline'] as bool? ?? false,
     );
   }
 

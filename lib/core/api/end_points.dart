@@ -33,13 +33,13 @@ class EndPoints {
   static const String bookAppointment = "api/bookings";
 
   // chats
-  static const String getConversations = "chat/conversations";
-  static const String createConversation = "chat/conversations";
+  static const String getConversations = "patient/chat/conversations";
+  static const String createConversation = "patient/chat/conversations";
+  static String sendMessage(String conversationId) =>
+      "patient/chat/conversations/$conversationId/messages";
   static String getConversationById(String conversationId) =>
-      "chat/conversations/$conversationId/messages";
-  static String sendChatMessage(String conversationId) =>
-      "chat/conversations/$conversationId/messages";
-  static const String uploadAttachment = "chat/upload";
+      "patient/chat/conversations/$conversationId/messages";
+  static const String uploadAttachment = "patient/chat/upload";
 
   // profile
   static const String getMe = "patient/me";

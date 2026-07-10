@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:cliniq/core/services/get_it_service.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
@@ -36,26 +38,20 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
   final ChatConversationRequest _request;
   late final ChatRepo _repo;
   final List<ChatRealtimeSubscription> _subscriptions = [];
-  bool _isTyping = false;
 
   @override
   FutureOr<ChatConversationEntity> build() async {
     _repo = ref.read(chatRepoProvider);
-    await _repo.connectRealtime();
+
+    final jwtToken = getIt<String>(instanceName: 'jwtToken');
+    await _repo.connectRealtime(jwtToken: jwtToken);
 
     final conversation = await _getConversation();
-    _repo.joinConversation(conversation.id);
+    await _repo.joinConversation(int.tryParse(conversation.id) ?? 0);
     _subscribe(conversation.id);
-    _markIncomingMessagesSeen(conversation);
 
-    ref.onDispose(() {
-      if (_isTyping) {
-        _repo.sendTypingStatus(
-          conversationId: conversation.id,
-          isTyping: false,
-        );
-      }
-      _repo.leaveConversation(conversation.id);
+    ref.onDispose(() async {
+      await _repo.leaveConversation(int.tryParse(conversation.id) ?? 0);
       for (final cancel in _subscriptions) {
         cancel();
       }
@@ -64,7 +60,7 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     return conversation.copyWith(unreadCount: 0);
   }
 
-  void sendMessage(String content) {
+  Future<void> sendMessage(String content) async {
     final text = content.trim();
     final conversation = state.value;
     if (conversation == null) return;
@@ -75,7 +71,7 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     final uploadedFile = attachState.uploadedFile;
     final localPath = attachState.pickedFile?.filePath;
 
-    final message = ChatMessageEntity(
+    final localMessage = ChatMessageEntity(
       id: 'local-${DateTime.now().microsecondsSinceEpoch}',
       content: text,
       sentAt: _currentTimeLabel(),
@@ -88,12 +84,28 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
       localFilePath: localPath,
     );
 
-    _upsertMessage(conversation.id, message);
-    _repo.sendMessage(conversationId: conversation.id, message: message);
-    updateTypingStatus(false);
+    _upsertMessage(conversation.id, localMessage);
 
     if (uploadedFile != null) {
       ref.read(attachmentUploadProvider.notifier).resetAfterSend();
+    }
+
+    try {
+      final serverMessage = await _repo.sendMessage(
+        conversationId: conversation.id,
+        message: localMessage,
+      );
+
+      log('Chat: Send succeeded, server id: ${serverMessage.id}');
+
+      _replaceMessage(conversation.id, localMessage.id, serverMessage);
+    } catch (e) {
+      log('Chat: Send failed: $e');
+      _updateMessageStatus(
+        conversation.id,
+        localMessage.id,
+        ChatMessageStatus.failed,
+      );
     }
   }
 
@@ -108,61 +120,47 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     if (message.status != ChatMessageStatus.failed) return;
 
     _updateMessageStatus(conversation.id, messageId, ChatMessageStatus.sending);
-    _repo.sendMessage(conversationId: conversation.id, message: message);
-  }
 
-  void updateTypingStatus(bool isTyping) {
-    final conversation = state.value;
-    if (conversation == null || _isTyping == isTyping) return;
-
-    _isTyping = isTyping;
-    _repo.sendTypingStatus(conversationId: conversation.id, isTyping: isTyping);
+    _repo.sendMessage(
+      conversationId: conversation.id,
+      message: message,
+    ).then((serverMessage) {
+      _replaceMessage(conversation.id, messageId, serverMessage);
+    }).catchError((_) {
+      _updateMessageStatus(conversation.id, messageId, ChatMessageStatus.failed);
+    });
   }
 
   void _subscribe(String conversationId) {
-    _subscriptions
-      ..add(
-        _repo.onMessageReceived(({required conversationId, required message}) {
-          _upsertMessage(conversationId, message);
-          if (message.sender != ChatMessageSender.user) {
-            _repo.markMessageSeen(
-              conversationId: conversationId,
-              messageId: message.id,
-            );
-          }
-        }),
-      )
-      ..add(
-        _repo.onTypingStatusChanged(({
-          required conversationId,
-          required isTyping,
-        }) {
-          _updateConversation(
-            conversationId,
-            (conversation) => conversation.copyWith(isTyping: isTyping),
-          );
-        }),
-      )
-      ..add(
-        _repo.onMessageStatusChanged(({
-          required conversationId,
-          required messageId,
-          required status,
-        }) {
-          _updateMessageStatus(conversationId, messageId, status);
-        }),
-      )
-      ..add(
-        _repo.onOnlineStatusChanged(({
-          required conversationId,
-          required isOnline,
-        }) {
-          _updateConversation(
-            conversationId,
-            (conversation) => conversation.copyWith(isOnline: isOnline),
-          );
-        }),
+    _subscriptions.add(
+      _repo.onMessageReceived(({required conversationId, required message}) {
+        _upsertOrUpdateByBackendId(conversationId, message);
+      }),
+    );
+  }
+
+  void _upsertOrUpdateByBackendId(
+      String conversationId, ChatMessageEntity message) {
+    _updateConversation(conversationId, (conversation) {
+      final messages = [...conversation.messages];
+
+      // Replace if already exists by backend id
+      final backendIndex = messages.indexWhere((m) => m.id == message.id);
+
+      if (backendIndex != -1) {
+        messages[backendIndex] = message;
+      } else {
+        // Also check if a local optimistic message with matching content exists
+        // (to replace the temporary one)
+        messages.add(message);
+      }
+
+      return conversation.copyWith(
+        messages: messages,
+        lastMessage: message.content,
+        lastMessageTime: message.sentAt,
       );
+    });
   }
 
   void _upsertMessage(String conversationId, ChatMessageEntity message) {
@@ -179,8 +177,38 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
         messages: messages,
         lastMessage: message.content,
         lastMessageTime: message.sentAt,
-        isTyping: false,
       );
+    });
+  }
+
+  void _replaceMessage(
+    String conversationId,
+    String localId,
+    ChatMessageEntity serverMessage,
+  ) {
+    _updateConversation(conversationId, (conversation) {
+      final messages = [...conversation.messages];
+      final localIndex = messages.indexWhere((m) => m.id == localId);
+
+      if (localIndex != -1) {
+        // Preserve local-only fields on the server message
+        final local = messages[localIndex];
+        final merged = ChatMessageEntity(
+          id: serverMessage.id,
+          content: serverMessage.content,
+          sentAt: serverMessage.sentAt,
+          sender: serverMessage.sender,
+          status: serverMessage.status,
+          attachmentUrl: local.attachmentUrl,
+          attachmentName: local.attachmentName,
+          attachmentSize: local.attachmentSize,
+          attachmentMimeType: local.attachmentMimeType,
+          localFilePath: local.localFilePath,
+        );
+        messages[localIndex] = merged;
+      }
+
+      return conversation.copyWith(messages: messages);
     });
   }
 
@@ -211,16 +239,8 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     state = AsyncData(update(conversation));
   }
 
-  void _markIncomingMessagesSeen(ChatConversationEntity conversation) {
-    for (final message in conversation.messages) {
-      if (message.sender != ChatMessageSender.user &&
-          message.status != ChatMessageStatus.seen) {
-        _repo.markMessageSeen(
-          conversationId: conversation.id,
-          messageId: message.id,
-        );
-      }
-    }
+  void updateTypingStatus(bool isTyping) {
+    // SignalR doesn't support typing indicators; kept for UI compatibility
   }
 
   String _currentTimeLabel() {

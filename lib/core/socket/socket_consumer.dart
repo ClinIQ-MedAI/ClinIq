@@ -7,24 +7,15 @@ abstract class SocketConsumer {
 
   bool get isConnected;
 
-  void init({
-    String? url,
-    Map<String, dynamic>? query,
-    Map<String, String>? headers,
-    bool autoConnect = false,
-  });
-
-  Future<void> connect();
+  Future<void> connect({String? jwtToken});
 
   Future<void> disconnect();
 
-  Future<void> reconnect();
+  Future<void> reconnect({String? jwtToken});
 
-  void emit(String event, [dynamic data]);
+  Future<void> invoke(String method, List<dynamic> args);
 
-  void on(String event, void Function(dynamic data) handler);
-
-  void off(String event, [void Function(dynamic data)? handler]);
+  void on(String event, void Function(List<dynamic>? arguments) handler);
 
   void dispose();
 }

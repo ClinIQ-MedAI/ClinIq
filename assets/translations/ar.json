@@ -200,6 +200,8 @@
             "empty_description": "اسأل طبيبك عن موعدك أو خطة العلاج أو تعليمات المتابعة.",
             "list_empty_title": "لا توجد محادثات مع الأطباء بعد",
             "list_empty_description": "ستظهر محادثات الأطباء هنا بعد بدء الاستشارة.",
+            "start_first_conversation": "ابدأ محادثتك الأولى",
+            "send_message": "أرسل رسالة",
             "ahmed_name": "د. أحمد حسن",
             "ahmed_specialty": "الطب الباطني",
             "salma_name": "د. سلمى نبيل",

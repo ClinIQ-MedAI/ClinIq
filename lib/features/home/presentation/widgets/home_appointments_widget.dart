@@ -46,7 +46,7 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 190.h,
+          height: 200.h,
           child: PageView.builder(
             controller: _pageController,
             itemCount: widget.appointments.length,
@@ -55,7 +55,6 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
               final appointment = widget.appointments[index];
               final delta = index - _currentPage;
 
-              // Stacked card animation logic
               final double scale = (1 - (delta.abs() * 0.1)).clamp(0.8, 1.0);
               final double opacity = (1 - (delta.abs() * 0.5)).clamp(0.0, 1.0);
               final double translation = delta * 60.0;
@@ -173,8 +172,7 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                             ],
                           ),
                         ),
-                        const HorizontalGap(16),
-                        // Prominent Doctor Photo
+                        const HorizontalGap(8),
                         Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,

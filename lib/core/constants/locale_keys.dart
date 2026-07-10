@@ -255,6 +255,9 @@ abstract class LocaleKeys {
   static const chatDoctorListEmptyTitle = "chat.doctor.list_empty_title";
   static const chatDoctorListEmptyDescription =
       "chat.doctor.list_empty_description";
+  static const chatDoctorStartFirstConversation =
+      "chat.doctor.start_first_conversation";
+  static const chatDoctorSendMessage = "chat.doctor.send_message";
   static const chatDoctorAhmedName = "chat.doctor.ahmed_name";
   static const chatDoctorAhmedSpecialty = "chat.doctor.ahmed_specialty";
   static const chatDoctorSalmaName = "chat.doctor.salma_name";

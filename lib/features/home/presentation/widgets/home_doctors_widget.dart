@@ -12,9 +12,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class HomeDoctorsWidget extends StatelessWidget {
-  const HomeDoctorsWidget({super.key, required this.doctors});
+  const HomeDoctorsWidget({
+    super.key,
+    required this.doctors,
+    this.onChatPressed,
+  });
 
   final List<DoctorEntity> doctors;
+  final void Function(DoctorEntity doctor)? onChatPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +106,26 @@ class HomeDoctorsWidget extends StatelessWidget {
                             ),
                           ),
                         ),
+                        if (onChatPressed != null)
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            child: GestureDetector(
+                              onTap: () => onChatPressed!(doctor),
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: context.colorScheme.surfaceContainerHigh,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.chat_bubble_outline_rounded,
+                                  color: context.colorScheme.primary,
+                                  size: 14,
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

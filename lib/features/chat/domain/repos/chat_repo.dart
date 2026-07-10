@@ -8,31 +8,24 @@ abstract class ChatRepo {
 
   Future<List<ChatMessageEntity>> getConversationMessages(String conversationId);
 
-  Future<ChatConversationEntity> createConversation(String doctorId);
+  Future<ChatConversationEntity> createConversation({
+    required String doctorId,
+    String? initialMessage,
+  });
 
-  Future<void> connectRealtime();
+  Future<void> connectRealtime({String? jwtToken});
 
   Future<void> disconnectRealtime();
 
-  Future<void> reconnectRealtime();
+  Future<void> reconnectRealtime({String? jwtToken});
 
-  void joinConversation(String conversationId);
+  Future<void> joinConversation(int conversationId);
 
-  void leaveConversation(String conversationId);
+  Future<void> leaveConversation(int conversationId);
 
-  void sendMessage({
+  Future<ChatMessageEntity> sendMessage({
     required String conversationId,
     required ChatMessageEntity message,
-  });
-
-  void sendTypingStatus({
-    required String conversationId,
-    required bool isTyping,
-  });
-
-  void markMessageSeen({
-    required String conversationId,
-    required String messageId,
   });
 
   ChatRealtimeSubscription onMessageReceived(
@@ -40,25 +33,6 @@ abstract class ChatRepo {
       required String conversationId,
       required ChatMessageEntity message,
     })
-    handler,
-  );
-
-  ChatRealtimeSubscription onTypingStatusChanged(
-    void Function({required String conversationId, required bool isTyping})
-    handler,
-  );
-
-  ChatRealtimeSubscription onMessageStatusChanged(
-    void Function({
-      required String conversationId,
-      required String messageId,
-      required ChatMessageStatus status,
-    })
-    handler,
-  );
-
-  ChatRealtimeSubscription onOnlineStatusChanged(
-    void Function({required String conversationId, required bool isOnline})
     handler,
   );
 }

@@ -1,8 +1,12 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
+import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
+import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
+import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
 import 'package:cliniq/features/home/presentation/widgets/home_appointments_widget.dart';
 import 'package:cliniq/features/home/presentation/widgets/home_doctors_widget.dart';
@@ -12,6 +16,7 @@ import 'package:cliniq/features/home/presentation/widgets/home_section_header.da
 import 'package:cliniq/features/home/presentation/widgets/home_specializations_widget.dart';
 import 'package:cliniq/features/home/presentation/widgets/see_all_button.dart';
 import 'package:cliniq/features/home/presentation/widgets/ai_assistant_section.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -101,6 +106,8 @@ class UserHomeView extends ConsumerWidget {
                                 const VerticalGap(20),
                                 HomeDoctorsWidget(
                                       doctors: homeData.suggestedDoctors,
+                                      onChatPressed: (doctor) =>
+                                          _startConversation(context, ref, doctor),
                                     )
                                     .animate()
                                     .fadeIn(delay: 750.ms)
@@ -202,5 +209,32 @@ class UserHomeView extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  Future<void> _startConversation(
+    BuildContext context,
+    WidgetRef ref,
+    DoctorEntity doctor,
+  ) async {
+    final repo = ref.read(chatRepoProvider);
+
+    try {
+      final conversation = await repo.createConversation(doctorId: doctor.id);
+
+      if (!context.mounted) return;
+
+      Navigator.pushNamed(
+        context,
+        Routes.chatDetailsScreen,
+        arguments: ChatDetailsArguments(
+          conversationId: conversation.id,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(LocaleKeys.messagesFailuresUnexpectedError.tr())),
+      );
+    }
   }
 }

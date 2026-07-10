@@ -15,22 +15,17 @@ class ChatMessageModel extends ChatMessageEntity {
   });
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
+    final id = _resolveId(json);
+    final sender = _resolveSender(json);
+    final status = _resolveStatus(json);
+    final sentAt = _resolveSentAt(json);
+
     return ChatMessageModel(
-      id: json['id'] as String,
-      content: json['content'] as String,
-      sentAt: json['sentAt'] as String,
-      sender: ChatMessageSender.values.firstWhere(
-        (sender) => sender.name == json['sender'],
-        orElse: () => ChatMessageSender.user,
-      ),
-      status: ChatMessageStatus.values.firstWhere(
-        (status) => status.name == json['status'],
-        orElse: () => ChatMessageStatus.delivered,
-      ),
-      attachmentUrl: json['attachmentUrl'] as String?,
-      attachmentName: json['attachmentName'] as String?,
-      attachmentSize: (json['attachmentSize'] as num?)?.toInt(),
-      attachmentMimeType: json['attachmentMimeType'] as String?,
+      id: id,
+      content: json['content'] as String? ?? '',
+      sentAt: sentAt,
+      sender: sender,
+      status: status,
     );
   }
 
@@ -87,5 +82,66 @@ class ChatMessageModel extends ChatMessageEntity {
           ? null
           : (localFilePath ?? this.localFilePath),
     );
+  }
+
+  static String _resolveId(Map<String, dynamic> json) {
+    // Socket payload uses 'messageId', HTTP uses 'id'
+    final id = json['messageId'] ?? json['id'];
+    return id?.toString() ?? '';
+  }
+
+  static ChatMessageSender _resolveSender(Map<String, dynamic> json) {
+    final senderType = json['senderType'];
+    if (senderType is int) {
+      // 0 = DOCTOR, 1 = PATIENT
+      return senderType == 0
+          ? ChatMessageSender.doctor
+          : ChatMessageSender.user;
+    }
+    if (senderType is String) {
+      if (senderType == 'DOCTOR') return ChatMessageSender.doctor;
+      if (senderType == 'PATIENT') return ChatMessageSender.user;
+    }
+    // Fallback to old string sender field
+    final sender = json['sender'] as String?;
+    return ChatMessageSender.values.firstWhere(
+      (s) => s.name == sender,
+      orElse: () => ChatMessageSender.doctor,
+    );
+  }
+
+  static ChatMessageStatus _resolveStatus(Map<String, dynamic> json) {
+    final status = json['status'];
+    if (status is int) {
+      // 0 = SENT, 1 = DELIVERED, 2 = READ
+      switch (status) {
+        case 0:
+          return ChatMessageStatus.sent;
+        case 1:
+          return ChatMessageStatus.delivered;
+        case 2:
+          return ChatMessageStatus.seen;
+      }
+    }
+    if (status is String) {
+      if (status == 'SENT') return ChatMessageStatus.sent;
+      if (status == 'DELIVERED') return ChatMessageStatus.delivered;
+      if (status == 'READ') return ChatMessageStatus.seen;
+    }
+    return ChatMessageStatus.sent;
+  }
+
+  static String _resolveSentAt(Map<String, dynamic> json) {
+    // Prefer 'createdAt' ISO string, fallback to old 'sentAt'
+    final createdAt = json['createdAt'] as String?;
+    if (createdAt != null && createdAt.length >= 16) {
+      // Extract HH:mm from ISO string "2026-07-09T03:00:00Z"
+      try {
+        return createdAt.substring(11, 16);
+      } catch (_) {
+        return createdAt;
+      }
+    }
+    return json['sentAt'] as String? ?? '';
   }
 }

@@ -20,45 +20,39 @@ abstract final class ChatDummyResponses {
             "size": 102400,
           },
         };
+
       case EndPoints.getConversations:
-        final doctorId = queryParameters?['doctorId'] as String?;
-        if (doctorId != null) {
-          final conversation = _doctorConversations.firstWhere(
-            (c) => c['id'] == doctorId,
-            orElse: () => _doctorConversations.first,
-          );
+        return _doctorConversations;
+
+      default:
+        if (path.startsWith(EndPoints.sendMessage(''))) {
+          // Mock a response for any send-message POST
           return {
-            "success": true,
-            "message": "Conversation created successfully",
-            "data": conversation,
+            "id": DateTime.now().millisecondsSinceEpoch,
+            "senderId": "patient_uuid",
+            "senderType": 1,
+            "content": queryParameters?['content'] ?? '',
+            "status": 0,
+            "createdAt": DateTime.now().toIso8601String(),
+            "readAt": null,
           };
         }
-        return {
-          "success": true,
-          "message": "Conversations fetched successfully",
-          "data": _doctorConversations,
-        };
-    }
 
-    final conversationId = _conversationIdFromPath(path);
-    if (conversationId != null) {
-      final id = queryParameters?['id'] as String? ?? conversationId;
-      final conversation = _doctorConversations.firstWhere(
-        (c) => c['id'] == id,
-        orElse: () => _doctorConversations.first,
-      );
-      return {
-        "success": true,
-        "message": "Messages fetched successfully",
-        "data": conversation['messages'],
-      };
-    }
+        final conversationId = _conversationIdFromPath(path);
+        if (conversationId != null) {
+          final conversation = _doctorConversations.firstWhere(
+            (c) => c['id'] == conversationId,
+            orElse: () => _doctorConversations.first,
+          );
+          return conversation['messages'] ?? [];
+        }
 
-    return null;
+        return null;
+    }
   }
 
-  static String? _conversationIdFromPath(String path) {
-    const prefix = 'chat/conversations/';
+  static int? _conversationIdFromPath(String path) {
+    const prefix = 'api/chat/conversations/';
     const suffix = '/messages';
 
     if (!path.startsWith(prefix) || !path.endsWith(suffix)) {
@@ -66,113 +60,118 @@ abstract final class ChatDummyResponses {
     }
 
     final id = path.substring(prefix.length, path.length - suffix.length);
-    return id.isEmpty ? null : id;
+    return int.tryParse(id);
   }
 
   static List<Map<String, dynamic>> get _doctorConversations => [
     {
-      "id": "doctor-ahmed",
-      "type": "doctor",
-      "title": LocaleKeys.chatDoctorAhmedName,
-      "subtitle": LocaleKeys.chatDoctorAhmedSpecialty,
-      "emptyTitle": LocaleKeys.chatDoctorEmptyTitle,
-      "emptyDescription": LocaleKeys.chatDoctorEmptyDescription,
-      "lastMessage": LocaleKeys.chatDoctorMessage3,
-      "lastMessageTime": "09:34",
+      "id": 1,
+      "doctorId": "doctor-ahmed-uuid",
+      "doctorName": LocaleKeys.chatDoctorAhmedName,
+      "doctorSpecialization": LocaleKeys.chatDoctorAhmedSpecialty,
+      "lastMessageAt": "2026-07-10T09:34:00Z",
       "unreadCount": 2,
-      "isTyping": true,
-      "isOnline": true,
       "messages": [
         {
-          "id": "doctor-ahmed-message-1",
+          "messageId": 11,
+          "senderId": "doctor-ahmed-uuid",
+          "senderType": 0,
           "content": LocaleKeys.chatDoctorMessage1,
-          "sentAt": "09:30",
-          "sender": "doctor",
-          "status": "seen",
+          "status": 2,
+          "createdAt": "2026-07-10T09:30:00Z",
+          "readAt": "2026-07-10T09:32:00Z",
         },
         {
-          "id": "doctor-ahmed-message-2",
+          "messageId": 12,
+          "senderId": "patient-uuid",
+          "senderType": 1,
           "content": LocaleKeys.chatDoctorMessage2,
-          "sentAt": "09:32",
-          "sender": "user",
-          "status": "seen",
+          "status": 2,
+          "createdAt": "2026-07-10T09:32:00Z",
+          "readAt": "2026-07-10T09:32:00Z",
         },
         {
-          "id": "doctor-ahmed-message-3",
+          "messageId": 13,
+          "senderId": "doctor-ahmed-uuid",
+          "senderType": 0,
           "content": LocaleKeys.chatDoctorMessage3,
-          "sentAt": "09:34",
-          "sender": "doctor",
-          "status": "delivered",
+          "status": 1,
+          "createdAt": "2026-07-10T09:34:00Z",
+          "readAt": null,
         },
       ],
     },
     {
-      "id": "doctor-salma",
-      "type": "doctor",
-      "title": LocaleKeys.chatDoctorSalmaName,
-      "subtitle": LocaleKeys.chatDoctorSalmaSpecialty,
-      "emptyTitle": LocaleKeys.chatDoctorEmptyTitle,
-      "emptyDescription": LocaleKeys.chatDoctorEmptyDescription,
-      "lastMessage": LocaleKeys.chatDoctorSalmaMessage3,
-      "lastMessageTime": "08:12",
+      "id": 2,
+      "doctorId": "doctor-salma-uuid",
+      "doctorName": LocaleKeys.chatDoctorSalmaName,
+      "doctorSpecialization": LocaleKeys.chatDoctorSalmaSpecialty,
+      "lastMessageAt": "2026-07-10T08:12:00Z",
       "unreadCount": 0,
-      "isOnline": false,
       "messages": [
         {
-          "id": "doctor-salma-message-1",
+          "messageId": 21,
+          "senderId": "doctor-salma-uuid",
+          "senderType": 0,
           "content": LocaleKeys.chatDoctorSalmaMessage1,
-          "sentAt": "08:04",
-          "sender": "doctor",
-          "status": "seen",
+          "status": 2,
+          "createdAt": "2026-07-10T08:04:00Z",
+          "readAt": "2026-07-10T08:06:00Z",
         },
         {
-          "id": "doctor-salma-message-2",
+          "messageId": 22,
+          "senderId": "patient-uuid",
+          "senderType": 1,
           "content": LocaleKeys.chatDoctorSalmaMessage2,
-          "sentAt": "08:08",
-          "sender": "user",
-          "status": "seen",
+          "status": 2,
+          "createdAt": "2026-07-10T08:08:00Z",
+          "readAt": "2026-07-10T08:08:00Z",
         },
         {
-          "id": "doctor-salma-message-3",
+          "messageId": 23,
+          "senderId": "doctor-salma-uuid",
+          "senderType": 0,
           "content": LocaleKeys.chatDoctorSalmaMessage3,
-          "sentAt": "08:12",
-          "sender": "doctor",
-          "status": "seen",
+          "status": 1,
+          "createdAt": "2026-07-10T08:12:00Z",
+          "readAt": null,
         },
       ],
     },
     {
-      "id": "doctor-youssef",
-      "type": "doctor",
-      "title": LocaleKeys.chatDoctorYoussefName,
-      "subtitle": LocaleKeys.chatDoctorYoussefSpecialty,
-      "emptyTitle": LocaleKeys.chatDoctorEmptyTitle,
-      "emptyDescription": LocaleKeys.chatDoctorEmptyDescription,
-      "lastMessage": LocaleKeys.chatDoctorYoussefMessage3,
-      "lastMessageTime": "07:31",
+      "id": 3,
+      "doctorId": "doctor-youssef-uuid",
+      "doctorName": LocaleKeys.chatDoctorYoussefName,
+      "doctorSpecialization": LocaleKeys.chatDoctorYoussefSpecialty,
+      "lastMessageAt": "2026-07-10T07:31:00Z",
       "unreadCount": 1,
-      "isOnline": true,
       "messages": [
         {
-          "id": "doctor-youssef-message-1",
+          "messageId": 31,
+          "senderId": "doctor-youssef-uuid",
+          "senderType": 0,
           "content": LocaleKeys.chatDoctorYoussefMessage1,
-          "sentAt": "07:20",
-          "sender": "doctor",
-          "status": "seen",
+          "status": 2,
+          "createdAt": "2026-07-10T07:20:00Z",
+          "readAt": "2026-07-10T07:22:00Z",
         },
         {
-          "id": "doctor-youssef-message-2",
+          "messageId": 32,
+          "senderId": "patient-uuid",
+          "senderType": 1,
           "content": LocaleKeys.chatDoctorYoussefMessage2,
-          "sentAt": "07:25",
-          "sender": "user",
-          "status": "delivered",
+          "status": 1,
+          "createdAt": "2026-07-10T07:25:00Z",
+          "readAt": null,
         },
         {
-          "id": "doctor-youssef-message-3",
+          "messageId": 33,
+          "senderId": "doctor-youssef-uuid",
+          "senderType": 0,
           "content": LocaleKeys.chatDoctorYoussefMessage3,
-          "sentAt": "07:31",
-          "sender": "doctor",
-          "status": "delivered",
+          "status": 1,
+          "createdAt": "2026-07-10T07:31:00Z",
+          "readAt": null,
         },
       ],
     },

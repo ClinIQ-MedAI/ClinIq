@@ -3,10 +3,14 @@ import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
+import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
 import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_tile.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
 import 'package:cliniq/features/chat/presentation/widgets/doctor_chats_empty_state.dart';
+import 'package:cliniq/features/chat/presentation/widgets/new_conversation_sheet.dart';
+import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
+import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +34,10 @@ class ChatsView extends ConsumerWidget {
       body: conversationsAsync.when(
         data: (conversations) {
           if (conversations.isEmpty) {
-            return DoctorChatsEmptyState();
+            return DoctorChatsEmptyState(
+              onStartConversation: () =>
+                  _showNewConversationSheet(context, ref),
+            );
           }
 
           return ListView.separated(
@@ -61,6 +68,75 @@ class ChatsView extends ConsumerWidget {
         ),
         loading: () => const ChatLoadingState(),
       ),
+    );
+  }
+
+  void _showNewConversationSheet(BuildContext context, WidgetRef ref) {
+    final homeDataAsync = ref.read(getHomeDataProvider);
+
+    homeDataAsync.whenData((either) {
+      either.fold(
+        (failure) {
+          _showSnackBar(context, failure.message);
+        },
+        (homeData) {
+          if (homeData.suggestedDoctors.isEmpty) {
+            _showSnackBar(context, LocaleKeys.messagesFailuresUnexpectedError.tr());
+            return;
+          }
+          _showDoctorSheet(context, ref, homeData.suggestedDoctors);
+        },
+      );
+    });
+  }
+
+  void _showDoctorSheet(
+    BuildContext context,
+    WidgetRef ref,
+    List<DoctorEntity> doctors,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => NewConversationSheet(
+        doctors: doctors,
+        onDoctorSelected: (doctor) =>
+            _startConversation(context, ref, doctor),
+      ),
+    );
+  }
+
+  Future<void> _startConversation(
+    BuildContext context,
+    WidgetRef ref,
+    DoctorEntity doctor,
+  ) async {
+    Navigator.pop(context);
+
+    final repo = ref.read(chatRepoProvider);
+
+    try {
+      final conversation = await repo.createConversation(doctorId: doctor.id);
+
+      if (!context.mounted) return;
+
+      Navigator.pushNamed(
+        context,
+        Routes.chatDetailsScreen,
+        arguments: ChatDetailsArguments(
+          conversationId: conversation.id,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      _showSnackBar(context, '$e');
+    }
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 }
