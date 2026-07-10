@@ -9,9 +9,14 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatMessageList extends StatelessWidget {
-  const ChatMessageList({super.key, required this.conversation});
+  const ChatMessageList({
+    super.key,
+    required this.conversation,
+    this.onMessageRetry,
+  });
 
   final ChatConversationEntity conversation;
+  final ValueChanged<String>? onMessageRetry;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +42,9 @@ class ChatMessageList extends StatelessWidget {
 
         return ChatMessageBubble(
           message: message,
+          onRetry: onMessageRetry != null
+              ? () => onMessageRetry!(message.id)
+              : null,
         ).animate().fadeIn(delay: (index * 80).ms).slideY(begin: 0.08);
       },
     );

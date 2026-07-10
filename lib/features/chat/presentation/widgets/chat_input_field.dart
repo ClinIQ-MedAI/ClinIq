@@ -13,6 +13,7 @@ class ChatInputField extends StatefulWidget {
     required this.onMessageSubmitted,
     required this.onTypingChanged,
     this.onAttachmentTap,
+    this.hasAttachment = false,
     this.isSendDisabled = false,
     this.bottomSpacing = 16,
   });
@@ -20,6 +21,7 @@ class ChatInputField extends StatefulWidget {
   final ValueChanged<String> onMessageSubmitted;
   final ValueChanged<bool> onTypingChanged;
   final VoidCallback? onAttachmentTap;
+  final bool hasAttachment;
   final bool isSendDisabled;
   final double bottomSpacing;
 
@@ -48,9 +50,13 @@ class _ChatInputFieldState extends State<ChatInputField> {
     widget.onTypingChanged(isTyping);
   }
 
+  bool get _canSend =>
+      _controller.text.trim().isNotEmpty || widget.hasAttachment;
+
   void _submitMessage() {
+    if (widget.isSendDisabled) return;
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    if (!_canSend) return;
 
     widget.onMessageSubmitted(text);
     _controller.clear();
@@ -133,7 +139,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                   ? Icons.hourglass_top_rounded
                   : Icons.send_rounded,
               isPrimary: true,
-              onPressed: widget.isSendDisabled ? null : _submitMessage,
+              onPressed:
+                  _canSend && !widget.isSendDisabled ? _submitMessage : null,
             ),
           ],
         ),

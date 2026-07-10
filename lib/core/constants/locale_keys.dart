@@ -295,6 +295,13 @@ abstract class LocaleKeys {
   static const chatAttachmentUploading = "chat.attachment_uploading";
   static const chatAttachmentRemove = "chat.attachment_remove";
   static const chatAttachmentRetry = "chat.attachment_retry";
+  static const chatImageViewerShare = "chat.image_viewer.share";
+  static const chatImageViewerSave = "chat.image_viewer.save";
+  static const chatImageViewerExternal = "chat.image_viewer.external";
+  static const chatImageViewerCopy = "chat.image_viewer.copy";
+  static const chatImageViewerSavedSuccess = "chat.image_viewer.saved_success";
+  static const chatImageViewerCopiedSuccess = "chat.image_viewer.copied_success";
+  static const chatImageViewerMoreActions = "chat.image_viewer.more_actions";
 
   // profile
   static const profileUserTitle = "profile.user.title";

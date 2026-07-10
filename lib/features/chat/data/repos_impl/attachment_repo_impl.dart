@@ -60,9 +60,16 @@ class AttachmentRepoImpl implements AttachmentRepo {
         isFromData: true,
       );
 
-      final uploaded = UploadedAttachmentModel.fromJson(
-        response['data'] as Map<String, dynamic>,
-      );
+      final Map<String, dynamic> data;
+      if (response is Map<String, dynamic> && response.containsKey('data') && response['data'] is Map<String, dynamic>) {
+        data = response['data'];
+      } else if (response is Map<String, dynamic> && response.containsKey('id') && response.containsKey('url')) {
+        data = response;
+      } else {
+        return Left(CustomFailure(message: 'Unexpected upload response format'));
+      }
+
+      final uploaded = UploadedAttachmentModel.fromJson(data);
       return Right(uploaded);
     } catch (e) {
       return Left(CustomFailure(message: e.toString()));

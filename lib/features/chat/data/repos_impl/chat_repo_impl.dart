@@ -87,6 +87,10 @@ class ChatRepoImpl extends ChatRepo {
         sentAt: message.sentAt,
         sender: message.sender,
         status: message.status,
+        attachmentUrl: message.attachmentUrl,
+        attachmentName: message.attachmentName,
+        attachmentSize: message.attachmentSize,
+        attachmentMimeType: message.attachmentMimeType,
       ).toJson(),
     });
   }

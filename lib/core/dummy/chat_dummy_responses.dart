@@ -7,6 +7,19 @@ abstract final class ChatDummyResponses {
     Map<String, dynamic>? queryParameters,
   }) {
     switch (path) {
+      case EndPoints.uploadAttachment:
+        return {
+          "success": true,
+          "message": "File uploaded successfully",
+          "data": {
+            "id": "upload-001",
+            "url": "uploads/sample-image.png",
+            "fileName": "sample-image.png",
+            "fileType": "image",
+            "mimeType": "image/png",
+            "size": 102400,
+          },
+        };
       case EndPoints.getConversations:
         final doctorId = queryParameters?['doctorId'] as String?;
         if (doctorId != null) {

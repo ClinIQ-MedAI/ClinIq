@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:ui';
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -47,7 +50,6 @@ class AttachmentPreviewWidget extends StatelessWidget {
             : context.colorScheme.primary;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
-      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: context.colorScheme.primary.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16.r),
@@ -55,80 +57,123 @@ class AttachmentPreviewWidget extends StatelessWidget {
           color: context.colorScheme.primary.withValues(alpha: 0.1),
         ),
       ),
-      child: Row(
+      child: Stack(
         children: [
-          if (isImage)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
-              child: Image.file(
-                File(filePath),
-                width: 44.w,
-                height: 44.w,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => _buildIcon(context, iconColor),
-              ),
-            )
-          else
-            _buildIcon(context, iconColor),
-          const HorizontalGap(12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+          Padding(
+            padding: EdgeInsets.all(12.r),
+            child: Row(
               children: [
-                Text(
-                  fileName,
-                  style: AppTextStyles.getTextStyle(13).copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: context.textPalette.primaryColor,
+                if (isImage)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.r),
+                    child: Image.file(
+                      File(filePath),
+                      width: 44.w,
+                      height: 44.w,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          _buildIcon(context, iconColor),
+                    ),
+                  )
+                else
+                  _buildIcon(context, iconColor),
+                const HorizontalGap(12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        fileName,
+                        style: AppTextStyles.getTextStyle(13).copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: context.textPalette.primaryColor,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (fileSize != null) ...[
+                        const VerticalGap(2),
+                        Text(
+                          _formatSize(fileSize!),
+                          style: AppTextStyles.getTextStyle(11).copyWith(
+                            color: context.textPalette.secondaryColor,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                      if (isUploading) ...[
+                        const VerticalGap(6),
+                        TweenAnimationBuilder<double>(
+                          tween: Tween(begin: 0, end: 1),
+                          duration: const Duration(milliseconds: 1200),
+                          builder: (context, value, _) {
+                            return LinearProgressIndicator(
+                              value: value,
+                              backgroundColor: context.colorScheme.primary
+                                  .withValues(alpha: 0.1),
+                              color: context.colorScheme.primary,
+                              minHeight: 3,
+                              borderRadius: BorderRadius.circular(2),
+                            );
+                          },
+                        ),
+                      ],
+                    ],
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                if (fileSize != null) ...[
-                  const VerticalGap(2),
-                  Text(
-                    _formatSize(fileSize!),
-                    style: AppTextStyles.getTextStyle(11).copyWith(
-                      color: context.textPalette.secondaryColor,
-                      fontWeight: FontWeight.w500,
+                if (!isUploading)
+                  InkWell(
+                    onTap: onRemove,
+                    borderRadius: BorderRadius.circular(12.r),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.error.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        Icons.close_rounded,
+                        color: context.colorScheme.error,
+                        size: 18.sp,
+                      ),
                     ),
                   ),
-                ],
-                if (isUploading) ...[
-                  const VerticalGap(6),
-                  TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: 1),
-                    duration: const Duration(milliseconds: 1200),
-                    builder: (context, value, _) {
-                      return LinearProgressIndicator(
-                        value: value,
-                        backgroundColor:
-                            context.colorScheme.primary.withValues(alpha: 0.1),
-                        color: context.colorScheme.primary,
-                        minHeight: 3,
-                        borderRadius: BorderRadius.circular(2),
-                      );
-                    },
-                  ),
-                ],
               ],
             ),
           ),
-          if (!isUploading)
-            InkWell(
-              onTap: onRemove,
-              borderRadius: BorderRadius.circular(12.r),
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: context.colorScheme.error.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Icon(
-                  Icons.close_rounded,
-                  color: context.colorScheme.error,
-                  size: 18.sp,
+          if (isUploading)
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16.r),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                  child: Container(
+                    color: context.colorScheme.surface.withValues(alpha: 0.4),
+                    child: Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            width: 18.w,
+                            height: 18.w,
+                            child: CircularProgressIndicator(
+                              color: context.colorScheme.primary,
+                              strokeWidth: 2.0,
+                            ),
+                          ),
+                          const HorizontalGap(8),
+                          Text(
+                            LocaleKeys.chatAttachmentUploading.tr(),
+                            style: AppTextStyles.getTextStyle(12).copyWith(
+                              color: context.colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

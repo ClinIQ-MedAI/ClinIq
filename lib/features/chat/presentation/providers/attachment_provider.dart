@@ -77,10 +77,7 @@ class AttachmentUploadNotifier extends Notifier<AttachmentUploadState> {
 
     result.fold(
       (failure) {
-        state = state.copyWith(
-          isUploading: false,
-          error: failure.message,
-        );
+        state = state.copyWith(isUploading: false, error: failure.message);
       },
       (uploaded) {
         state = state.copyWith(
@@ -92,11 +89,35 @@ class AttachmentUploadNotifier extends Notifier<AttachmentUploadState> {
     );
   }
 
+  Future<UploadedAttachmentEntity?> uploadCurrentFile() async {
+    final file = state.pickedFile;
+    if (file == null) return null;
+
+    state = state.copyWith(isUploading: true);
+    final repo = ref.read(attachmentRepoProvider);
+    final result = await repo.uploadAttachment(
+      filePath: file.filePath,
+      fileName: file.fileName,
+    );
+
+    return result.fold(
+      (failure) {
+        state = state.copyWith(isUploading: false, error: failure.message);
+        return null;
+      },
+      (uploaded) {
+        state = state.copyWith(
+          uploadedFile: uploaded,
+          isUploading: false,
+          clearError: true,
+        );
+        return uploaded;
+      },
+    );
+  }
+
   void retry() {
-    final picked = state.pickedFile;
-    if (picked != null) {
-      _upload(picked);
-    }
+    uploadCurrentFile();
   }
 
   void removeAttachment() {

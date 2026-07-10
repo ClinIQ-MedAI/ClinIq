@@ -8,6 +8,10 @@ class ChatMessageModel extends ChatMessageEntity {
     required super.sender,
     required super.status,
     super.attachmentUrl,
+    super.attachmentName,
+    super.attachmentSize,
+    super.attachmentMimeType,
+    super.localFilePath,
   });
 
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +28,9 @@ class ChatMessageModel extends ChatMessageEntity {
         orElse: () => ChatMessageStatus.delivered,
       ),
       attachmentUrl: json['attachmentUrl'] as String?,
+      attachmentName: json['attachmentName'] as String?,
+      attachmentSize: (json['attachmentSize'] as num?)?.toInt(),
+      attachmentMimeType: json['attachmentMimeType'] as String?,
     );
   }
 
@@ -35,6 +42,9 @@ class ChatMessageModel extends ChatMessageEntity {
       'sender': sender.name,
       'status': status.name,
       if (attachmentUrl != null) 'attachmentUrl': attachmentUrl,
+      if (attachmentName != null) 'attachmentName': attachmentName,
+      if (attachmentSize != null) 'attachmentSize': attachmentSize,
+      if (attachmentMimeType != null) 'attachmentMimeType': attachmentMimeType,
     };
   }
 
@@ -46,7 +56,15 @@ class ChatMessageModel extends ChatMessageEntity {
     ChatMessageSender? sender,
     ChatMessageStatus? status,
     String? attachmentUrl,
+    String? attachmentName,
+    int? attachmentSize,
+    String? attachmentMimeType,
+    String? localFilePath,
     bool clearAttachmentUrl = false,
+    bool clearAttachmentName = false,
+    bool clearAttachmentSize = false,
+    bool clearAttachmentMimeType = false,
+    bool clearLocalFilePath = false,
   }) {
     return ChatMessageModel(
       id: id ?? this.id,
@@ -56,6 +74,18 @@ class ChatMessageModel extends ChatMessageEntity {
       status: status ?? this.status,
       attachmentUrl:
           clearAttachmentUrl ? null : (attachmentUrl ?? this.attachmentUrl),
+      attachmentName: clearAttachmentName
+          ? null
+          : (attachmentName ?? this.attachmentName),
+      attachmentSize: clearAttachmentSize
+          ? null
+          : (attachmentSize ?? this.attachmentSize),
+      attachmentMimeType: clearAttachmentMimeType
+          ? null
+          : (attachmentMimeType ?? this.attachmentMimeType),
+      localFilePath: clearLocalFilePath
+          ? null
+          : (localFilePath ?? this.localFilePath),
     );
   }
 }

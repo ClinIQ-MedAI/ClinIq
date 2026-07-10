@@ -24,4 +24,5 @@ class Routes {
   // chat
   static const String chatDetailsScreen = '/chatDetailsScreen';
   static const String aiChatScreen = '/aiChatScreen';
+  static const String fullScreenImageViewer = '/fullScreenImageViewer';
 }

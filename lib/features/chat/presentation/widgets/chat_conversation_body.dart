@@ -15,11 +15,13 @@ class ChatConversationBody extends StatelessWidget {
     required this.onTypingChanged,
     this.onAttachmentTap,
     this.onRemoveAttachment,
+    this.hasAttachment = false,
     this.attachmentFileName,
     this.attachmentFilePath,
     this.isAttachmentUploading = false,
     this.attachmentFileSize,
     this.isSendDisabled = false,
+    this.onMessageRetry,
     this.inputBottomSpacing = 16,
   });
 
@@ -28,6 +30,8 @@ class ChatConversationBody extends StatelessWidget {
   final ValueChanged<bool> onTypingChanged;
   final VoidCallback? onAttachmentTap;
   final VoidCallback? onRemoveAttachment;
+  final ValueChanged<String>? onMessageRetry;
+  final bool hasAttachment;
   final String? attachmentFileName;
   final String? attachmentFilePath;
   final bool isAttachmentUploading;
@@ -44,7 +48,12 @@ class ChatConversationBody extends StatelessWidget {
           conversation: conversation,
         ).animate().fadeIn(delay: 100.ms).slideY(begin: -0.1),
         const VerticalGap(8),
-        Expanded(child: ChatMessageList(conversation: conversation)),
+        Expanded(
+          child: ChatMessageList(
+            conversation: conversation,
+            onMessageRetry: onMessageRetry,
+          ),
+        ),
         if (attachmentFileName != null && attachmentFilePath != null) ...[
           const VerticalGap(8),
           AttachmentPreviewWidget(
@@ -61,6 +70,7 @@ class ChatConversationBody extends StatelessWidget {
           onMessageSubmitted: onMessageSubmitted,
           onTypingChanged: onTypingChanged,
           onAttachmentTap: onAttachmentTap,
+          hasAttachment: hasAttachment,
           isSendDisabled: isSendDisabled,
         ),
       ],

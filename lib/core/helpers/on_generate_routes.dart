@@ -20,6 +20,8 @@ import 'package:cliniq/features/settings/presentation/screens/settings_screen.da
 import 'package:cliniq/features/settings/presentation/screens/terms_and_services_screen.dart';
 import 'package:cliniq/features/user/presentation/screens/edit_profile_screen.dart';
 import 'package:cliniq/features/ai/presentation/screens/ai_chat_screen.dart';
+import 'package:cliniq/features/chat/presentation/arguments/full_screen_image_viewer_arguments.dart';
+import 'package:cliniq/features/chat/presentation/widgets/full_screen_image_viewer.dart';
 
 Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
   log("Navigating to ${settings.name}");
@@ -86,6 +88,22 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
       final conversationId = args?.conversationId ?? '';
       return MaterialPageRoute(
         builder: (_) => ChatDetailsScreen(conversationId: conversationId),
+      );
+
+    case Routes.fullScreenImageViewer:
+      final args = settings.arguments as FullScreenImageViewerArguments?;
+      final message = args?.message;
+      if (message == null) {
+        return MaterialPageRoute(builder: (_) => const UndefinedRoutePage());
+      }
+      return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            FullScreenImageViewer(message: message),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        opaque: false,
+        barrierDismissible: false,
       );
 
     default:

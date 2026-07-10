@@ -242,7 +242,16 @@
         "pdf_report_desc": "Upload medical reports as PDF",
         "attachment_uploading": "Uploading attachment...",
         "attachment_remove": "Remove",
-        "attachment_retry": "Retry"
+        "attachment_retry": "Retry",
+        "image_viewer": {
+            "share": "Share",
+            "save": "Save to device",
+            "external": "Open externally",
+            "copy": "Copy image URL",
+            "saved_success": "Image saved successfully",
+            "copied_success": "URL copied to clipboard",
+            "more_actions": "More Actions"
+        }
     },
     "profile": {
         "user": {

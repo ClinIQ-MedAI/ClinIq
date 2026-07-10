@@ -242,7 +242,16 @@
         "pdf_report_desc": "تحميل التقارير الطبية بصيغة PDF",
         "attachment_uploading": "جاري رفع المرفق...",
         "attachment_remove": "إزالة",
-        "attachment_retry": "إعادة المحاولة"
+        "attachment_retry": "إعادة المحاولة",
+        "image_viewer": {
+            "share": "مشاركة",
+            "save": "حفظ في الجهاز",
+            "external": "فتح خارجي",
+            "copy": "نسخ رابط الصورة",
+            "saved_success": "تم حفظ الصورة بنجاح",
+            "copied_success": "تم نسخ الرابط إلى الحافظة",
+            "more_actions": "المزيد من الإجراءات"
+        }
     },
     "profile": {
         "user": {

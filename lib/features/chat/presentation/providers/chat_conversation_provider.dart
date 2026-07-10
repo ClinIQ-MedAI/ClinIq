@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
+import 'package:cliniq/features/chat/presentation/providers/attachment_provider.dart';
 import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
 import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,10 +64,16 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     return conversation.copyWith(unreadCount: 0);
   }
 
-  void sendMessage(String content, {String? attachmentUrl}) {
+  void sendMessage(String content) {
     final text = content.trim();
     final conversation = state.value;
-    if ((text.isEmpty && attachmentUrl == null) || conversation == null) return;
+    if (conversation == null) return;
+
+    final attachState = ref.read(attachmentUploadProvider);
+    if (text.isEmpty && !attachState.hasAttachment) return;
+
+    final uploadedFile = attachState.uploadedFile;
+    final localPath = attachState.pickedFile?.filePath;
 
     final message = ChatMessageEntity(
       id: 'local-${DateTime.now().microsecondsSinceEpoch}',
@@ -74,12 +81,34 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
       sentAt: _currentTimeLabel(),
       sender: ChatMessageSender.user,
       status: ChatMessageStatus.sending,
-      attachmentUrl: attachmentUrl,
+      attachmentUrl: uploadedFile?.url,
+      attachmentName: uploadedFile?.fileName,
+      attachmentSize: uploadedFile?.size,
+      attachmentMimeType: uploadedFile?.mimeType,
+      localFilePath: localPath,
     );
 
     _upsertMessage(conversation.id, message);
     _repo.sendMessage(conversationId: conversation.id, message: message);
     updateTypingStatus(false);
+
+    if (uploadedFile != null) {
+      ref.read(attachmentUploadProvider.notifier).resetAfterSend();
+    }
+  }
+
+  void retryMessage(String messageId) {
+    final conversation = state.value;
+    if (conversation == null) return;
+
+    final messageIndex = conversation.messages.indexWhere((m) => m.id == messageId);
+    if (messageIndex == -1) return;
+
+    final message = conversation.messages[messageIndex];
+    if (message.status != ChatMessageStatus.failed) return;
+
+    _updateMessageStatus(conversation.id, messageId, ChatMessageStatus.sending);
+    _repo.sendMessage(conversationId: conversation.id, message: message);
   }
 
   void updateTypingStatus(bool isTyping) {

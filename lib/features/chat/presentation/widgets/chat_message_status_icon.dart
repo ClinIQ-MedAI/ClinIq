@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatMessageStatusIcon extends StatelessWidget {
-  const ChatMessageStatusIcon({super.key, required this.status});
+  const ChatMessageStatusIcon({
+    super.key,
+    required this.status,
+    this.color,
+  });
 
   final ChatMessageStatus status;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +26,10 @@ class ChatMessageStatusIcon extends StatelessWidget {
     return Icon(
       icon,
       size: 14.sp,
-      color: context.colorScheme.onPrimary.withValues(
-        alpha: status == ChatMessageStatus.seen ? 0.95 : 0.7,
-      ),
+      color: color ??
+          context.colorScheme.onPrimary.withValues(
+            alpha: status == ChatMessageStatus.seen ? 0.95 : 0.7,
+          ),
     );
   }
 }

@@ -25,31 +25,12 @@ class ChatDetailsScreen extends ConsumerWidget {
     );
   }
 
-  void _handleSendMessage(
-    BuildContext context,
-    WidgetRef ref,
-    ChatConversationRequest request,
-    String text,
-  ) async {
-    final uploadState = ref.read(attachmentUploadProvider);
-    final attachmentUrl = uploadState.uploadedFile?.url;
-
-    ref.read(chatConversationProvider(request).notifier).sendMessage(
-          text,
-          attachmentUrl: attachmentUrl,
-        );
-
-    if (attachmentUrl != null) {
-      ref.read(attachmentUploadProvider.notifier).resetAfterSend();
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final request = ChatConversationRequest(conversationId: conversationId);
     final conversationAsync = ref.watch(chatConversationProvider(request));
     final uploadState = ref.watch(attachmentUploadProvider);
-    
+
     return conversationAsync.when(
       data: (conversation) => Scaffold(
         backgroundColor: context.colorScheme.surface,
@@ -57,11 +38,14 @@ class ChatDetailsScreen extends ConsumerWidget {
         body: ChatConversationBody(
           conversation: conversation,
           onMessageSubmitted: (text) =>
-              _handleSendMessage(context, ref, request, text),
+              ref.read(chatConversationProvider(request).notifier).sendMessage(text),
+          onMessageRetry: (messageId) =>
+              ref.read(chatConversationProvider(request).notifier).retryMessage(messageId),
           onTypingChanged: ref
               .read(chatConversationProvider(request).notifier)
               .updateTypingStatus,
           onAttachmentTap: () => _handleAttachmentTap(context, ref),
+          hasAttachment: uploadState.hasAttachment,
           attachmentFileName: uploadState.pickedFile?.fileName,
           attachmentFilePath: uploadState.pickedFile?.filePath,
           isAttachmentUploading: uploadState.isUploading,
