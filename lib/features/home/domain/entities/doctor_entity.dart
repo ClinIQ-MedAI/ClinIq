@@ -7,6 +7,10 @@ class DoctorEntity {
   final String rating;
   final String numberOfAppointments;
   final String city;
+  final String? bio;
+  final String? consultationFee;
+  final String? languages;
+  final String? education;
 
   DoctorEntity({
     required this.id,
@@ -17,5 +21,9 @@ class DoctorEntity {
     required this.rating,
     required this.numberOfAppointments,
     required this.city,
+    this.bio,
+    this.consultationFee,
+    this.languages,
+    this.education,
   });
 }

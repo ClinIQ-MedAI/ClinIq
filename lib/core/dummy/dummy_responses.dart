@@ -1,6 +1,7 @@
 import 'package:cliniq/core/dummy/ai_dummy_responses.dart';
 import 'package:cliniq/core/dummy/appointments_dummy_responses.dart';
 import 'package:cliniq/core/dummy/auth_dummy_responses.dart';
+import 'package:cliniq/core/dummy/booking_dummy_responses.dart';
 import 'package:cliniq/core/dummy/chat_dummy_responses.dart';
 import 'package:cliniq/core/dummy/home_dummy_responses.dart';
 import 'package:cliniq/core/dummy/notifications_dummy_responses.dart';
@@ -37,6 +38,10 @@ class DummyResponses {
           queryParameters: queryParameters,
         ) ??
         NotificationsDummyResponses.getResponse(
+          path,
+          queryParameters: queryParameters,
+        ) ??
+        BookingDummyResponses.getResponse(
           path,
           queryParameters: queryParameters,
         );

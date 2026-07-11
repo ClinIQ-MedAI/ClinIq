@@ -117,7 +117,7 @@ class _DoctorsScreenState extends ConsumerState<DoctorsScreen> {
                           onTap: () => Navigator.pushNamed(
                             context,
                             Routes.doctorDetailsScreen,
-                            arguments: doctor,
+                            arguments: doctor.id,
                           ),
                         )
                         .animate()

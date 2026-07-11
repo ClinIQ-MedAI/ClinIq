@@ -8,7 +8,7 @@ import 'package:dartz/dartz.dart';
 
 import 'package:cliniq/features/appointments/domain/entities/doctor_detail_entity.dart';
 import 'package:cliniq/features/appointments/domain/entities/doctor_schedule_entity.dart';
-import 'package:cliniq/features/home/data/models/doctor_model.dart';
+import 'package:cliniq/features/appointments/data/models/doctor_details_model.dart';
 
 class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
   AppointmentsRepoImpl({required super.api});
@@ -18,10 +18,10 @@ class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
   getAvailableDoctors(String date) async {
     final result = await handleApi(
       () =>
-          api.get(EndPoints.availableDoctors, queryParameters: {'date': date}),
+          api.get(EndPoints.getDoctorsByDate, queryParameters: {'date': date}),
     );
     return result.fold((failure) => Left(failure), (data) {
-      final list = (data['data'] as List)
+      final list = (data as List)
           .map((e) => ExaminationAppointmentModel.fromJson(e))
           .toList();
       return Right(list);
@@ -35,8 +35,8 @@ class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
   }) async {
     final result = await handleApi(
       () => api.get(
-        EndPoints.doctorWorkingHours,
-        queryParameters: {'doctorId': doctorId, 'date': date},
+        EndPoints.getDoctorSchedules(doctorId),
+        queryParameters: {'date': date},
       ),
     );
     return result.fold((failure) => Left(failure), (data) {
@@ -70,44 +70,12 @@ class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
     required String doctorId,
   }) async {
     final result = await handleApi(
-      () => api.get(
-        EndPoints.getDoctorById,
-        queryParameters: {'doctorId': doctorId},
-      ),
+      () => api.get(EndPoints.getDoctorById(doctorId)),
     );
     return result.fold((failure) => Left(failure), (data) {
-      final detailData = data['data'] as Map<String, dynamic>;
-      final doctorData = detailData['doctor'] as Map<String, dynamic>;
-      final scheduleData = detailData['schedule'] as Map<String, dynamic>;
-
-      final doctor = DoctorModel.fromJson(doctorData);
-
-      final weeklySchedule = (scheduleData['weeklySchedule'] as List)
-          .map((e) => WorkingDayRangeEntity(day: e['day'], range: e['range']))
-          .toList();
-
-      final dates = (scheduleData['dates'] as List)
-          .map(
-            (e) => DoctorDateAvailabilityEntity(
-              day: e['day'],
-              date: e['date'],
-              month: e['month'],
-              fullDate: e['fullDate'],
-              patientCount: e['patientCount'],
-              isFull: e['isFull'],
-            ),
-          )
-          .toList();
-
-      return Right(
-        DoctorDetailEntity(
-          doctor: doctor,
-          schedule: DoctorScheduleEntity(
-            weeklySchedule: weeklySchedule,
-            dates: dates,
-          ),
-        ),
-      );
+      final responseData = data['data'] as Map<String, dynamic>;
+      final doctorDetail = DoctorDetailsModel.fromJson(responseData);
+      return Right(doctorDetail);
     });
   }
 
@@ -119,7 +87,7 @@ class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
   }) async {
     final result = await handleApi(
       () => api.post(
-        EndPoints.bookAppointment,
+        EndPoints.createBooking,
         data: {'doctorId': doctorId, 'date': date, 'time': time},
       ),
     );

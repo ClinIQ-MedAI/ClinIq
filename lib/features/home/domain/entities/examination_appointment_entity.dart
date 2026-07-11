@@ -3,17 +3,19 @@ class ExaminationAppointmentEntity {
   final String doctorName;
   final String doctorSpeciality;
   final String doctorImage;
-  final String appointmentDate;
-  final String appointmentTime;
-  final String appointmentStatus;
+  final double rating;
+  final int reviewCount;
+  final String startTime;
+  final String endTime;
 
   ExaminationAppointmentEntity({
     required this.id,
     required this.doctorName,
     required this.doctorSpeciality,
     required this.doctorImage,
-    required this.appointmentDate,
-    required this.appointmentTime,
-    required this.appointmentStatus,
+    required this.rating,
+    required this.reviewCount,
+    required this.startTime,
+    required this.endTime,
   });
 }

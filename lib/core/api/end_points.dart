@@ -23,13 +23,6 @@ class EndPoints {
   static const String suggestedDoctors = "patient/home/suggested-doctors";
   static const String news = "patient/home/news";
 
-  // appointments
-  static const String availableDoctors = "api/bookings/doctors";
-  static const String doctorWorkingHours =
-      "api/bookings/doctors/{doctorId}/schedules";
-  static const String getDoctorById = "api/bookings/doctors/{doctorId}";
-  static const String bookAppointment = "api/bookings";
-
   // chats
   static const String getConversations = "patient/chat/conversations";
   static const String createConversation = "patient/chat/conversations";
@@ -49,4 +42,13 @@ class EndPoints {
   static const String getUnreadNotificationCount = "notifications/unread-count";
   static String readNotification(String id) => "notifications/$id/read";
   static const String readAllNotifications = "notifications/read-all";
+
+  // booking
+  static String getDoctorById(String doctorId) =>
+      "patient/doctors/$doctorId";
+  static String getDoctorSchedules(String doctorId) =>
+      "patient/bookings/doctors/$doctorId/schedules";
+  static const String createBooking = "patient/bookings";
+  static const String getMyBookings = "patient/bookings/me";
+  static const String getDoctorsByDate = "patient/bookings/doctors";
 }

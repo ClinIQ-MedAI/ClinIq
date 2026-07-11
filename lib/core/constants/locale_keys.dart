@@ -435,6 +435,25 @@ abstract class LocaleKeys {
   static const String bookingPatient = "booking.patient";
   static const String bookingFull = "booking.full";
   static const String bookingBookingButton = "booking.booking_button";
+  static const String bookingBookAppointment = "booking.book_appointment";
+  static const String bookingConsultDoctor = "booking.consult_doctor";
+  static const String bookingConsultDoctorDesc = "booking.consult_doctor_desc";
+  static const String bookingSelectTime = "booking.select_time";
+  static const String bookingAvailableSlots = "booking.available_slots";
+  static const String bookingAvailableTimes = "booking.available_times";
+  static const String bookingConfirmBooking = "booking.confirm_booking";
+  static const String bookingBooked = "booking.booked";
+  static const String bookingNoSlotsAvailable = "booking.no_slots_available";
+  static const String bookingAvailableDoctorsEmptyTitle =
+      "booking.available_doctors_empty_title";
+  static const String bookingAvailableDoctorsEmptyDescription =
+      "booking.available_doctors_empty_description";
+  static const String bookingAvailableDoctorsSelectAnotherDate =
+      "booking.available_doctors_select_another_date";
+  static const String bookingSuccessTitle = "booking.success_title";
+  static const String bookingSuccessMessage = "booking.success_message";
+  static const String bookingDone = "booking.done";
+  static const String bookingLanguages = "booking.languages";
 
   // notifications
   static const String notificationsTitle = "notifications.title";

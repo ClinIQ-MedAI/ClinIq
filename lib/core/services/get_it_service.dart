@@ -7,6 +7,8 @@ import 'package:cliniq/core/socket/signalr_service.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
+import 'package:cliniq/features/booking/data/repos_impl/booking_repo_impl.dart';
+import 'package:cliniq/features/booking/domain/repos/booking_repo.dart';
 import 'package:cliniq/features/chat/data/repos_impl/attachment_repo_impl.dart';
 import 'package:cliniq/features/chat/data/repos_impl/chat_repo_impl.dart';
 import 'package:cliniq/features/chat/domain/repos/attachment_repo.dart';
@@ -69,5 +71,9 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<NotificationRepo>(
     NotificationRepoImpl(api: ApiSelector.get(ApiFeatures.notifications)),
+  );
+
+  getIt.registerSingleton<BookingRepo>(
+    BookingRepoImpl(api: ApiSelector.get(ApiFeatures.booking)),
   );
 }

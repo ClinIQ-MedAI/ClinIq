@@ -21,9 +21,39 @@ class UserAppointmentsView extends ConsumerStatefulWidget {
 class _UserAppointmentsViewState extends ConsumerState<UserAppointmentsView> {
   DateTime selectedDate = DateTime.now();
 
+  Future<void> _selectAnotherDate() async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate.isBefore(today) ? today : selectedDate,
+      firstDate: today,
+      lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Theme.of(context).colorScheme.primary,
+              onPrimary: Theme.of(context).colorScheme.onPrimary,
+              onSurface: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && mounted) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final dateString = DateFormat('yyyy-MM-dd').format(selectedDate);
+    final dateString = DateFormat('yyyy-MM-dd', 'en').format(selectedDate);
     final availableDoctorsAsync = ref.watch(
       getAvailableDoctorsProvider(dateString),
     );
@@ -49,6 +79,7 @@ class _UserAppointmentsViewState extends ConsumerState<UserAppointmentsView> {
           Expanded(
             child: AvailableDoctorsSection(
               doctorsAsync: availableDoctorsAsync,
+              onSelectAnotherDate: _selectAnotherDate,
             ).animate().fadeIn(delay: 400.ms),
           ),
           const VerticalGap(24),

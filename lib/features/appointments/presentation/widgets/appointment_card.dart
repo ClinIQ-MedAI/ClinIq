@@ -21,7 +21,7 @@ class AppointmentCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookingScreen(doctor: appointment),
+            builder: (context) => BookingScreen(doctorId: appointment.id),
           ),
         );
       },
@@ -99,36 +99,18 @@ class AppointmentCard extends StatelessWidget {
                     children: [
                       _buildInfoItem(
                         context,
-                        Icons.calendar_today_rounded,
-                        appointment.appointmentDate,
+                        Icons.star_rounded,
+                        '${appointment.rating} (${appointment.reviewCount})',
                       ),
                       const HorizontalGap(12),
                       _buildInfoItem(
                         context,
                         Icons.access_time_rounded,
-                        appointment.appointmentTime,
+                        '${appointment.startTime} - ${appointment.endTime}',
                       ),
                     ],
                   ),
                 ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: appointment.appointmentStatus == 'Upcoming'
-                    ? Colors.blue.withValues(alpha: 0.1)
-                    : Colors.green.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Text(
-                appointment.appointmentStatus,
-                style: AppTextStyles.getTextStyle(10).copyWith(
-                  color: appointment.appointmentStatus == 'Upcoming'
-                      ? Colors.blue
-                      : Colors.green,
-                  fontWeight: FontWeight.w800,
-                ),
               ),
             ),
           ],

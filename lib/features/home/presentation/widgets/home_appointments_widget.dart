@@ -184,8 +184,8 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                                       size: 16,
                                     ),
                                     const HorizontalGap(8),
-                                    Text(
-                                      '${appointment.appointmentDate} • ${appointment.appointmentTime}',
+                                      Text(
+                                        '${appointment.startTime} - ${appointment.endTime}',
                                       style: AppTextStyles.getTextStyle(13)
                                           .copyWith(
                                             color:

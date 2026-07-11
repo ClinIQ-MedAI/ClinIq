@@ -10,16 +10,15 @@ import 'package:cliniq/features/appointments/presentation/widgets/booking/bookin
 import 'package:cliniq/features/appointments/presentation/widgets/booking/confirm_booking_button.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/doctor_detail_header.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/working_hours_section.dart';
-import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BookingScreen extends ConsumerStatefulWidget {
-  final ExaminationAppointmentEntity doctor;
+  final String doctorId;
 
-  const BookingScreen({super.key, required this.doctor});
+  const BookingScreen({super.key, required this.doctorId});
 
   @override
   ConsumerState<BookingScreen> createState() => _BookingScreenState();
@@ -31,7 +30,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     final doctorDetailAsync = ref.watch(
-      getDoctorByIdProvider(widget.doctor.id),
+      getDoctorByIdProvider(widget.doctorId),
     );
 
     ref.listen(bookAppointmentProvider, (previous, next) {
@@ -85,7 +84,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                           ref
                               .read(bookAppointmentProvider.notifier)
                               .book(
-                                doctorId: widget.doctor.id,
+                                doctorId: widget.doctorId,
                                 date: selectedFullDate!,
                                 time: "09:00 AM",
                               );

@@ -111,7 +111,7 @@ class AppointmentsScreen extends ConsumerWidget {
                           ),
                           const HorizontalGap(8),
                           Text(
-                            '${appointment.appointmentDate} • ${appointment.appointmentTime}',
+                            '${appointment.startTime} - ${appointment.endTime}',
                             style: AppTextStyles.getTextStyle(13).copyWith(
                               color: context.colorScheme.onPrimary,
                               fontWeight: FontWeight.w700,

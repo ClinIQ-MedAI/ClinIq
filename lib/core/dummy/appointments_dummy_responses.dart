@@ -7,7 +7,7 @@ abstract final class AppointmentsDummyResponses {
   }) {
     switch (path) {
       case EndPoints.examinationAppointments:
-      case EndPoints.availableDoctors:
+      case EndPoints.getDoctorsByDate:
         List<Map<String, dynamic>> selectedDoctors = [];
         String? requestedDate = queryParameters?['date'];
 
@@ -134,19 +134,20 @@ abstract final class AppointmentsDummyResponses {
           int doctorIndex = (seed + j) % doctorsPool.length;
           var doc = doctorsPool[doctorIndex];
 
-          int hour = 9 + (seed % 3) + j;
+          int startHour = 9 + (seed % 3) + j;
+          int endHour = startHour + 8;
 
           selectedDoctors.add({
             "id": "${seed}_$j",
-            "doctorName": doc["name"],
-            "doctorSpeciality": doc["spec"],
-            "doctorImage": doc["img"],
-            "appointmentDate": requestedDate,
-            "appointmentTime":
-                "${hour % 12 == 0 ? 12 : hour % 12}:00 ${hour >= 12 ? 'PM' : 'AM'}",
-            "appointmentStatus": path == EndPoints.availableDoctors
-                ? "Available"
-                : "Upcoming",
+            "name": doc["name"],
+            "specialization": doc["spec"],
+            "imageUrl": doc["img"],
+            "rating": (4.0 + (seed % 10) * 0.1),
+            "reviewCount": 50 + (seed % 200),
+            "startTime":
+                "${startHour % 12 == 0 ? 12 : startHour % 12}:00 ${startHour >= 12 ? 'PM' : 'AM'}",
+            "endTime":
+                "${endHour % 12 == 0 ? 12 : endHour % 12}:00 ${endHour >= 12 ? 'PM' : 'AM'}",
           });
         }
 
@@ -156,7 +157,7 @@ abstract final class AppointmentsDummyResponses {
           "data": selectedDoctors,
         };
 
-      case EndPoints.doctorWorkingHours:
+      case _ when path.startsWith('patient/bookings/doctors/') && path.endsWith('/schedules'):
         return {
           "success": true,
           "message": "Working hours fetched successfully",
@@ -202,66 +203,7 @@ abstract final class AppointmentsDummyResponses {
             ],
           },
         };
-      case EndPoints.getDoctorById:
-        return {
-          "success": true,
-          "message": "Doctor details fetched successfully",
-          "data": {
-            "doctor": {
-              "id": "1",
-              "name": "Dr. Mohamed Ahmed",
-              "image":
-                  "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
-              "speciality": "Cardiology",
-              "experience": "10 years",
-              "rating": "4.5",
-              "numberOfAppointments": "100",
-              "city": "Cairo",
-            },
-            "schedule": {
-              "weeklySchedule": [
-                {"day": "Sun", "range": "09:00 - 13:00"},
-                {"day": "Tue", "range": "09:00 - 13:00"},
-                {"day": "Thu", "range": "09:00 - 13:00"},
-              ],
-              "dates": [
-                {
-                  "day": "Sun",
-                  "date": "27",
-                  "month": "Jan",
-                  "fullDate": "2026-01-27",
-                  "patientCount": "2/10",
-                  "isFull": false,
-                },
-                {
-                  "day": "Tue",
-                  "date": "29",
-                  "month": "Jan",
-                  "fullDate": "2026-01-29",
-                  "patientCount": "Full",
-                  "isFull": true,
-                },
-                {
-                  "day": "Thu",
-                  "date": "1",
-                  "month": "Feb",
-                  "fullDate": "2026-02-01",
-                  "patientCount": "5/10",
-                  "isFull": false,
-                },
-                {
-                  "day": "Sun",
-                  "date": "4",
-                  "month": "Feb",
-                  "fullDate": "2026-02-04",
-                  "patientCount": "0/10",
-                  "isFull": false,
-                },
-              ],
-            },
-          },
-        };
-      case EndPoints.bookAppointment:
+      case EndPoints.createBooking:
         return {"success": true, "message": "Appointment booked successfully"};
 
       default:
