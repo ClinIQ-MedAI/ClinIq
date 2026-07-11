@@ -37,6 +37,21 @@ class AppointmentsScreen extends ConsumerWidget {
     );
   }
 
+  String _statusLabel(String status) {
+    switch (status.toLowerCase()) {
+      case 'upcoming':
+        return LocaleKeys.homeUpcoming.tr();
+      case 'completed':
+        return LocaleKeys.homeCompleted.tr();
+      case 'cancelled':
+        return LocaleKeys.homeCancelled.tr();
+      case 'pending':
+        return LocaleKeys.homePending.tr();
+      default:
+        return status;
+    }
+  }
+
   Widget _buildList(
     BuildContext context,
     List<ExaminationAppointmentEntity> appointments,
@@ -105,19 +120,52 @@ class AppointmentsScreen extends ConsumerWidget {
                       Row(
                         children: [
                           Icon(
-                            Icons.access_time_filled_rounded,
+                            Icons.calendar_month_rounded,
                             color: context.colorScheme.onPrimary,
                             size: 16,
                           ),
-                          const HorizontalGap(8),
+                          const HorizontalGap(6),
                           Text(
-                            '${appointment.startTime} - ${appointment.endTime}',
-                            style: AppTextStyles.getTextStyle(13).copyWith(
+                            appointment.appointmentDate,
+                            style: AppTextStyles.getTextStyle(12).copyWith(
                               color: context.colorScheme.onPrimary,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const HorizontalGap(16),
+                          Icon(
+                            Icons.access_time_rounded,
+                            color: context.colorScheme.onPrimary,
+                            size: 16,
+                          ),
+                          const HorizontalGap(6),
+                          Text(
+                            appointment.appointmentTime,
+                            style: AppTextStyles.getTextStyle(12).copyWith(
+                              color: context.colorScheme.onPrimary,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
+                      ),
+                      const VerticalGap(12),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 6.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.onPrimary
+                              .withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Text(
+                          _statusLabel(appointment.appointmentStatus),
+                          style: AppTextStyles.getTextStyle(12).copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: context.colorScheme.onPrimary,
+                          ),
+                        ),
                       ),
                     ],
                   ),

@@ -6,39 +6,32 @@ class ExaminationAppointmentModel extends ExaminationAppointmentEntity {
     required super.doctorName,
     required super.doctorSpeciality,
     required super.doctorImage,
-    required super.rating,
-    required super.reviewCount,
-    required super.startTime,
-    required super.endTime,
+    required super.appointmentDate,
+    required super.appointmentTime,
+    required super.appointmentStatus,
   });
 
   factory ExaminationAppointmentModel.fromJson(Map<String, dynamic> json) {
     return ExaminationAppointmentModel(
-      id: json['id'],
-      doctorName: json['name'],
-      doctorSpeciality: json['specialization'],
-      doctorImage: json['imageUrl'],
-      rating: json['rating'] is num
-          ? (json['rating'] as num).toDouble()
-          : double.tryParse(json['rating'].toString()) ?? 0.0,
-      reviewCount: json['reviewCount'] is num
-          ? (json['reviewCount'] as num).toInt()
-          : int.tryParse(json['reviewCount'].toString()) ?? 0,
-      startTime: json['startTime'],
-      endTime: json['endTime'],
+      id: json['id'].toString(),
+      doctorName: json['doctorName'] ?? json['name'] ?? '',
+      doctorSpeciality: json['doctorSpeciality'] ?? json['specialization'] ?? '',
+      doctorImage: json['doctorImage'] ?? json['imageUrl'] ?? '',
+      appointmentDate: json['appointmentDate'] ?? '',
+      appointmentTime: json['appointmentTime'] ?? '',
+      appointmentStatus: json['appointmentStatus'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': doctorName,
-      'specialization': doctorSpeciality,
-      'imageUrl': doctorImage,
-      'rating': rating,
-      'reviewCount': reviewCount,
-      'startTime': startTime,
-      'endTime': endTime,
+      'doctorName': doctorName,
+      'doctorSpeciality': doctorSpeciality,
+      'doctorImage': doctorImage,
+      'appointmentDate': appointmentDate,
+      'appointmentTime': appointmentTime,
+      'appointmentStatus': appointmentStatus,
     };
   }
 
@@ -50,10 +43,9 @@ class ExaminationAppointmentModel extends ExaminationAppointmentEntity {
       doctorName: entity.doctorName,
       doctorSpeciality: entity.doctorSpeciality,
       doctorImage: entity.doctorImage,
-      rating: entity.rating,
-      reviewCount: entity.reviewCount,
-      startTime: entity.startTime,
-      endTime: entity.endTime,
+      appointmentDate: entity.appointmentDate,
+      appointmentTime: entity.appointmentTime,
+      appointmentStatus: entity.appointmentStatus,
     );
   }
 
@@ -63,10 +55,9 @@ class ExaminationAppointmentModel extends ExaminationAppointmentEntity {
       doctorName: doctorName,
       doctorSpeciality: doctorSpeciality,
       doctorImage: doctorImage,
-      rating: rating,
-      reviewCount: reviewCount,
-      startTime: startTime,
-      endTime: endTime,
+      appointmentDate: appointmentDate,
+      appointmentTime: appointmentTime,
+      appointmentStatus: appointmentStatus,
     );
   }
 
@@ -75,20 +66,18 @@ class ExaminationAppointmentModel extends ExaminationAppointmentEntity {
     String? doctorName,
     String? doctorSpeciality,
     String? doctorImage,
-    double? rating,
-    int? reviewCount,
-    String? startTime,
-    String? endTime,
+    String? appointmentDate,
+    String? appointmentTime,
+    String? appointmentStatus,
   }) {
     return ExaminationAppointmentModel(
       id: id ?? this.id,
       doctorName: doctorName ?? this.doctorName,
       doctorSpeciality: doctorSpeciality ?? this.doctorSpeciality,
       doctorImage: doctorImage ?? this.doctorImage,
-      rating: rating ?? this.rating,
-      reviewCount: reviewCount ?? this.reviewCount,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
+      appointmentDate: appointmentDate ?? this.appointmentDate,
+      appointmentTime: appointmentTime ?? this.appointmentTime,
+      appointmentStatus: appointmentStatus ?? this.appointmentStatus,
     );
   }
 }

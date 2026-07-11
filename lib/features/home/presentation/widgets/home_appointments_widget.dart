@@ -135,7 +135,7 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                                   borderRadius: BorderRadius.circular(8.r),
                                 ),
                                 child: Text(
-                                  'UPCOMING',
+                                  appointment.appointmentStatus,
                                   style: AppTextStyles.getTextStyle(10)
                                       .copyWith(
                                         color: Colors.white,
@@ -179,18 +179,34 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-                                      Icons.access_time_filled_rounded,
+                                      Icons.calendar_month_rounded,
                                       color: context.colorScheme.onPrimary,
                                       size: 16,
                                     ),
-                                    const HorizontalGap(8),
-                                      Text(
-                                        '${appointment.startTime} - ${appointment.endTime}',
-                                      style: AppTextStyles.getTextStyle(13)
+                                    const HorizontalGap(6),
+                                    Text(
+                                      appointment.appointmentDate,
+                                      style: AppTextStyles.getTextStyle(12)
                                           .copyWith(
                                             color:
                                                 context.colorScheme.onPrimary,
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                    const HorizontalGap(12),
+                                    Icon(
+                                      Icons.access_time_rounded,
+                                      color: context.colorScheme.onPrimary,
+                                      size: 16,
+                                    ),
+                                    const HorizontalGap(6),
+                                      Text(
+                                        appointment.appointmentTime,
+                                      style: AppTextStyles.getTextStyle(12)
+                                          .copyWith(
+                                            color:
+                                                context.colorScheme.onPrimary,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                     ),
                                   ],

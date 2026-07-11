@@ -263,6 +263,13 @@ abstract class LocaleKeys {
   static const homeDoctorDetailsTitle = "home.doctor_details_title";
   static const homeStartChat = "home.start_chat";
   static const homeChatWithDoctorDesc = "home.chat_with_doctor_desc";
+  static const homeAppointmentDate = "home.appointment_date";
+  static const homeAppointmentTime = "home.appointment_time";
+  static const homeStatus = "home.status";
+  static const homeUpcoming = "home.upcoming";
+  static const homeCompleted = "home.completed";
+  static const homeCancelled = "home.cancelled";
+  static const homePending = "home.pending";
   static const homeConsultationFee = "home.consultation_fee";
   static const homeAvailability = "home.availability";
   static const homeAvailable = "home.available";

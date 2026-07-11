@@ -8,7 +8,7 @@ abstract final class AppointmentsDummyResponses {
     switch (path) {
       case EndPoints.examinationAppointments:
       case EndPoints.getDoctorsByDate:
-        List<Map<String, dynamic>> selectedDoctors = [];
+        List<Map<String, dynamic>> items = [];
         String? requestedDate = queryParameters?['date'];
 
         int seed = 0;
@@ -27,134 +27,129 @@ abstract final class AppointmentsDummyResponses {
 
         List<Map<String, String>> doctorsPool = [
           {
-            "name": "Dr. David Martinez",
-            "spec": "Psychiatrist",
-            "img":
+            "doctorName": "Dr. David Martinez",
+            "doctorSpeciality": "Psychiatrist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
           },
           {
-            "name": "Dr. Mohamed Ahmed",
-            "spec": "Cardiology",
-            "img":
+            "doctorName": "Dr. Mohamed Ahmed",
+            "doctorSpeciality": "Cardiology",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
           },
           {
-            "name": "Dr. Emily Davis",
-            "spec": "Dermatology",
-            "img":
+            "doctorName": "Dr. Emily Davis",
+            "doctorSpeciality": "Dermatology",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg",
           },
           {
-            "name": "Dr. James Wilson",
-            "spec": "Neurology",
-            "img":
+            "doctorName": "Dr. James Wilson",
+            "doctorSpeciality": "Neurology",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/smiling-doctor-with-stethoscope-isolated-on-white_651396-974.jpg",
           },
           {
-            "name": "Dr. Maria Garcia",
-            "spec": "Dentist",
-            "img":
+            "doctorName": "Dr. Maria Garcia",
+            "doctorSpeciality": "Dentist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/female-doctor-hospital-with-stethoscope_23-2148827715.jpg",
           },
           {
-            "name": "Dr. Robert Chen",
-            "spec": "Orthopedic",
-            "img":
+            "doctorName": "Dr. Robert Chen",
+            "doctorSpeciality": "Orthopedic",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/portrait-successful-mid-adult-doctor-with-crossed-arms_1262-12865.jpg",
           },
           {
-            "name": "Dr. Sophia Miller",
-            "spec": "Oncology",
-            "img":
+            "doctorName": "Dr. Sophia Miller",
+            "doctorSpeciality": "Oncology",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
           },
           {
-            "name": "Dr. William Taylor",
-            "spec": "Urology",
-            "img":
+            "doctorName": "Dr. William Taylor",
+            "doctorSpeciality": "Urology",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/smiling-doctor-with-stethoscope-isolated-on-white_651396-974.jpg",
           },
           {
-            "name": "Dr. Chloe Hall",
-            "spec": "Gynecologist",
-            "img":
+            "doctorName": "Dr. Chloe Hall",
+            "doctorSpeciality": "Gynecologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg",
           },
           {
-            "name": "Dr. David Martinez",
-            "spec": "Psychiatrist",
-            "img":
-                "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
-          },
-          {
-            "name": "Dr. Isabella Ross",
-            "spec": "Opthalmologist",
-            "img":
+            "doctorName": "Dr. Isabella Ross",
+            "doctorSpeciality": "Opthalmologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/female-doctor-hospital-with-stethoscope_23-2148827715.jpg",
           },
           {
-            "name": "Dr. Michael Lee",
-            "spec": "Gastroenterologist",
-            "img":
+            "doctorName": "Dr. Michael Lee",
+            "doctorSpeciality": "Gastroenterologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/smiling-doctor-with-stethoscope-isolated-on-white_651396-974.jpg",
           },
           {
-            "name": "Dr. Ava Thompson",
-            "spec": "Endocrinologist",
-            "img":
+            "doctorName": "Dr. Ava Thompson",
+            "doctorSpeciality": "Endocrinologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/woman-doctor-wearing-lab-coat-with-stethoscope-isolated_1303-29791.jpg",
           },
           {
-            "name": "Dr. Lucas Scott",
-            "spec": "Pulmonologist",
-            "img":
+            "doctorName": "Dr. Lucas Scott",
+            "doctorSpeciality": "Pulmonologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
           },
           {
-            "name": "Dr. Mia White",
-            "spec": "Rheumatologist",
-            "img":
+            "doctorName": "Dr. Mia White",
+            "doctorSpeciality": "Rheumatologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/female-doctor-hospital-with-stethoscope_23-2148827715.jpg",
           },
           {
-            "name": "Dr. Ethan Green",
-            "spec": "Nephrologist",
-            "img":
+            "doctorName": "Dr. Ethan Green",
+            "doctorSpeciality": "Nephrologist",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/smiling-doctor-with-stethoscope-isolated-on-white_651396-974.jpg",
           },
           {
-            "name": "Dr. Mason Hill",
-            "spec": "General Surgeon",
-            "img":
+            "doctorName": "Dr. Mason Hill",
+            "doctorSpeciality": "General Surgeon",
+            "doctorImage":
                 "https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg",
           },
         ];
+
+        List<String> statuses = ["Upcoming", "Completed", "Cancelled", "Pending"];
 
         for (int j = 0; j < 5; j++) {
           int doctorIndex = (seed + j) % doctorsPool.length;
           var doc = doctorsPool[doctorIndex];
 
-          int startHour = 9 + (seed % 3) + j;
-          int endHour = startHour + 8;
+          int appointmentHour = 9 + (seed % 8) + j;
+          String time =
+              "${appointmentHour % 12 == 0 ? 12 : appointmentHour % 12}:00 ${appointmentHour >= 12 ? 'PM' : 'AM'}";
+          String status = statuses[j % statuses.length];
 
-          selectedDoctors.add({
+          items.add({
             "id": "${seed}_$j",
-            "name": doc["name"],
-            "specialization": doc["spec"],
-            "imageUrl": doc["img"],
-            "rating": (4.0 + (seed % 10) * 0.1),
-            "reviewCount": 50 + (seed % 200),
-            "startTime":
-                "${startHour % 12 == 0 ? 12 : startHour % 12}:00 ${startHour >= 12 ? 'PM' : 'AM'}",
-            "endTime":
-                "${endHour % 12 == 0 ? 12 : endHour % 12}:00 ${endHour >= 12 ? 'PM' : 'AM'}",
+            "doctorName": doc["doctorName"],
+            "doctorSpeciality": doc["doctorSpeciality"],
+            "doctorImage": doc["doctorImage"],
+            "appointmentDate": requestedDate,
+            "appointmentTime": time,
+            "appointmentStatus": status,
           });
         }
 
         return {
           "success": true,
           "message": "Data fetched successfully",
-          "data": selectedDoctors,
+          "data": items,
         };
 
       case _ when path.startsWith('patient/bookings/doctors/') && path.endsWith('/schedules'):
