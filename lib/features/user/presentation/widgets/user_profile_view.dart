@@ -59,7 +59,7 @@ class UserProfileView extends ConsumerWidget {
             children: [
               if (userProfile != null)
                 ProfileHeader(
-                      name: userProfile.id.toString(),
+                      name: userProfile.fullName,
                       email: userProfile.email,
                       profilePic: userProfile.profilePic,
                     )

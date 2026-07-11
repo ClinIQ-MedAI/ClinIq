@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cliniq/core/constants/storage_keys.dart';
 import 'package:cliniq/core/helpers/app_storage_helper.dart';
@@ -15,22 +16,20 @@ final currentUserProvider =
 class CurrentUserNotifier extends Notifier<UserProfileEntity?> {
   @override
   UserProfileEntity? build() {
-    _initFromCache();
+    state = null;
+    Future.microtask(loadUser);
     return null;
   }
 
-  void _initFromCache() {
+  Future<void> loadUser() async {
     final json = AppStorageHelper.getString(StorageKeys.currentUser);
     if (json != null && json.isNotEmpty) {
       try {
         final decoded = jsonDecode(json);
         state = UserProfileModel.fromJson(decoded);
+        return;
       } catch (_) {}
     }
-  }
-
-  Future<void> loadUser() async {
-    if (state != null) return;
     await refreshUser();
   }
 
@@ -40,10 +39,7 @@ class CurrentUserNotifier extends Notifier<UserProfileEntity?> {
   }
 
   Future<void> updateUser(UserProfileEntity user) async {
-    final model = user is UserProfileModel
-        ? user
-        : UserProfileModel.fromEntity(user);
-    await saveCurrentUserData(model);
+    await cacheCurrentUser(user);
     state = user;
   }
 

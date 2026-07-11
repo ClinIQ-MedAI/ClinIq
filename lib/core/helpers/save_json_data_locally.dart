@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cliniq/core/constants/storage_keys.dart';
 import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/features/user/data/models/user_profile_model.dart';
+import 'package:cliniq/features/user/domain/entities/user_profile_entity.dart';
 
 Future<void> saveJsonDataLocally({
   required String storageKey,
@@ -19,12 +20,15 @@ Future<void> saveJsonDataLocally({
   }
 }
 
-Future<void> saveCurrentUserData(UserProfileModel user) async {
+Future<void> cacheCurrentUser(UserProfileEntity user) async {
+  final model = user is UserProfileModel
+      ? user
+      : UserProfileModel.fromEntity(user);
   await saveJsonDataLocally(
     storageKey: StorageKeys.currentUser,
-    json: user.toJson(),
+    json: model.toJson(),
   );
-  if (user.id != null) {
-    await AppStorageHelper.setString(StorageKeys.currentUserId, user.id!);
+  if (model.id != null) {
+    await AppStorageHelper.setString(StorageKeys.currentUserId, model.id!);
   }
 }

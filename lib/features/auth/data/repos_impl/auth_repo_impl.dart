@@ -48,7 +48,7 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
       await AppStorageHelper.setBool(StorageKeys.isLoggedIn, true);
 
       final user = UserProfileModel.fromJson(result["user"]);
-      await saveCurrentUserData(user);
+      await cacheCurrentUser(user);
 
       await AppStorageHelper.deleteSecureData(StorageKeys.resetToken);
     }).asVoid();
@@ -210,7 +210,7 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
       await AppStorageHelper.setBool(StorageKeys.isProfileCompleted, true);
       if (result["data"] != null) {
         final user = UserProfileModel.fromJson(result["data"]);
-        await saveCurrentUserData(user);
+        await cacheCurrentUser(user);
       }
     }).asVoid();
   }
