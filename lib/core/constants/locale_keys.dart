@@ -435,4 +435,16 @@ abstract class LocaleKeys {
   static const String bookingPatient = "booking.patient";
   static const String bookingFull = "booking.full";
   static const String bookingBookingButton = "booking.booking_button";
+
+  // notifications
+  static const String notificationsTitle = "notifications.title";
+  static const String notificationsEmptyTitle = "notifications.empty_title";
+  static const String notificationsEmptyDescription =
+      "notifications.empty_description";
+  static const String notificationsReadAll = "notifications.read_all";
+  static const String notificationsNew = "notifications.new";
+  static const String notificationsErrorTitle = "notifications.error_title";
+  static const String notificationsErrorDescription =
+      "notifications.error_description";
+  static const String notificationsRetry = "notifications.retry";
 }

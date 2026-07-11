@@ -385,5 +385,15 @@
         "patient": "مريض",
         "full": "مكتمل",
         "booking_button": "حجز"
+    },
+    "notifications": {
+        "title": "الإشعارات",
+        "empty_title": "لا توجد إشعارات بعد",
+        "empty_description": "سنقوم بإعلامك عند حدوث شيء مهم.",
+        "read_all": "قراءة الكل",
+        "new": "جديد",
+        "error_title": "تعذر تحميل الإشعارات",
+        "error_description": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+        "retry": "إعادة المحاولة"
     }
 }

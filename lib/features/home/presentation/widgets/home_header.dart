@@ -1,9 +1,11 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
+import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_svgs.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/user_profile_image.dart';
+import 'package:cliniq/features/notifications/presentation/providers/unread_count_provider.dart';
 import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ class HomeHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userProfile = ref.watch(currentUserProvider);
+    final unreadCount = ref.watch(unreadCountProvider);
+    ref.read(unreadCountProvider.notifier).load();
     final userName = userProfile?.fullName ?? 'User';
 
     return Container(
@@ -133,9 +137,18 @@ class HomeHeader extends ConsumerWidget {
                         ),
                         child: IconButton(
                           icon: Badge(
+                            isLabelVisible: unreadCount > 0,
                             backgroundColor:
                                 context.colorScheme.secondary,
-                            smallSize: 8,
+                            smallSize: 18,
+                            label: Text(
+                              unreadCount.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                             child: SvgPicture.asset(
                               AppSvgs.notificationIcon,
                               height: 24.h,
@@ -145,7 +158,12 @@ class HomeHeader extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              Routes.notificationsScreen,
+                            );
+                          },
                         ),
                       ).animate().fadeIn(delay: 400.ms).scale(),
                     ],

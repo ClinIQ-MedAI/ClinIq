@@ -28,6 +28,7 @@ import 'package:cliniq/features/user/presentation/screens/edit_profile_screen.da
 import 'package:cliniq/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:cliniq/features/chat/presentation/arguments/full_screen_image_viewer_arguments.dart';
 import 'package:cliniq/features/chat/presentation/widgets/full_screen_image_viewer.dart';
+import 'package:cliniq/features/notifications/presentation/screens/notifications_screen.dart';
 
 Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
   log("Navigating to ${settings.name}");
@@ -125,6 +126,12 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
         },
         opaque: false,
         barrierDismissible: false,
+      );
+
+    // Notifications
+    case Routes.notificationsScreen:
+      return MaterialPageRoute(
+        builder: (_) => const NotificationsScreen(),
       );
 
     default:

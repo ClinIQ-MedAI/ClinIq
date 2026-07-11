@@ -13,6 +13,8 @@ import 'package:cliniq/features/chat/domain/repos/attachment_repo.dart';
 import 'package:cliniq/features/chat/domain/repos/chat_repo.dart';
 import 'package:cliniq/features/home/data/repos_impl/home_repo_impl.dart';
 import 'package:cliniq/features/home/domain/repos/home_repo.dart';
+import 'package:cliniq/features/notifications/data/repos_impl/notification_repo_impl.dart';
+import 'package:cliniq/features/notifications/domain/repos/notification_repo.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cliniq/features/auth/data/repos_impl/auth_repo_impl.dart';
@@ -63,5 +65,9 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<AttachmentRepo>(
     AttachmentRepoImpl(api: ApiSelector.get(ApiFeatures.chat)),
+  );
+
+  getIt.registerSingleton<NotificationRepo>(
+    NotificationRepoImpl(api: ApiSelector.get(ApiFeatures.notifications)),
   );
 }

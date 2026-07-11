@@ -43,4 +43,10 @@ class EndPoints {
   static const String getMe = "patient/me";
   static const String updateMe = "patient/me";
   static const String completeProfile = "patient/Survey";
+
+  // notifications
+  static const String getNotifications = "notifications";
+  static const String getUnreadNotificationCount = "notifications/unread-count";
+  static String readNotification(String id) => "notifications/$id/read";
+  static const String readAllNotifications = "notifications/read-all";
 }

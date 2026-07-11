@@ -385,5 +385,15 @@
         "patient": "Patient",
         "full": "Full",
         "booking_button": "Confirm Booking"
+    },
+    "notifications": {
+        "title": "Notifications",
+        "empty_title": "No notifications yet",
+        "empty_description": "We'll notify you when something important happens.",
+        "read_all": "Read All",
+        "new": "New",
+        "error_title": "Couldn't load notifications",
+        "error_description": "Something went wrong. Please try again.",
+        "retry": "Retry"
     }
 }

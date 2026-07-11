@@ -28,4 +28,7 @@ class Routes {
   static const String chatDetailsScreen = '/chatDetailsScreen';
   static const String aiChatScreen = '/aiChatScreen';
   static const String fullScreenImageViewer = '/fullScreenImageViewer';
+
+  // notifications
+  static const String notificationsScreen = '/notificationsScreen';
 }
