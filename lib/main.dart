@@ -10,8 +10,8 @@ import 'package:cliniq/core/cubits/app_theme_cubit/app_theme_cubit.dart';
 import 'package:cliniq/core/cubits/app_theme_cubit/app_theme_state.dart';
 import 'package:cliniq/core/cubits/internet/internet_connection_cubit.dart';
 import 'package:cliniq/core/helpers/app_storage_helper.dart';
-import 'package:cliniq/core/helpers/get_initial_route.dart';
 import 'package:cliniq/core/helpers/on_generate_routes.dart';
+import 'package:cliniq/features/splash/presentation/screens/splash_screen.dart';
 import 'package:cliniq/core/services/custom_bloc_observer.dart';
 import 'package:cliniq/core/services/get_it_service.dart';
 import 'package:cliniq/core/utils/app_themes.dart';
@@ -87,7 +87,7 @@ class _ClinIqState extends ConsumerState<ClinIq> {
                 localizationsDelegates: context.localizationDelegates,
                 onGenerateRoute: (settings) =>
                     onGenerateRoutes(settings, context),
-                home: getInitialRoute(),
+                home: const SplashScreen(),
                 // builder: kDebugMode
                 //     ? (context, child) {
                 //         return DeveloperOverlay(child: child!);

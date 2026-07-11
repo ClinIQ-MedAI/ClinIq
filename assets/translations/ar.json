@@ -411,6 +411,9 @@
         "done": "تم",
         "languages": "اللغات"
     },
+    "splash": {
+        "tagline": "رفيقك في الرعاية الصحية"
+    },
     "notifications": {
         "title": "الإشعارات",
         "empty_title": "لا توجد إشعارات بعد",

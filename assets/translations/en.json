@@ -411,6 +411,9 @@
         "done": "Done",
         "languages": "Languages"
     },
+    "splash": {
+        "tagline": "Your Healthcare Companion"
+    },
     "notifications": {
         "title": "Notifications",
         "empty_title": "No notifications yet",

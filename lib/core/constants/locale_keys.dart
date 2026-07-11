@@ -464,6 +464,9 @@ abstract class LocaleKeys {
   static const String bookingDone = "booking.done";
   static const String bookingLanguages = "booking.languages";
 
+  // splash
+  static const String splashTagline = "splash.tagline";
+
   // notifications
   static const String notificationsTitle = "notifications.title";
   static const String notificationsEmptyTitle = "notifications.empty_title";

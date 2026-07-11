@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cliniq/features/auth/presentation/arguments/reset_password_arguments.dart';
+import 'package:cliniq/features/splash/presentation/screens/splash_screen.dart';
 import 'package:cliniq/features/auth/presentation/arguments/verify_email_arguments.dart';
 import 'package:cliniq/features/auth/presentation/arguments/verify_reset_code_arguments.dart';
 import 'package:cliniq/features/auth/presentation/screens/complete_user_profile_screen.dart';
@@ -34,6 +35,9 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
   log("Navigating to ${settings.name}");
 
   switch (settings.name) {
+    case Routes.splashScreen:
+      return MaterialPageRoute(builder: (_) => const SplashScreen());
+
     case Routes.loginScreen:
       return MaterialPageRoute(builder: (_) => const LoginScreen());
 
