@@ -73,7 +73,7 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 200.h,
+          height: 220.h,
           child: PageView.builder(
             controller: _pageController,
             itemCount: appointments.length,
@@ -88,10 +88,10 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
 
               return Opacity(
                 opacity: opacity,
-                  child: Transform(
-                    transform: Matrix4.identity()
-                      ..translate(translation)
-                      ..scale(scale),
+                child: Transform(
+                  transform: Matrix4.identity()
+                    ..translate(translation)
+                    ..scale(scale),
                   alignment: Alignment.center,
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -200,8 +200,8 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                                       size: 16,
                                     ),
                                     const HorizontalGap(6),
-                                      Text(
-                                        appointment.appointmentTime,
+                                    Text(
+                                      appointment.appointmentTime,
                                       style: AppTextStyles.getTextStyle(12)
                                           .copyWith(
                                             color:
@@ -236,8 +236,9 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                               height: 90.w,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: context.colorScheme.onPrimary
-                                    .withValues(alpha: 0.15),
+                                color: context.colorScheme.onPrimary.withValues(
+                                  alpha: 0.15,
+                                ),
                               ),
                               child: Icon(
                                 Icons.person,

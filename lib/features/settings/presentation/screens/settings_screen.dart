@@ -182,7 +182,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       false,
                     );
                     AppStorageHelper.remove(StorageKeys.currentUser);
-                    AppStorageHelper.remove(StorageKeys.isProfileCompleted);
                     ref.read(currentUserProvider.notifier).clearUser();
                     if (context.mounted) {
                       Navigator.of(context).pushNamedAndRemoveUntil(

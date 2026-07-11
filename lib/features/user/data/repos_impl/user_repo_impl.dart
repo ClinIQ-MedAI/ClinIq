@@ -1,7 +1,5 @@
 import 'package:cliniq/core/api/end_points.dart';
-import 'package:cliniq/core/constants/storage_keys.dart';
 import 'package:cliniq/core/extensions/either_extensions.dart';
-import 'package:cliniq/core/helpers/app_storage_helper.dart';
 import 'package:cliniq/core/helpers/save_json_data_locally.dart';
 import 'package:cliniq/core/repos/base_repo/base_repo_impl.dart';
 import 'package:cliniq/features/user/data/models/user_profile_model.dart';
@@ -42,7 +40,6 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
     return handleApi(
       () => api.post(EndPoints.completeProfile, data: data),
     ).onSuccess((result) async {
-      await AppStorageHelper.setBool(StorageKeys.isProfileCompleted, true);
       if (result["data"] != null) {
         final user = UserProfileModel.fromJson(result["data"]);
         await cacheCurrentUser(user);

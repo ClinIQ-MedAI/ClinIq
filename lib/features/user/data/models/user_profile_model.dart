@@ -18,6 +18,13 @@ class UserProfileModel extends UserProfileEntity {
     super.role,
     super.emailConfirmed,
     super.phoneNumberConfirmed,
+    super.status,
+    super.hasDiabetes,
+    super.hasPressureIssues,
+    super.allergies,
+    super.chronicConditions,
+    super.emergencyContactName,
+    super.emergencyContactPhone,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
@@ -50,11 +57,18 @@ class UserProfileModel extends UserProfileEntity {
       bloodGroup: json['bloodGroup'] ?? json['bloodType'],
       height: json['height']?.toString(),
       weight: json['weight']?.toString(),
-      ailments: json['ailments'] ?? json['chronicConditions'],
+      ailments: json['ailments'],
       profilePic: json['profilePic'] ?? json['profilePicUrl'] ?? json['avatar'],
       role: json['role'],
       emailConfirmed: json['emailConfirmed'],
       phoneNumberConfirmed: json['phoneNumberConfirmed'],
+      status: json['status'],
+      hasDiabetes: json['hasDiabetes'],
+      hasPressureIssues: json['hasPressureIssues'],
+      allergies: json['allergies'],
+      chronicConditions: json['chronicConditions'],
+      emergencyContactName: json['emergencyContactName'],
+      emergencyContactPhone: json['emergencyContactPhone'],
     );
   }
 
@@ -81,6 +95,16 @@ class UserProfileModel extends UserProfileEntity {
       if (emailConfirmed != null) 'emailConfirmed': emailConfirmed,
       if (phoneNumberConfirmed != null)
         'phoneNumberConfirmed': phoneNumberConfirmed,
+      if (status != null && status!.isNotEmpty) 'status': status,
+      if (hasDiabetes != null) 'hasDiabetes': hasDiabetes,
+      if (hasPressureIssues != null) 'hasPressureIssues': hasPressureIssues,
+      if (allergies != null && allergies!.isNotEmpty) 'allergies': allergies,
+      if (chronicConditions != null && chronicConditions!.isNotEmpty)
+        'chronicConditions': chronicConditions,
+      if (emergencyContactName != null && emergencyContactName!.isNotEmpty)
+        'emergencyContactName': emergencyContactName,
+      if (emergencyContactPhone != null && emergencyContactPhone!.isNotEmpty)
+        'emergencyContactPhone': emergencyContactPhone,
     };
   }
 
@@ -102,6 +126,13 @@ class UserProfileModel extends UserProfileEntity {
       role: entity.role,
       emailConfirmed: entity.emailConfirmed,
       phoneNumberConfirmed: entity.phoneNumberConfirmed,
+      status: entity.status,
+      hasDiabetes: entity.hasDiabetes,
+      hasPressureIssues: entity.hasPressureIssues,
+      allergies: entity.allergies,
+      chronicConditions: entity.chronicConditions,
+      emergencyContactName: entity.emergencyContactName,
+      emergencyContactPhone: entity.emergencyContactPhone,
     );
   }
 
@@ -123,6 +154,13 @@ class UserProfileModel extends UserProfileEntity {
       role: role,
       emailConfirmed: emailConfirmed,
       phoneNumberConfirmed: phoneNumberConfirmed,
+      status: status,
+      hasDiabetes: hasDiabetes,
+      hasPressureIssues: hasPressureIssues,
+      allergies: allergies,
+      chronicConditions: chronicConditions,
+      emergencyContactName: emergencyContactName,
+      emergencyContactPhone: emergencyContactPhone,
     );
   }
 
@@ -143,6 +181,13 @@ class UserProfileModel extends UserProfileEntity {
     String? role,
     bool? emailConfirmed,
     bool? phoneNumberConfirmed,
+    String? status,
+    bool? hasDiabetes,
+    bool? hasPressureIssues,
+    String? allergies,
+    String? chronicConditions,
+    String? emergencyContactName,
+    String? emergencyContactPhone,
   }) {
     return UserProfileModel(
       id: id ?? this.id,
@@ -161,6 +206,14 @@ class UserProfileModel extends UserProfileEntity {
       role: role ?? this.role,
       emailConfirmed: emailConfirmed ?? this.emailConfirmed,
       phoneNumberConfirmed: phoneNumberConfirmed ?? this.phoneNumberConfirmed,
+      status: status ?? this.status,
+      hasDiabetes: hasDiabetes ?? this.hasDiabetes,
+      hasPressureIssues: hasPressureIssues ?? this.hasPressureIssues,
+      allergies: allergies ?? this.allergies,
+      chronicConditions: chronicConditions ?? this.chronicConditions,
+      emergencyContactName: emergencyContactName ?? this.emergencyContactName,
+      emergencyContactPhone:
+          emergencyContactPhone ?? this.emergencyContactPhone,
     );
   }
 }

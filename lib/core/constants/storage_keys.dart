@@ -10,5 +10,4 @@ class StorageKeys {
   static const String userEmail = "userEmail";
   static const String userRole = "userRole";
   static const String resetToken = "resetToken";
-  static const String isProfileCompleted = "isProfileCompleted";
 }

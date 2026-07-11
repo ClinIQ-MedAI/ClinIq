@@ -47,9 +47,11 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
 
       await AppStorageHelper.setBool(StorageKeys.isLoggedIn, true);
 
-      final user = UserProfileModel.fromJson(result["user"]);
-      await cacheCurrentUser(user);
-
+      final mergedUser = UserProfileModel.fromJson({
+        ...result['user'],
+        ...(result['patient'] ?? {}),
+      });
+      await cacheCurrentUser(mergedUser);
       await AppStorageHelper.deleteSecureData(StorageKeys.resetToken);
     }).asVoid();
   }
@@ -207,7 +209,6 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
         "Invalid email": LocaleKeys.messagesFailuresInvalidEmail,
       },
     ).onSuccess((result) async {
-      await AppStorageHelper.setBool(StorageKeys.isProfileCompleted, true);
       if (result["data"] != null) {
         final user = UserProfileModel.fromJson(result["data"]);
         await cacheCurrentUser(user);

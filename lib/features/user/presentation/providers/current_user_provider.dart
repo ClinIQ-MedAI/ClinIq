@@ -48,12 +48,4 @@ class CurrentUserNotifier extends Notifier<UserProfileEntity?> {
     await AppStorageHelper.remove(StorageKeys.currentUserId);
     state = null;
   }
-
-  bool get isProfileCompleted {
-    return AppStorageHelper.getBool(StorageKeys.isProfileCompleted) ?? false;
-  }
-
-  Future<void> setProfileCompleted(bool value) async {
-    await AppStorageHelper.setBool(StorageKeys.isProfileCompleted, value);
-  }
 }

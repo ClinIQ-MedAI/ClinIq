@@ -25,9 +25,6 @@ class CompleteProfileNotifier extends AsyncNotifier<Success?> {
     await _repository
         .completeUserProfile(data: data)
         .onSuccess((_) async {
-          await ref
-              .read(currentUserProvider.notifier)
-              .setProfileCompleted(true);
           ref.read(currentUserProvider.notifier).refreshUser();
           state = AsyncData(Success(data: data));
         })

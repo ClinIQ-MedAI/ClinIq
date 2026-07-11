@@ -20,9 +20,7 @@ class UserProfileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userProfile = ref.watch(currentUserProvider);
-    final isProfileCompleted = ref
-        .read(currentUserProvider.notifier)
-        .isProfileCompleted;
+    final isProfileCompleted = userProfile?.isProfileCompleted ?? false;
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,

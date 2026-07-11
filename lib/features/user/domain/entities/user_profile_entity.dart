@@ -15,6 +15,13 @@ class UserProfileEntity {
   final String? role;
   final bool? emailConfirmed;
   final bool? phoneNumberConfirmed;
+  final String? status;
+  final bool? hasDiabetes;
+  final bool? hasPressureIssues;
+  final String? allergies;
+  final String? chronicConditions;
+  final String? emergencyContactName;
+  final String? emergencyContactPhone;
 
   UserProfileEntity({
     this.id,
@@ -33,6 +40,13 @@ class UserProfileEntity {
     this.role,
     this.emailConfirmed,
     this.phoneNumberConfirmed,
+    this.status,
+    this.hasDiabetes,
+    this.hasPressureIssues,
+    this.allergies,
+    this.chronicConditions,
+    this.emergencyContactName,
+    this.emergencyContactPhone,
   });
 
   String get fullName {
@@ -49,4 +63,12 @@ class UserProfileEntity {
       (weight != null && weight!.isNotEmpty) ||
       (ailments != null && ailments!.isNotEmpty) ||
       (dateOfBirth != null && dateOfBirth!.isNotEmpty);
+
+  bool get isProfileCompleted {
+    return (height != null && height!.isNotEmpty) ||
+        (weight != null && weight!.isNotEmpty) ||
+        (bloodGroup != null && bloodGroup!.isNotEmpty) ||
+        (emergencyContactName != null && emergencyContactName!.isNotEmpty) ||
+        (emergencyContactPhone != null && emergencyContactPhone!.isNotEmpty);
+  }
 }
