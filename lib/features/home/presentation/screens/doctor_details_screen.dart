@@ -29,7 +29,8 @@ class DoctorDetailsScreen extends ConsumerStatefulWidget {
   final String doctorId;
 
   @override
-  ConsumerState<DoctorDetailsScreen> createState() => _DoctorDetailsScreenState();
+  ConsumerState<DoctorDetailsScreen> createState() =>
+      _DoctorDetailsScreenState();
 }
 
 class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
@@ -42,9 +43,7 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: ProfileAppBar(
-        title: LocaleKeys.homeDoctorDetailsTitle.tr(),
-      ),
+      appBar: ProfileAppBar(title: LocaleKeys.homeDoctorDetailsTitle.tr()),
       body: doctorAsync.when(
         data: (doctor) => _buildContent(context, doctor),
         error: (error, _) => _buildError(context, error),
@@ -69,13 +68,14 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
             Text(
               error.toString(),
               textAlign: TextAlign.center,
-              style: AppTextStyles.getTextStyle(14).copyWith(
-                color: context.textPalette.secondaryColor,
-              ),
+              style: AppTextStyles.getTextStyle(
+                14,
+              ).copyWith(color: context.textPalette.secondaryColor),
             ),
             const VerticalGap(24),
             FilledButton.icon(
-              onPressed: () => ref.invalidate(doctorDetailsProvider(widget.doctorId)),
+              onPressed: () =>
+                  ref.invalidate(doctorDetailsProvider(widget.doctorId)),
               icon: const Icon(Icons.refresh_rounded),
               label: Text(LocaleKeys.notificationsRetry.tr()),
             ),
@@ -128,11 +128,7 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
       ),
       child: Column(
         children: [
-          DoctorAvatar(
-            imageUrl: doctor.image,
-            name: doctor.name,
-            size: 120.r,
-          ),
+          DoctorAvatar(imageUrl: doctor.image, name: doctor.name, size: 120.r),
           const VerticalGap(20),
           Text(
             doctor.name,
@@ -266,7 +262,9 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
                   context,
                   Icons.location_on_rounded,
                   LocaleKeys.homeLocation.tr(),
-                  doctor.city.isNotEmpty ? doctor.city : LocaleKeys.homeAvailable.tr(),
+                  doctor.city.isNotEmpty
+                      ? doctor.city
+                      : LocaleKeys.homeAvailable.tr(),
                 ),
                 const Divider(height: 24),
                 _infoRow(
@@ -344,9 +342,9 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
                       const VerticalGap(4),
                       Text(
                         'Specialized in ${doctor.speciality.localizedSpeciality}',
-                        style: AppTextStyles.getTextStyle(13).copyWith(
-                          color: context.textPalette.secondaryColor,
-                        ),
+                        style: AppTextStyles.getTextStyle(
+                          13,
+                        ).copyWith(color: context.textPalette.secondaryColor),
                       ),
                     ],
                   ),
@@ -423,8 +421,9 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap:
-                          _isBookingLoading ? null : () => _showScheduleSheet(context, doctor),
+                      onTap: _isBookingLoading
+                          ? null
+                          : () => _showScheduleSheet(context, doctor),
                       borderRadius: BorderRadius.circular(20.r),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
@@ -440,14 +439,17 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
                                   end: Alignment.bottomRight,
                                 ),
                           color: _isBookingLoading
-                              ? context.colorScheme.primary.withValues(alpha: 0.5)
+                              ? context.colorScheme.primary.withValues(
+                                  alpha: 0.5,
+                                )
                               : null,
                           borderRadius: BorderRadius.circular(20.r),
                           boxShadow: _isBookingLoading
                               ? null
                               : [
                                   BoxShadow(
-                                    color: context.colorScheme.primary.withValues(alpha: 0.3),
+                                    color: context.colorScheme.primary
+                                        .withValues(alpha: 0.3),
                                     blurRadius: 20,
                                     offset: const Offset(0, 8),
                                   ),
@@ -495,14 +497,20 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
     ).animate().fadeIn(delay: 175.ms).slideY(begin: 0.05);
   }
 
-  Future<void> _showScheduleSheet(BuildContext context, DoctorEntity doctor) async {
+  Future<void> _showScheduleSheet(
+    BuildContext context,
+    DoctorEntity doctor,
+  ) async {
     final today = DateTime.now();
     final dateStr =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
     try {
       final repo = ref.read(bookingRepoProvider);
-      final schedulesResult = await repo.getDoctorSchedules(widget.doctorId, dateStr);
+      final schedulesResult = await repo.getDoctorSchedules(
+        widget.doctorId,
+        dateStr,
+      );
       final schedules = schedulesResult.fold(
         (failure) => throw failure.message,
         (data) => data,
@@ -530,7 +538,11 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
     }
   }
 
-  Future<void> _createBooking(DoctorEntity doctor, String date, String time) async {
+  Future<void> _createBooking(
+    DoctorEntity doctor,
+    String date,
+    String time,
+  ) async {
     setState(() => _isBookingLoading = true);
 
     try {
@@ -540,10 +552,7 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
         date: date,
         time: time,
       );
-      bookingResult.fold(
-        (failure) => throw failure.message,
-        (_) {},
-      );
+      bookingResult.fold((failure) => throw failure.message, (_) {});
 
       if (!mounted) return;
 
@@ -574,11 +583,7 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
             color: context.colorScheme.primary.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(14.r),
           ),
-          child: Icon(
-            icon,
-            color: context.colorScheme.primary,
-            size: 20.sp,
-          ),
+          child: Icon(icon, color: context.colorScheme.primary, size: 20.sp),
         ),
         const HorizontalGap(14),
         Expanded(
@@ -607,7 +612,11 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
     );
   }
 
-  Widget _buildChatCta(BuildContext context, WidgetRef ref, DoctorEntity doctor) {
+  Widget _buildChatCta(
+    BuildContext context,
+    WidgetRef ref,
+    DoctorEntity doctor,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w),
       child: Container(
@@ -667,7 +676,9 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: _isChatLoading ? null : () => _startChat(context, ref, doctor),
+                  onTap: _isChatLoading
+                      ? null
+                      : () => _startChat(context, ref, doctor),
                   borderRadius: BorderRadius.circular(20.r),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -690,7 +701,9 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
                           ? null
                           : [
                               BoxShadow(
-                                color: context.colorScheme.primary.withValues(alpha: 0.3),
+                                color: context.colorScheme.primary.withValues(
+                                  alpha: 0.3,
+                                ),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),
@@ -734,7 +747,11 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
     ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1);
   }
 
-  Future<void> _startChat(BuildContext context, WidgetRef ref, DoctorEntity doctor) async {
+  Future<void> _startChat(
+    BuildContext context,
+    WidgetRef ref,
+    DoctorEntity doctor,
+  ) async {
     if (_isChatLoading) return;
     setState(() => _isChatLoading = true);
 
@@ -753,9 +770,7 @@ class _DoctorDetailsScreenState extends ConsumerState<DoctorDetailsScreen> {
       Navigator.pushNamed(
         context,
         Routes.chatDetailsScreen,
-        arguments: ChatDetailsArguments(
-          conversationId: conversation.id,
-        ),
+        arguments: ChatDetailsArguments(conversationId: conversation.id),
       );
     } catch (e) {
       if (!mounted) return;

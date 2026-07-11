@@ -1,4 +1,5 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
+import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
@@ -7,7 +8,7 @@ import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.d
 import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_tile.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
-import 'package:cliniq/features/chat/presentation/widgets/doctor_chats_empty_state.dart';
+import 'package:cliniq/features/chat/presentation/widgets/empty_conversations_state.dart';
 import 'package:cliniq/features/chat/presentation/widgets/new_conversation_sheet.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
@@ -34,7 +35,7 @@ class ChatsView extends ConsumerWidget {
       body: conversationsAsync.when(
         data: (conversations) {
           if (conversations.isEmpty) {
-            return DoctorChatsEmptyState(
+            return EmptyConversationsState(
               onStartConversation: () =>
                   _showNewConversationSheet(context, ref),
             );
@@ -135,8 +136,6 @@ class ChatsView extends ConsumerWidget {
   }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    showCustomSnackBar(context, message);
   }
 }

@@ -1,12 +1,13 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
+import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
-import 'package:cliniq/core/widgets/custom_text_form_field.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
 import 'package:cliniq/features/home/presentation/widgets/doctor_card.dart';
-import 'package:cliniq/features/home/presentation/widgets/home_section_empty_state.dart';
+import 'package:cliniq/features/home/presentation/widgets/empty_search_result.dart';
+import 'package:cliniq/features/home/presentation/widgets/modern_search_bar.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -82,29 +83,77 @@ class _DoctorsScreenState extends ConsumerState<DoctorsScreen> {
           ),
           child: Padding(
             padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 16.h),
-            child: CustomTextFormField(
+            child: ModernSearchBar(
               controller: _searchController,
-              hintText: LocaleKeys.homeDoctorsSearchHint.tr(),
-              prefixIcon: const Icon(Icons.search_rounded),
               onChanged: (value) => setState(() => _searchQuery = value),
             ),
           ),
-        ),
+        ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.1),
         Expanded(
           child: filteredDoctors.isEmpty
-              ? Center(
-                  child: HomeSectionEmptyState(
-                    icon: _searchQuery.isNotEmpty
-                        ? Icons.search_off_rounded
-                        : Icons.person_search_rounded,
-                    title: _searchQuery.isNotEmpty
-                        ? LocaleKeys.homeNoSearchResults.tr()
-                        : LocaleKeys.homeNoDoctors.tr(),
-                    description: _searchQuery.isNotEmpty
-                        ? LocaleKeys.homeNoSearchResultsDesc.tr()
-                        : LocaleKeys.homeNoDoctorsDesc.tr(),
-                  ),
-                )
+              ? (_searchQuery.isNotEmpty
+                  ? EmptySearchResult(
+                      onClearSearch: () {
+                        _searchController.clear();
+                        setState(() => _searchQuery = '');
+                      },
+                    )
+                  : Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 32.h,
+                            horizontal: 24.w,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(24.r),
+                            border: Border.all(
+                              color: context.colorScheme.primary
+                                  .withValues(alpha: 0.08),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(16.w),
+                                decoration: BoxDecoration(
+                                  color: context.colorScheme.primary
+                                      .withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(20.r),
+                                ),
+                                child: Icon(
+                                  Icons.person_search_rounded,
+                                  size: 32.sp,
+                                  color: context.colorScheme.primary,
+                                ),
+                              ),
+                              const VerticalGap(16),
+                              Text(
+                                LocaleKeys.homeNoDoctors.tr(),
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.getTextStyle(16).copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: context.textPalette.primaryColor,
+                                ),
+                              ),
+                              const VerticalGap(8),
+                              Text(
+                                LocaleKeys.homeNoDoctorsDesc.tr(),
+                                textAlign: TextAlign.center,
+                                style: AppTextStyles.getTextStyle(13).copyWith(
+                                  color: context.textPalette.secondaryColor,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ))
               : ListView.separated(
                   physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 40.h),

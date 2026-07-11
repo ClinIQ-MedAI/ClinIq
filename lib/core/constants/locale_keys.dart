@@ -283,6 +283,7 @@ abstract class LocaleKeys {
   static const homeDoctorsSearchHint = "home.doctors_search_hint";
   static const homeNoSearchResults = "home.no_search_results";
   static const homeNoSearchResultsDesc = "home.no_search_results_desc";
+  static const homeClearSearch = "home.clear_search";
   static const homeAbout = "home.about";
   static const homeDetails = "home.details";
   static const homeEducation = "home.education";
@@ -335,6 +336,7 @@ abstract class LocaleKeys {
       "chat.doctor.list_empty_description";
   static const chatDoctorStartFirstConversation =
       "chat.doctor.start_first_conversation";
+  static const chatDoctorHelperText = "chat.doctor.helper_text";
   static const chatDoctorSendMessage = "chat.doctor.send_message";
   static const chatDoctorAhmedName = "chat.doctor.ahmed_name";
   static const chatDoctorAhmedSpecialty = "chat.doctor.ahmed_specialty";
