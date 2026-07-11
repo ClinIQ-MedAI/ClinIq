@@ -14,8 +14,8 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
   @override
   Future<Either<Failure, UserProfileEntity>> getMe() {
     return handleApi(() async {
-      final response = await api.get(EndPoints.getMe);
-      final user = UserProfileModel.fromJson(response["data"]);
+      final data = await api.get(EndPoints.getMe);
+      final user = UserProfileModel.fromJson(data);
       await cacheCurrentUser(user);
       return user;
     });
@@ -26,8 +26,8 @@ class UserRepoImpl extends BaseRepoImpl implements UserRepo {
     required Map<String, dynamic> data,
   }) {
     return handleApi(() async {
-      final response = await api.put(EndPoints.updateMe, data: data);
-      final user = UserProfileModel.fromJson(response["data"]);
+      await api.put(EndPoints.updateMe, data: data);
+      final user = UserProfileModel.fromJson(data);
       await cacheCurrentUser(user);
       return user;
     });

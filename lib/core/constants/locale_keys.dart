@@ -410,6 +410,24 @@ abstract class LocaleKeys {
   static const profileUserCompleteProfileDescription = "profile.user.complete_profile_description";
   static const profileUserCompleteProfileButton = "profile.user.complete_profile_button";
   static const profileUserPhone = "profile.user.phone";
+  static const profileUserDateOfBirth = "profile.user.date_of_birth";
+  static const profileUserDateOfBirthHint = "profile.user.date_of_birth_hint";
+  static const profileUserDiabetes = "profile.user.diabetes";
+  static const profileUserPressure = "profile.user.pressure";
+  static const profileUserAllergies = "profile.user.allergies";
+  static const profileUserAllergiesHint = "profile.user.allergies_hint";
+  static const profileUserChronicConditions = "profile.user.chronic_conditions";
+  static const profileUserChronicConditionsHint = "profile.user.chronic_conditions_hint";
+  static const profileUserEmergencySection = "profile.user.emergency_section";
+  static const profileUserEmergencyContactName = "profile.user.emergency_contact_name";
+  static const profileUserEmergencyContactNameHint = "profile.user.emergency_contact_name_hint";
+  static const profileUserEmergencyContactPhone = "profile.user.emergency_contact_phone";
+  static const profileUserEmergencyContactPhoneHint = "profile.user.emergency_contact_phone_hint";
+  static const profileUserBloodGroupHint = "profile.user.blood_group_hint";
+  static const profileUserGenderHint = "profile.user.gender_hint";
+  static const profileUserMale = "profile.user.male";
+  static const profileUserFemale = "profile.user.female";
+  static const profileUserPhysicalInfo = "profile.user.physical_info";
 
   // settings
   static const settingsUserTitle = "settings.user.title";

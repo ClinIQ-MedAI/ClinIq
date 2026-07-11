@@ -2,6 +2,11 @@ import 'package:cliniq/core/models/bottom_nav_item.dart';
 import 'package:cliniq/core/utils/app_svgs.dart';
 
 class DropdownOptions {
+  static const List<String> genderOptions = [
+    'Male',
+    'Female',
+  ];
+
   static const List<String> bloodTypes = [
     'A+',
     'A-',

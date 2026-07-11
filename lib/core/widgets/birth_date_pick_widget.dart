@@ -13,11 +13,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BirthDatePickWidget extends StatefulWidget {
   final ValueChanged<DateTime> onDateSelected;
   final IconData? icon;
+  final String? initialDateText;
 
   const BirthDatePickWidget({
     super.key,
     required this.onDateSelected,
     this.icon,
+    this.initialDateText,
   });
 
   @override
@@ -25,8 +27,24 @@ class BirthDatePickWidget extends StatefulWidget {
 }
 
 class _BirthDatePickWidgetState extends State<BirthDatePickWidget> {
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller;
   DateTime? selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialDateText ?? '');
+    if (widget.initialDateText != null && widget.initialDateText!.isNotEmpty) {
+      try {
+        selectedDate = DateFormat('dd-MM-yyyy').parse(widget.initialDateText!);
+      } catch (_) {
+        try {
+          selectedDate = DateTime.parse(widget.initialDateText!);
+          _controller.text = DateFormat('dd-MM-yyyy').format(selectedDate!);
+        } catch (_) {}
+      }
+    }
+  }
 
   void _showCupertinoPicker(BuildContext context) {
     DateTime tempPickedDate = DateTime(2000);

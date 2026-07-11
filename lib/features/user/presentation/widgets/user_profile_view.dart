@@ -5,6 +5,7 @@ import 'package:cliniq/core/widgets/custom_button.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:cliniq/features/user/presentation/widgets/basic_info_section.dart';
+import 'package:cliniq/features/user/presentation/widgets/emergency_contact_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/medical_info_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_header.dart';
@@ -68,7 +69,7 @@ class UserProfileView extends ConsumerWidget {
               if (userProfile != null) ...[
                 const VerticalGap(24),
                 BasicInfoSection(
-                  phone: userProfile.phoneNumber,
+                  user: userProfile,
                 ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.1),
               ],
 
@@ -85,6 +86,10 @@ class UserProfileView extends ConsumerWidget {
                 MedicalInfoSection(
                   user: userProfile,
                 ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.1),
+                const VerticalGap(24),
+                EmergencyContactSection(
+                  user: userProfile,
+                ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.1),
               ],
 
               if (isProfileCompleted) ...[

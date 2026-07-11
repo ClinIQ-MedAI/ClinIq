@@ -1,5 +1,6 @@
 import 'package:cliniq/core/extensions/either_extensions.dart';
 import 'package:cliniq/core/utils/success.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:cliniq/features/user/presentation/providers/get_user_repo_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,6 +22,7 @@ class UpdateProfileNotifier extends AsyncNotifier<Success?> {
         .read(getUserRepoProvider)
         .updateMe(data: data)
         .onSuccess((_) async {
+          await ref.read(currentUserProvider.notifier).refreshUser();
           state = AsyncData(Success(data: data));
         })
         .onFailure((l) {

@@ -31,13 +31,21 @@ class MedicalInfoSection extends StatelessWidget {
       ));
     }
 
-    addRow(LocaleKeys.profileUserGender, user.gender, Icons.person_outline_rounded);
-    addRow(LocaleKeys.profileUserBloodGroup, user.bloodGroup, Icons.bloodtype_rounded,
-        iconColor: Colors.redAccent);
+    void addSwitchRow(String title, bool? value, IconData icon, {Color? iconColor}) {
+      if (value == null || !value) return;
+      addRow(title, 'Yes', icon, iconColor: iconColor);
+    }
+
     addRow(LocaleKeys.profileUserHeight, user.height, Icons.height);
     addRow(LocaleKeys.profileUserWeight, user.weight, Icons.monitor_weight_outlined);
+    addRow(LocaleKeys.profileUserBloodGroup, user.bloodGroup, Icons.bloodtype_rounded,
+        iconColor: Colors.redAccent);
     addRow(LocaleKeys.profileUserAilments, user.ailments, Icons.health_and_safety_rounded,
         iconColor: Colors.orangeAccent);
+    addSwitchRow(LocaleKeys.profileUserDiabetes, user.hasDiabetes, Icons.monitor_heart_rounded);
+    addSwitchRow(LocaleKeys.profileUserPressure, user.hasPressureIssues, Icons.favorite_border_rounded);
+    addRow(LocaleKeys.profileUserAllergies, user.allergies, Icons.warning_amber_rounded);
+    addRow(LocaleKeys.profileUserChronicConditions, user.chronicConditions, Icons.medical_information_rounded);
 
     if (rows.isEmpty) return const SizedBox.shrink();
 

@@ -9,8 +9,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class BasicInfoSection extends StatelessWidget {
-  const BasicInfoSection({super.key, required this.user});
+class EmergencyContactSection extends StatelessWidget {
+  const EmergencyContactSection({super.key, required this.user});
 
   final UserProfileEntity user;
 
@@ -18,25 +18,16 @@ class BasicInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final rows = <Widget>[];
 
-    void addRow(String title, String? value, IconData icon, {Color? iconColor}) {
+    void addRow(String title, String? value, IconData icon) {
       if (value == null || value.isEmpty) return;
       if (rows.isNotEmpty) {
         rows.add(const Divider(height: 32, thickness: 1, color: Color(0xFFF1F5F9)));
       }
-      rows.add(ProfileInfoRow(
-        title: title,
-        value: value,
-        icon: icon,
-        iconColor: iconColor,
-      ));
+      rows.add(ProfileInfoRow(title: title, value: value, icon: icon));
     }
 
-    addRow(LocaleKeys.profileUserPhone, user.phoneNumber, Icons.phone_android_rounded);
-    addRow(LocaleKeys.profileUserEmail, user.email, Icons.email_outlined);
-    addRow(LocaleKeys.profileUserGender, user.gender, Icons.person_outline_rounded);
-    if (user.dateOfBirth != null && user.dateOfBirth!.isNotEmpty) {
-      addRow(LocaleKeys.profileUserDateOfBirth, user.dateOfBirth, Icons.calendar_month_rounded);
-    }
+    addRow(LocaleKeys.profileUserEmergencyContactName, user.emergencyContactName, Icons.person_pin_rounded);
+    addRow(LocaleKeys.profileUserEmergencyContactPhone, user.emergencyContactPhone, Icons.phone_rounded);
 
     if (rows.isEmpty) return const SizedBox.shrink();
 
@@ -55,7 +46,7 @@ class BasicInfoSection extends StatelessWidget {
             ),
             const HorizontalGap(12),
             Text(
-              LocaleKeys.profileUserPersonalInfo.tr(),
+              LocaleKeys.profileUserEmergencySection.tr(),
               style: AppTextStyles.getTextStyle(18).copyWith(
                 fontWeight: FontWeight.w800,
                 color: context.textPalette.primaryColor,

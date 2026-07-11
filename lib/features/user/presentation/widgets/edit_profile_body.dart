@@ -4,6 +4,7 @@ import 'package:cliniq/core/widgets/user_profile_image.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:cliniq/features/user/presentation/providers/update_profile_provider.dart';
+import 'package:cliniq/features/user/presentation/widgets/edit_emergency_contact_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/edit_medical_info_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/edit_personal_info_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/edit_physical_metrics_section.dart';
@@ -27,6 +28,16 @@ class _EditProfileBodyState extends ConsumerState<EditProfileBody> {
   late TextEditingController heightController;
   late TextEditingController weightController;
   late TextEditingController ailmentsController;
+  late TextEditingController allergiesController;
+  late TextEditingController chronicConditionsController;
+  late TextEditingController emergencyNameController;
+  late TextEditingController emergencyPhoneController;
+
+  String? gender;
+  String? dateOfBirth;
+  String? bloodGroup;
+  bool hasDiabetes = false;
+  bool hasPressureIssues = false;
 
   @override
   void initState() {
@@ -39,6 +50,15 @@ class _EditProfileBodyState extends ConsumerState<EditProfileBody> {
     heightController = TextEditingController(text: user?.height ?? '');
     weightController = TextEditingController(text: user?.weight ?? '');
     ailmentsController = TextEditingController(text: user?.ailments ?? '');
+    allergiesController = TextEditingController(text: user?.allergies ?? '');
+    chronicConditionsController = TextEditingController(text: user?.chronicConditions ?? '');
+    emergencyNameController = TextEditingController(text: user?.emergencyContactName ?? '');
+    emergencyPhoneController = TextEditingController(text: user?.emergencyContactPhone ?? '');
+    gender = user?.gender;
+    dateOfBirth = user?.dateOfBirth;
+    bloodGroup = user?.bloodGroup;
+    hasDiabetes = user?.hasDiabetes ?? false;
+    hasPressureIssues = user?.hasPressureIssues ?? false;
   }
 
   @override
@@ -50,18 +70,31 @@ class _EditProfileBodyState extends ConsumerState<EditProfileBody> {
     heightController.dispose();
     weightController.dispose();
     ailmentsController.dispose();
+    allergiesController.dispose();
+    chronicConditionsController.dispose();
+    emergencyNameController.dispose();
+    emergencyPhoneController.dispose();
     super.dispose();
   }
 
   Future<void> onSave() async {
-    final data = { 
+    final data = {
       'firstName': firstNameController.text,
       'lastName': lastNameController.text,
       'email': emailController.text,
-      'mobile': mobileController.text,
+      'phoneNumber': mobileController.text,
       'height': heightController.text,
       'weight': weightController.text,
       'ailments': ailmentsController.text,
+      'allergies': allergiesController.text,
+      'chronicConditions': chronicConditionsController.text,
+      'emergencyContactName': emergencyNameController.text,
+      'emergencyContactPhone': emergencyPhoneController.text,
+      if (gender != null) 'gender': gender,
+      if (dateOfBirth != null) 'dateOfBirth': dateOfBirth,
+      if (bloodGroup != null) 'bloodGroup': bloodGroup,
+      'hasDiabetes': hasDiabetes,
+      'hasPressureIssues': hasPressureIssues,
     };
 
     await ref.read(updateProfileProvider.notifier).updateProfile(data);
@@ -104,16 +137,33 @@ class _EditProfileBodyState extends ConsumerState<EditProfileBody> {
             lastNameController: lastNameController,
             emailController: emailController,
             mobileController: mobileController,
+            gender: gender,
+            dateOfBirth: dateOfBirth,
+            onGenderChanged: (v) => setState(() => gender = v),
+            onDateOfBirthChanged: (v) => setState(() => dateOfBirth = v.toIso8601String().split('T').first),
           ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1),
           const VerticalGap(24),
           EditPhysicalMetricsSection(
             heightController: heightController,
             weightController: weightController,
+            bloodGroup: bloodGroup,
+            onBloodGroupChanged: (v) => setState(() => bloodGroup = v),
           ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.1),
           const VerticalGap(24),
           EditMedicalInfoSection(
             ailmentsController: ailmentsController,
+            allergiesController: allergiesController,
+            chronicConditionsController: chronicConditionsController,
+            hasDiabetes: hasDiabetes,
+            hasPressureIssues: hasPressureIssues,
+            onDiabetesChanged: (v) => setState(() => hasDiabetes = v),
+            onPressureChanged: (v) => setState(() => hasPressureIssues = v),
           ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.1),
+          const VerticalGap(24),
+          EditEmergencyContactSection(
+            emergencyNameController: emergencyNameController,
+            emergencyPhoneController: emergencyPhoneController,
+          ).animate().fadeIn(delay: 700.ms).slideY(begin: 0.1),
           const VerticalGap(48),
           CustomButton(
             text: LocaleKeys.profileUserSave,

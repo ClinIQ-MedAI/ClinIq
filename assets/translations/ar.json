@@ -359,7 +359,25 @@
         "complete_profile_title": "أكمل ملفك الشخصي",
         "complete_profile_description": "أكمل ملفك الطبي لفتح تجربة CliniQ الكاملة.",
         "complete_profile_button": "إكمال الملف الشخصي",
-        "phone": "الهاتف"
+        "phone": "الهاتف",
+        "date_of_birth": "تاريخ الميلاد",
+        "date_of_birth_hint": "اختر تاريخ ميلادك",
+        "diabetes": "السكري",
+        "pressure": "ارتفاع ضغط الدم",
+        "allergies": "الحساسية",
+        "allergies_hint": "أذكر أي حساسية لديك",
+        "chronic_conditions": "الأمراض المزمنة",
+        "chronic_conditions_hint": "مثال: الربو، التهاب المفاصل",
+        "emergency_section": "جهة الاتصال في الطوارئ",
+        "emergency_contact_name": "اسم جهة الاتصال",
+        "emergency_contact_name_hint": "الاسم الكامل لجهة الاتصال",
+        "emergency_contact_phone": "هاتف جهة الاتصال",
+        "emergency_contact_phone_hint": "رقم هاتف جهة الاتصال",
+        "blood_group_hint": "اختر فصيلة الدم",
+        "gender_hint": "اختر الجنس",
+        "male": "ذكر",
+        "female": "أنثى",
+        "physical_info": "المعلومات الجسدية"
         }
     },
     "settings": {

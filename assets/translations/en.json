@@ -359,7 +359,25 @@
             "complete_profile_title": "Complete your profile",
             "complete_profile_description": "Complete your medical profile to unlock the full CliniQ experience.",
             "complete_profile_button": "Complete Profile",
-            "phone": "Phone"
+            "phone": "Phone",
+        "date_of_birth": "Date of Birth",
+        "date_of_birth_hint": "Select your date of birth",
+        "diabetes": "Diabetes",
+        "pressure": "High Blood Pressure",
+        "allergies": "Allergies",
+        "allergies_hint": "List any allergies you have",
+        "chronic_conditions": "Chronic Conditions",
+        "chronic_conditions_hint": "e.g. Asthma, Arthritis",
+        "emergency_section": "Emergency Contact",
+        "emergency_contact_name": "Contact Name",
+        "emergency_contact_name_hint": "Full name of emergency contact",
+        "emergency_contact_phone": "Contact Phone",
+        "emergency_contact_phone_hint": "Phone number of emergency contact",
+        "blood_group_hint": "Select blood type",
+        "gender_hint": "Select gender",
+        "male": "Male",
+        "female": "Female",
+        "physical_info": "Physical Information"
         }
     },
     "settings": {
