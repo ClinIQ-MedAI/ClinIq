@@ -53,10 +53,9 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
       }
     });
 
-    ref.read(doctorConversationsProvider.notifier).updateConversation(
-      conversation.id,
-      (c) => c.copyWith(unreadCount: 0),
-    );
+    ref
+        .read(doctorConversationsProvider.notifier)
+        .updateConversation(conversation.id, (c) => c.copyWith(unreadCount: 0));
 
     return conversation.copyWith(unreadCount: 0);
   }
@@ -114,7 +113,9 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
     final conversation = state.value;
     if (conversation == null) return;
 
-    final messageIndex = conversation.messages.indexWhere((m) => m.id == messageId);
+    final messageIndex = conversation.messages.indexWhere(
+      (m) => m.id == messageId,
+    );
     if (messageIndex == -1) return;
 
     final message = conversation.messages[messageIndex];
@@ -122,14 +123,18 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
 
     _updateMessageStatus(conversation.id, messageId, ChatMessageStatus.sending);
 
-    _repo.sendMessage(
-      conversationId: conversation.id,
-      message: message,
-    ).then((serverMessage) {
-      _replaceMessage(conversation.id, messageId, serverMessage);
-    }).catchError((_) {
-      _updateMessageStatus(conversation.id, messageId, ChatMessageStatus.failed);
-    });
+    _repo
+        .sendMessage(conversationId: conversation.id, message: message)
+        .then((serverMessage) {
+          _replaceMessage(conversation.id, messageId, serverMessage);
+        })
+        .catchError((_) {
+          _updateMessageStatus(
+            conversation.id,
+            messageId,
+            ChatMessageStatus.failed,
+          );
+        });
   }
 
   void _subscribe(String conversationId) {
@@ -141,7 +146,9 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
   }
 
   void _upsertOrUpdateByBackendId(
-      String conversationId, ChatMessageEntity message) {
+    String conversationId,
+    ChatMessageEntity message,
+  ) {
     _updateConversation(conversationId, (conversation) {
       final messages = [...conversation.messages];
 

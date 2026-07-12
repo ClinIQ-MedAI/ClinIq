@@ -17,6 +17,7 @@ class ChatConversationEntity {
     this.isTyping = false,
     this.unreadCount = 0,
     this.isOnline = false,
+    this.participantId,
   });
 
   final String id;
@@ -32,6 +33,7 @@ class ChatConversationEntity {
   final bool isTyping;
   final int unreadCount;
   final bool isOnline;
+  final String? participantId;
 
   ChatConversationEntity copyWith({
     String? id,
@@ -47,6 +49,7 @@ class ChatConversationEntity {
     bool? isTyping,
     int? unreadCount,
     bool? isOnline,
+    String? participantId,
   }) {
     return ChatConversationEntity(
       id: id ?? this.id,
@@ -62,6 +65,7 @@ class ChatConversationEntity {
       isTyping: isTyping ?? this.isTyping,
       unreadCount: unreadCount ?? this.unreadCount,
       isOnline: isOnline ?? this.isOnline,
+      participantId: participantId ?? this.participantId,
     );
   }
 }

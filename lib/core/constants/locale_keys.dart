@@ -515,8 +515,16 @@ abstract class LocaleKeys {
   static const String bookingSuccessMessage = "booking.success_message";
   static const String bookingDone = "booking.done";
   static const String bookingLanguages = "booking.languages";
+  static const String bookingChatWithDoctorTitle =
+      "booking.chat_with_doctor_title";
+  static const String bookingChatWithDoctorSubtitle =
+      "booking.chat_with_doctor_subtitle";
+  static const String bookingStartChatButton = "booking.start_chat_button";
 
-  // splash
+  // chat (shared)
+  static const String chatUnableToOpenConversation =
+      "chat.unable_to_open_conversation";
+
   static const String splashTagline = "splash.tagline";
 
   // notifications

@@ -8,6 +8,7 @@ import 'package:cliniq/features/appointments/presentation/providers/get_doctor_b
 import 'package:cliniq/features/appointments/presentation/widgets/booking/about_doctor_section.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/booking_date_selector.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/confirm_booking_button.dart';
+import 'package:cliniq/features/appointments/presentation/widgets/booking/doctor_chat_section.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/doctor_detail_header.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/working_hours_section.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
@@ -74,7 +75,9 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                         onDateSelected: (date) =>
                             setState(() => selectedFullDate = date),
                       ),
-                      const VerticalGap(48),
+                      const VerticalGap(32),
+                      DoctorChatSection(doctor: detail.doctor),
+                      const VerticalGap(32),
                       ConfirmBookingButton(
                         isLoading: isBookingLoading,
                         isEnabled: selectedFullDate != null,

@@ -446,7 +446,10 @@
         "success_title": "تم تأكيد الحجز!",
         "success_message": "تم حجز موعدك مع {0} بنجاح.",
         "done": "تم",
-        "languages": "اللغات"
+        "languages": "اللغات",
+        "chat_with_doctor_title": "هل لديك أسئلة قبل الحجز؟",
+        "chat_with_doctor_subtitle": "يمكنك بدء محادثة مع هذا الطبيب للاستفسار عن الأعراض أو التحضير أو تفاصيل الاستشارة.",
+        "start_chat_button": "ابدأ المحادثة"
     },
     "splash": {
         "tagline": "رفيقك في الرعاية الصحية"

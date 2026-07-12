@@ -17,6 +17,7 @@ class ChatConversationModel extends ChatConversationEntity {
     super.isTyping,
     super.unreadCount,
     super.isOnline,
+    super.participantId,
   });
 
   factory ChatConversationModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +25,9 @@ class ChatConversationModel extends ChatConversationEntity {
     final title = json['doctorName'] as String? ??
         json['patientName'] as String? ??
         '';
+    final participantId = json['doctorId']?.toString() ??
+        json['participantId']?.toString() ??
+        json['patientId']?.toString();
     final subtitle = json['doctorSpecialization'] as String? ?? '';
     final lastMessageAt = json['lastMessageAt'] as String? ?? '';
     final lastMessageTime = lastMessageAt.length >= 16
@@ -47,6 +51,7 @@ class ChatConversationModel extends ChatConversationEntity {
       lastMessageTime: lastMessageTime,
       imageUrl: json['doctorAvatar'] as String? ?? '',
       unreadCount: json['unreadCount'] as int? ?? 0,
+      participantId: participantId,
     );
   }
 
@@ -65,6 +70,7 @@ class ChatConversationModel extends ChatConversationEntity {
     bool? isTyping,
     int? unreadCount,
     bool? isOnline,
+    String? participantId,
   }) {
     return ChatConversationModel(
       id: id ?? this.id,
@@ -80,6 +86,7 @@ class ChatConversationModel extends ChatConversationEntity {
       isTyping: isTyping ?? this.isTyping,
       unreadCount: unreadCount ?? this.unreadCount,
       isOnline: isOnline ?? this.isOnline,
+      participantId: participantId ?? this.participantId,
     );
   }
 
@@ -108,6 +115,7 @@ class ChatConversationModel extends ChatConversationEntity {
       'isTyping': isTyping,
       'unreadCount': unreadCount,
       'isOnline': isOnline,
+      if (participantId != null) 'participantId': participantId,
     };
   }
 }

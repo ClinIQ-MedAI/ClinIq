@@ -446,7 +446,10 @@
         "success_title": "Booking Confirmed!",
         "success_message": "Your appointment with {0} has been successfully booked.",
         "done": "Done",
-        "languages": "Languages"
+        "languages": "Languages",
+        "chat_with_doctor_title": "Have questions before booking?",
+        "chat_with_doctor_subtitle": "You can start a conversation with this doctor to ask about your symptoms, preparation, or consultation details.",
+        "start_chat_button": "Start Chat"
     },
     "splash": {
         "tagline": "Your Healthcare Companion"

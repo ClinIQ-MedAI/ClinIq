@@ -4,11 +4,12 @@ import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
-import 'package:cliniq/features/chat/presentation/providers/chat_repo_provider.dart';
 import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
+import 'package:cliniq/features/chat/presentation/providers/start_chat_provider.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_tile.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
 import 'package:cliniq/features/chat/presentation/widgets/empty_conversations_state.dart';
+import 'package:cliniq/features/chat/presentation/widgets/new_conversation_button.dart';
 import 'package:cliniq/features/chat/presentation/widgets/new_conversation_sheet.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
@@ -28,9 +29,14 @@ class ChatsView extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: context.colorScheme.surface,
-      appBar: const ProfileAppBar(
+      appBar: ProfileAppBar(
         title: LocaleKeys.chatDoctorTitle,
         showBackButton: false,
+        actions: [
+          NewConversationButton(
+            onTap: () => _showNewConversationSheet(context, ref),
+          ),
+        ],
       ),
       body: conversationsAsync.when(
         data: (conversations) {
@@ -82,7 +88,10 @@ class ChatsView extends ConsumerWidget {
         },
         (homeData) {
           if (homeData.suggestedDoctors.isEmpty) {
-            _showSnackBar(context, LocaleKeys.messagesFailuresUnexpectedError.tr());
+            _showSnackBar(
+              context,
+              LocaleKeys.messagesFailuresUnexpectedError.tr(),
+            );
             return;
           }
           _showDoctorSheet(context, ref, homeData.suggestedDoctors);
@@ -102,8 +111,7 @@ class ChatsView extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => NewConversationSheet(
         doctors: doctors,
-        onDoctorSelected: (doctor) =>
-            _startConversation(context, ref, doctor),
+        onDoctorSelected: (doctor) => _startConversation(context, ref, doctor),
       ),
     );
   }
@@ -115,19 +123,19 @@ class ChatsView extends ConsumerWidget {
   ) async {
     Navigator.pop(context);
 
-    final repo = ref.read(chatRepoProvider);
+    final useCase = ref.read(startChatUseCaseProvider);
 
     try {
-      final conversation = await repo.createConversation(doctorId: doctor.id);
+      final conversation = await useCase(
+        doctorId: doctor.id,
+        doctorName: doctor.name,
+      );
 
       if (!context.mounted) return;
-
       await Navigator.pushNamed(
         context,
         Routes.chatDetailsScreen,
-        arguments: ChatDetailsArguments(
-          conversationId: conversation.id,
-        ),
+        arguments: ChatDetailsArguments(conversationId: conversation.id),
       );
 
       ref.invalidate(doctorConversationsProvider);
