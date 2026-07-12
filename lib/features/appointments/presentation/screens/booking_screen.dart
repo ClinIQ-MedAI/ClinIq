@@ -11,6 +11,8 @@ import 'package:cliniq/features/appointments/presentation/widgets/booking/confir
 import 'package:cliniq/features/appointments/presentation/widgets/booking/doctor_chat_section.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/doctor_detail_header.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/booking/working_hours_section.dart';
+import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
+import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,6 +42,21 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
           context,
           LocaleKeys.messagesSuccessAppointmentBookedSuccessfully,
         );
+
+        final doctorDetail = doctorDetailAsync.value;
+        if (doctorDetail != null && selectedFullDate != null) {
+          final newAppointment = ExaminationAppointmentEntity(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            doctorName: doctorDetail.doctor.name,
+            doctorSpeciality: doctorDetail.doctor.speciality,
+            doctorImage: doctorDetail.doctor.image,
+            appointmentDate: selectedFullDate!,
+            appointmentTime: "09:00 AM", // Current default time in booking
+            appointmentStatus: "Upcoming",
+          );
+          ref.read(getHomeDataProvider.notifier).addAppointment(newAppointment);
+        }
+
         Navigator.pop(context);
       }
     });
