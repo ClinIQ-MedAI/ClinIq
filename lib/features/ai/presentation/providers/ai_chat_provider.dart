@@ -32,16 +32,32 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
   String? _pendingChatId;
 
   @override
-  FutureOr<ChatConversationEntity> build() {
-    _initSocket();
+  FutureOr<ChatConversationEntity> build() async {
+    await _initSocket();
+
+    final repo = ref.read(aiChatRepoProvider);
+    final historyResult = await repo.getChatHistory();
+    final historyMessages = historyResult.fold(
+      (failure) {
+        log('AI Chat: History load failed: $failure');
+        return <ChatMessageEntity>[];
+      },
+      (messages) => messages,
+    );
 
     ref.onDispose(() {
       _replySubscription?.cancel();
-      final repo = ref.read(aiChatRepoProvider);
       repo.disconnectSocket();
     });
 
-    return _buildConversation();
+    final conversation = _buildConversation();
+    if (historyMessages.isEmpty) return conversation;
+
+    return conversation.copyWith(
+      messages: historyMessages,
+      lastMessage: historyMessages.last.content,
+      lastMessageTime: historyMessages.last.sentAt,
+    );
   }
 
   ChatConversationEntity _buildConversation() {

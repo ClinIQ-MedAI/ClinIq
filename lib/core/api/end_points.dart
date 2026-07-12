@@ -44,8 +44,7 @@ class EndPoints {
   static const String readAllNotifications = "notifications/read-all";
 
   // booking
-  static String getDoctorById(String doctorId) =>
-      "patient/doctors/$doctorId";
+  static String getDoctorById(String doctorId) => "patient/doctors/$doctorId";
   static String getDoctorSchedules(String doctorId) =>
       "patient/bookings/doctors/$doctorId/schedules";
   static const String createBooking = "patient/bookings";
@@ -53,8 +52,8 @@ class EndPoints {
   static const String getDoctorsByDate = "patient/bookings/doctors";
 
   // AI chat
-  static const String aiScanUpload = "Scans/upload";
-  static const String aiPrescriptionUpload = "Prescriptions/upload";
+  static const String aiScanUpload = "ai/scans/upload";
+  static const String aiPrescriptionUpload = "ai/prescriptions/upload";
   static const String aiSendMessage = "chatbot";
-  static const String aiGetHistory = "ai/chat/history";
+  static const String aiGetHistory = "chatbot/history";
 }
