@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:cliniq/core/errors/failures.dart';
 import 'package:cliniq/features/ai/domain/entities/chatbot_reply_entity.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class AiChatRepo {
-  Future<Either<Failure, String>> sendMessage({
+  Future<void> connectSocket();
+  Future<void> disconnectSocket();
+  Stream<ChatbotReplyEntity> get onReplyReceived;
+
+  Future<Either<Failure, ChatbotReplyEntity>> sendChatMessage({
     required String message,
     String? languagePreference,
     String? scanId,
@@ -12,9 +18,4 @@ abstract class AiChatRepo {
   });
 
   Future<Either<Failure, List<ChatMessageEntity>>> getChatHistory();
-
-  Future<void> connectSocket();
-  Future<void> disconnectSocket();
-  Stream<ChatbotReplyEntity> get onReplyReceived;
-  bool get isSocketConnected;
 }

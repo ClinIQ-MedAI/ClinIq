@@ -2,7 +2,7 @@ import 'package:cliniq/core/api/api_urls.dart';
 
 enum ChatMessageSender { user, doctor, ai }
 
-enum ChatMessageStatus { sending, sent, delivered, seen, failed }
+enum ChatMessageStatus { sending, sent, delivered, seen, failed, loading }
 
 class ChatMessageEntity {
   const ChatMessageEntity({

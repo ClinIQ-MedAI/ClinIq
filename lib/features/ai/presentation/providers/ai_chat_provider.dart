@@ -29,13 +29,19 @@ final aiChatProvider =
 
 class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
   StreamSubscription<ChatbotReplyEntity>? _replySubscription;
-  String? _pendingChatId;
 
   @override
   FutureOr<ChatConversationEntity> build() async {
-    await _initSocket();
-
     final repo = ref.read(aiChatRepoProvider);
+
+    await repo.connectSocket();
+    _replySubscription = repo.onReplyReceived.listen(_handleReply);
+
+    ref.onDispose(() async {
+      _replySubscription?.cancel();
+      await repo.disconnectSocket();
+    });
+
     final historyResult = await repo.getChatHistory();
     final historyMessages = historyResult.fold(
       (failure) {
@@ -45,11 +51,6 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       (messages) => messages,
     );
 
-    ref.onDispose(() {
-      _replySubscription?.cancel();
-      repo.disconnectSocket();
-    });
-
     final conversation = _buildConversation();
     if (historyMessages.isEmpty) return conversation;
 
@@ -58,6 +59,59 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       lastMessage: historyMessages.last.content,
       lastMessageTime: historyMessages.last.sentAt,
     );
+  }
+
+  void _handleReply(ChatbotReplyEntity reply) {
+    log('_handleReply called — chatId: ${reply.chatId}, status: ${reply.status}');
+
+    final conversation = state.value;
+    if (conversation == null) {
+      return;
+    }
+
+    final loadingId = '${reply.chatId}-loading';
+
+    final loadingIndex =
+        conversation.messages.indexWhere((m) => m.id == loadingId);
+    if (loadingIndex == -1) {
+      return;
+    }
+
+
+    final messages = [...conversation.messages];
+    messages.removeAt(loadingIndex);
+
+    final status = reply.status.toLowerCase();
+
+    if (status == 'completed') {
+      messages.add(ChatMessageEntity(
+        id: reply.chatId,
+        content: reply.reply,
+        sentAt: reply.finishedAt ?? _currentTimeLabel(),
+        sender: ChatMessageSender.ai,
+        status: ChatMessageStatus.seen,
+      ));
+    } else if (status == 'failed') {
+      messages.add(ChatMessageEntity(
+        id: reply.chatId,
+        content: reply.error ?? 'An error occurred',
+        sentAt: _currentTimeLabel(),
+        sender: ChatMessageSender.ai,
+        status: ChatMessageStatus.failed,
+      ));
+    } 
+
+    state = AsyncData(conversation.copyWith(
+      messages: messages,
+      lastMessage: messages.last.content,
+      lastMessageTime: messages.last.sentAt,
+    ));
+
+    if (reply.showUpload) {
+      ref.read(aiShowUploadRequestProvider.notifier).show();
+    } else {
+      ref.read(aiShowUploadRequestProvider.notifier).hide();
+    }
   }
 
   ChatConversationEntity _buildConversation() {
@@ -73,55 +127,6 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       lastMessageTime: '',
       messages: [],
     );
-  }
-
-  Future<void> _initSocket() async {
-    try {
-      final repo = ref.read(aiChatRepoProvider);
-      await repo.connectSocket();
-      _replySubscription = repo.onReplyReceived.listen(_handleReply);
-      log('AI Chat: Socket connected successfully');
-    } catch (e) {
-      log('AI Chat: Socket init failed: $e');
-    }
-  }
-
-  void _handleReply(ChatbotReplyEntity reply) {
-    final conversation = state.value;
-    if (conversation == null || reply.chatId.isEmpty) return;
-
-    if (reply.chatId != _pendingChatId) return;
-
-    if (reply.status == 'pending') return;
-
-    if (reply.status == 'completed' && reply.reply.isNotEmpty) {
-      _removeLoadingMessage(reply.chatId);
-
-      _addMessage(ChatMessageEntity(
-        id: reply.chatId,
-        content: reply.reply,
-        sentAt: _currentTimeLabel(),
-        sender: ChatMessageSender.ai,
-        status: ChatMessageStatus.seen,
-      ));
-
-      if (reply.showUpload) {
-        ref.read(aiShowUploadRequestProvider.notifier).show();
-      }
-
-      _pendingChatId = null;
-    } else if (reply.status == 'failed') {
-      _removeLoadingMessage(reply.chatId);
-
-      _addMessage(ChatMessageEntity(
-        id: reply.chatId,
-        content: reply.error ?? 'AI response failed',
-        sentAt: _currentTimeLabel(),
-        sender: ChatMessageSender.ai,
-        status: ChatMessageStatus.failed,
-      ));
-      _pendingChatId = null;
-    }
   }
 
   Future<void> sendMessage(String content) async {
@@ -199,7 +204,7 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
 
     try {
       final repo = ref.read(aiChatRepoProvider);
-      final result = await repo.sendMessage(
+      final result = await repo.sendChatMessage(
         message: text,
         languagePreference: languagePreference,
         scanId: scanId,
@@ -210,16 +215,16 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
         (failure) {
           _updateMessageStatus(userMessage.id, ChatMessageStatus.failed);
         },
-        (chatId) {
+        (response) {
           _updateMessageStatus(userMessage.id, ChatMessageStatus.sent);
-          _pendingChatId = chatId;
 
+          final loadingId = '${response.chatId}-loading';
           _addMessage(ChatMessageEntity(
-            id: '$chatId-loading',
+            id: loadingId,
             content: '',
             sentAt: _currentTimeLabel(),
             sender: ChatMessageSender.ai,
-            status: ChatMessageStatus.sending,
+            status: ChatMessageStatus.loading,
           ));
         },
       );
@@ -259,17 +264,6 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       messages: [...conversation.messages, message],
       lastMessage: message.content,
       lastMessageTime: message.sentAt,
-    ));
-  }
-
-  void _removeLoadingMessage(String chatId) {
-    final conversation = state.value;
-    if (conversation == null) return;
-
-    state = AsyncData(conversation.copyWith(
-      messages: conversation.messages
-          .where((m) => m.id != '$chatId-loading')
-          .toList(),
     ));
   }
 

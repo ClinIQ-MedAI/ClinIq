@@ -9,6 +9,7 @@ import 'package:cliniq/features/chat/presentation/widgets/image_message_bubble.d
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({super.key, required this.message, this.onRetry});
 
@@ -27,7 +28,13 @@ class ChatMessageBubble extends StatelessWidget {
     final isUser = message.sender == ChatMessageSender.user;
     final isAi = message.sender == ChatMessageSender.ai;
 
-    if (!_hasText && !_hasAttachment) return const SizedBox.shrink();
+    if (!_hasText && !_hasAttachment && message.status != ChatMessageStatus.loading) {
+      return const SizedBox.shrink();
+    }
+
+    if (message.status == ChatMessageStatus.loading) {
+      return _loadingBubble(context);
+    }
 
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -143,6 +150,32 @@ class ChatMessageBubble extends StatelessWidget {
           ChatMessageStatusIcon(status: message.status),
         ],
       ],
+    );
+  }
+
+  Widget _loadingBubble(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
+        decoration: BoxDecoration(
+          color: context.colorScheme.secondary.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.r),
+            topRight: Radius.circular(24.r),
+            bottomLeft: Radius.circular(8.r),
+            bottomRight: Radius.circular(24.r),
+          ),
+        ),
+        child: SizedBox(
+          width: 24.w,
+          height: 24.h,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.5,
+            color: context.colorScheme.primary,
+          ),
+        ),
+      ),
     );
   }
 

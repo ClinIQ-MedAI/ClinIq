@@ -4,6 +4,7 @@ import 'package:cliniq/core/api/api_selector.dart';
 import 'package:cliniq/core/repos/socket_repo/socket_repo.dart';
 import 'package:cliniq/core/repos/socket_repo/socket_repo_impl.dart';
 import 'package:cliniq/core/socket/signalr_service.dart';
+import 'package:cliniq/core/socket/socket_config.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
@@ -34,8 +35,14 @@ Future<void> setupGetIt() async {
   // Connectivity
   getIt.registerSingleton<Connectivity>(Connectivity());
 
-  // SignalR service
+  // SignalR service - Doctor Chat
   getIt.registerSingleton<SocketConsumer>(SignalRService());
+
+  // SignalR service - AI Chatbot (separate hub)
+  getIt.registerSingleton<SocketConsumer>(
+    SignalRService(hubUrl: SocketConfig.aiSignalrBaseUrl),
+    instanceName: 'aiSocket',
+  );
 
   getIt.registerSingleton<SocketRepo>(
     SocketRepoImpl(socket: getIt<SocketConsumer>()),
@@ -83,11 +90,6 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<AiScanRepo>(
     AiScanRepoImpl(api: ApiSelector.get(ApiFeatures.chat)),
-  );
-
-  getIt.registerSingleton<SocketConsumer>(
-    SignalRService(hubUrl: 'https://Cliniq.runasp.net/hubs/chatbot'),
-    instanceName: 'aiSocket',
   );
 
   getIt.registerSingleton<AiChatRepo>(

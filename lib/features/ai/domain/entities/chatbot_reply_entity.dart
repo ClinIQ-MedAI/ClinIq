@@ -4,7 +4,7 @@ class ChatbotReplyEntity {
   final String reply;
   final String queryType;
   final bool showUpload;
-  final String patientId;
+  final String? patientId;
   final String? error;
   final String? worker;
   final int? durationMs;
@@ -14,9 +14,9 @@ class ChatbotReplyEntity {
     required this.chatId,
     required this.status,
     required this.reply,
-    required this.queryType,
-    required this.showUpload,
-    required this.patientId,
+    this.queryType = '',
+    this.showUpload = false,
+    this.patientId,
     this.error,
     this.worker,
     this.durationMs,

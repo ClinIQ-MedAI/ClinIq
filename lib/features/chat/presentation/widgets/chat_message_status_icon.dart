@@ -15,7 +15,19 @@ class ChatMessageStatusIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (status == ChatMessageStatus.loading) {
+      return SizedBox(
+        width: 14.sp,
+        height: 14.sp,
+        child: CircularProgressIndicator(
+          strokeWidth: 1.5,
+          color: color ?? Theme.of(context).colorScheme.primary,
+        ),
+      );
+    }
+
     final icon = switch (status) {
+      ChatMessageStatus.loading => Icons.hourglass_empty_rounded,
       ChatMessageStatus.sending => Icons.schedule_rounded,
       ChatMessageStatus.sent => Icons.done_rounded,
       ChatMessageStatus.delivered => Icons.done_all_rounded,

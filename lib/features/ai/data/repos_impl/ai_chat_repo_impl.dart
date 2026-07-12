@@ -17,34 +17,56 @@ class AiChatRepoImpl extends BaseRepoImpl implements AiChatRepo {
   AiChatRepoImpl({required super.api, required this.socket});
 
   final SocketConsumer socket;
+  bool _listenerRegistered = false;
+
   final StreamController<ChatbotReplyEntity> _replyController =
       StreamController<ChatbotReplyEntity>.broadcast();
-  bool _listening = false;
 
   @override
-  Future<Either<Failure, String>> sendMessage({
+  Stream<ChatbotReplyEntity> get onReplyReceived => _replyController.stream;
+
+  @override
+  Future<void> connectSocket() async {
+    if (socket.isConnected && _listenerRegistered) return;
+
+    if (!socket.isConnected) {
+      await socket.connect();
+    }
+
+    if (!_listenerRegistered) {
+      socket.on(SocketEvents.receiveChatbotReply, _onReplyReceived);
+      _listenerRegistered = true;
+    }
+  }
+
+  @override
+  Future<void> disconnectSocket() async {
+    _listenerRegistered = false;
+    await socket.disconnect();
+  }
+
+  void _onReplyReceived(List<dynamic>? arguments) {
+    final data = arguments?.first;
+    if (data is! Map<String, dynamic>) return;
+    log('AI Socket: ReceiveChatbotReply payload: $data');
+    _replyController.add(ChatbotReplyModel.fromJson(data));
+  }
+
+  @override
+  Future<Either<Failure, ChatbotReplyEntity>> sendChatMessage({
     required String message,
     String? languagePreference,
     String? scanId,
     String? prescriptionId,
   }) {
-    return handleApi(() async {
+    return handleApi<ChatbotReplyEntity>(() async {
       final body = <String, dynamic>{'message': message};
-      if (languagePreference != null) {
-        body['languagePreference'] = languagePreference;
-      } else {
-        body['languagePreference'] = 'en';
-      }
+      body['languagePreference'] = languagePreference ?? 'en';
       if (scanId != null) body['scanId'] = scanId;
       if (prescriptionId != null) body['prescriptionId'] = prescriptionId;
 
       final response = await api.post(EndPoints.aiSendMessage, data: body);
-      final chatId = response is Map<String, dynamic>
-          ? (response['chatId']?.toString() ??
-                response['chat_id']?.toString() ??
-                '')
-          : '';
-      return chatId;
+      return ChatbotReplyModel.fromJson(response as Map<String, dynamic>);
     });
   }
 
@@ -55,44 +77,5 @@ class AiChatRepoImpl extends BaseRepoImpl implements AiChatRepo {
       final list = response as List<dynamic>;
       return AiChatHistoryModel.toMessageList(list);
     });
-  }
-
-  @override
-  Future<void> connectSocket() async {
-    if (socket.isConnected) return;
-    await socket.connect();
-    _listenForReplies();
-  }
-
-  @override
-  Future<void> disconnectSocket() async {
-    await socket.disconnect();
-  }
-
-  @override
-  bool get isSocketConnected => socket.isConnected;
-
-  @override
-  Stream<ChatbotReplyEntity> get onReplyReceived => _replyController.stream;
-
-  void _listenForReplies() {
-    if (_listening) return;
-    _listening = true;
-
-    socket.on(SocketEvents.receiveChatbotReply, (List<dynamic>? arguments) {
-      if (arguments == null || arguments.isEmpty) return;
-      final data = arguments.first;
-      if (data is! Map<String, dynamic>) return;
-
-      log('AI Socket: ReceiveChatbotReply payload: $data');
-      final reply = ChatbotReplyModel.fromJson(data);
-      _replyController.add(reply);
-    });
-  }
-
-  void dispose() {
-    _replyController.close();
-    socket.dispose();
-    _listening = false;
   }
 }
