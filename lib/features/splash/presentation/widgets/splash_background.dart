@@ -1,65 +1,41 @@
+import 'package:cliniq/features/splash/presentation/widgets/splash_glow_orb.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashBackground extends StatelessWidget {
-  const SplashBackground({super.key});
+  const SplashBackground({super.key, required this.animation});
+
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            const Color(0xFF4F46E5),
-            const Color(0xFF7C3AED).withValues(alpha: 0.85),
-            const Color(0xFF4F46E5),
-          ],
-          stops: const [0.0, 0.5, 1.0],
+    final scheme = Theme.of(context).colorScheme;
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, _) => DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              scheme.primary,
+              Color.lerp(scheme.primary, scheme.secondary, .16)!,
+            ],
+          ),
         ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -80.h,
-            right: -60.w,
-            child: Container(
-              width: 240.w,
-              height: 240.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.04),
-              ),
+        child: Stack(
+          children: [
+            SplashGlowOrb(
+              alignment: const Alignment(.95, -.9),
+              sizeFactor: .62,
+              opacity: .13 * animation.value,
             ),
-          ),
-          Positioned(
-            bottom: 100.h,
-            left: -40.w,
-            child: Container(
-              width: 180.w,
-              height: 180.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.03),
-              ),
+            SplashGlowOrb(
+              alignment: const Alignment(-.95, .58),
+              sizeFactor: .48,
+              opacity: .08 * animation.value,
             ),
-          ),
-          Positioned(
-            top: 200.h,
-            left: 60.w,
-            child: Container(
-              width: 100.w,
-              height: 100.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: 0.05),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

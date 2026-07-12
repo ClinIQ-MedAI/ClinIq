@@ -31,6 +31,7 @@ import 'package:cliniq/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:cliniq/features/chat/presentation/arguments/full_screen_image_viewer_arguments.dart';
 import 'package:cliniq/features/chat/presentation/widgets/full_screen_image_viewer.dart';
 import 'package:cliniq/features/notifications/presentation/screens/notifications_screen.dart';
+import 'package:cliniq/features/onboarding/presentation/screens/onboarding_screen.dart';
 
 Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
   log("Navigating to ${settings.name}");
@@ -38,6 +39,9 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
   switch (settings.name) {
     case Routes.splashScreen:
       return MaterialPageRoute(builder: (_) => const SplashScreen());
+
+    case Routes.onboardingScreen:
+      return MaterialPageRoute(builder: (_) => const OnboardingScreen());
 
     case Routes.loginScreen:
       return MaterialPageRoute(builder: (_) => const LoginScreen());
@@ -140,9 +144,7 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
 
     // Notifications
     case Routes.notificationsScreen:
-      return MaterialPageRoute(
-        builder: (_) => const NotificationsScreen(),
-      );
+      return MaterialPageRoute(builder: (_) => const NotificationsScreen());
 
     default:
       return MaterialPageRoute(

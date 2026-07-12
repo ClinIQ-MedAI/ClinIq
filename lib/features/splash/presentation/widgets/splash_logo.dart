@@ -1,22 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashLogo extends StatelessWidget {
-  const SplashLogo({super.key});
+  const SplashLogo({super.key, required this.animation});
+
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      'assets/images/logo.svg',
-      width: 120.w,
-      height: 120.w,
-    ).animate().scaleXY(
-          begin: 0.7,
-          end: 1.0,
-          duration: 500.ms,
-          curve: Curves.easeOutBack,
-        ).fadeIn(duration: 400.ms);
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        final scale = .8 + (.2 * animation.value);
+        return Opacity(
+          opacity: animation.value,
+          child: Transform.scale(
+            scale: scale,
+            child: Container(
+              width: 136.w,
+              height: 136.w,
+              padding: EdgeInsets.all(12.w),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: onPrimary.withValues(alpha: .1 * animation.value),
+              ),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: RepaintBoundary(child: SvgPicture.asset('assets/images/logo.svg')),
+    );
   }
 }

@@ -1,59 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SplashLoader extends StatefulWidget {
-  const SplashLoader({super.key});
+class SplashLoader extends StatelessWidget {
+  const SplashLoader({super.key, required this.animation});
 
-  @override
-  State<SplashLoader> createState() => _SplashLoaderState();
-}
-
-class _SplashLoaderState extends State<SplashLoader>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-    _controller.repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onPrimary;
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, _) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(3, (index) {
-            final delay = index * 0.2;
-            final value = ((_controller.value - delay) % 1.0).clamp(0.0, 1.0);
-            final size = 8.w + (value * 6.w);
-            final opacity = 0.4 + (value * 0.6);
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w),
-              child: Container(
-                width: size,
-                height: size,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: opacity),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            );
-          }),
-        );
-      },
+      animation: animation,
+      builder: (context, _) => SizedBox(
+        height: 18.h,
+        width: 68.w,
+        child: CustomPaint(
+          painter: _SplashPulsePainter(color, animation.value),
+        ),
+      ),
     );
   }
+}
+
+class _SplashPulsePainter extends CustomPainter {
+  const _SplashPulsePainter(this.color, this.progress);
+
+  final Color color;
+  final double progress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withValues(alpha: .72)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+    final beat = (progress * 2 - 1).abs();
+    final path = Path()
+      ..moveTo(0, size.height * .58)
+      ..lineTo(size.width * .24, size.height * .58)
+      ..lineTo(size.width * .37, size.height * (.58 - (.26 * beat)))
+      ..lineTo(size.width * .48, size.height * (.87 - (.48 * beat)))
+      ..lineTo(size.width * .59, size.height * .58)
+      ..lineTo(size.width, size.height * .58);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _SplashPulsePainter oldDelegate) =>
+      oldDelegate.progress != progress || oldDelegate.color != color;
 }

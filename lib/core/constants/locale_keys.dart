@@ -526,6 +526,7 @@ abstract class LocaleKeys {
   static const String chatUnableToOpenConversation =
       "chat.unable_to_open_conversation";
 
+  static const String splashTitle = "splash.title";
   static const String splashTagline = "splash.tagline";
 
   // notifications

@@ -453,7 +453,8 @@
         "view_schedule": "View Schedule"
     },
     "splash": {
-        "tagline": "Your Healthcare Companion"
+        "title": "CliniQ",
+        "tagline": "AI-Powered Healthcare"
     },
     "notifications": {
         "title": "Notifications",
