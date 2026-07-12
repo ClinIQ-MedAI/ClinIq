@@ -4,6 +4,7 @@ import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
+import 'package:cliniq/features/chat/presentation/providers/doctor_conversations_provider.dart';
 import 'package:cliniq/features/chat/presentation/providers/start_chat_provider.dart';
 import 'package:cliniq/features/home/presentation/providers/bottom_nav_index_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,13 +44,15 @@ class _StartChatButtonState extends ConsumerState<StartChatButton> {
 
       ref.read(bottomNavIndexProvider.notifier).setIndex(2);
 
-      Navigator.pushNamed(
+      await Navigator.pushNamed(
         context,
         Routes.chatDetailsScreen,
         arguments: ChatDetailsArguments(
           conversationId: conversation.id,
         ),
       );
+
+      ref.invalidate(doctorConversationsProvider);
     } catch (e) {
       if (!mounted) return;
       showCustomSnackBar(context, e.toString());

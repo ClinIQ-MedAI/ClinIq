@@ -13,6 +13,7 @@ class ChatConversationEntity {
     required this.messages,
     required this.lastMessage,
     required this.lastMessageTime,
+    this.imageUrl = '',
     this.isTyping = false,
     this.unreadCount = 0,
     this.isOnline = false,
@@ -27,6 +28,7 @@ class ChatConversationEntity {
   final List<ChatMessageEntity> messages;
   final String lastMessage;
   final String lastMessageTime;
+  final String imageUrl;
   final bool isTyping;
   final int unreadCount;
   final bool isOnline;
@@ -41,6 +43,7 @@ class ChatConversationEntity {
     List<ChatMessageEntity>? messages,
     String? lastMessage,
     String? lastMessageTime,
+    String? imageUrl,
     bool? isTyping,
     int? unreadCount,
     bool? isOnline,
@@ -55,6 +58,7 @@ class ChatConversationEntity {
       messages: messages ?? this.messages,
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      imageUrl: imageUrl ?? this.imageUrl,
       isTyping: isTyping ?? this.isTyping,
       unreadCount: unreadCount ?? this.unreadCount,
       isOnline: isOnline ?? this.isOnline,

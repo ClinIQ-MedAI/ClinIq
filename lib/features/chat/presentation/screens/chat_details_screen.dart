@@ -6,7 +6,7 @@ import 'package:cliniq/features/chat/presentation/providers/chat_conversation_pr
 import 'package:cliniq/features/chat/presentation/widgets/attachment_picker_sheet.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_body.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
-import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
+import 'package:cliniq/features/chat/presentation/widgets/doctor_chat_header.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,43 +31,48 @@ class ChatDetailsScreen extends ConsumerWidget {
     final conversationAsync = ref.watch(chatConversationProvider(request));
     final uploadState = ref.watch(attachmentUploadProvider);
 
-    return conversationAsync.when(
-      data: (conversation) => Scaffold(
-        backgroundColor: context.colorScheme.surface,
-        appBar: ProfileAppBar(title: conversation.title),
-        body: ChatConversationBody(
-          conversation: conversation,
-          onMessageSubmitted: (text) => ref
-              .read(chatConversationProvider(request).notifier)
-              .sendMessage(text),
-          onMessageRetry: (messageId) => ref
-              .read(chatConversationProvider(request).notifier)
-              .retryMessage(messageId),
-          onTypingChanged: ref
-              .read(chatConversationProvider(request).notifier)
-              .updateTypingStatus,
-          onAttachmentTap: () => _handleAttachmentTap(context, ref),
-          hasAttachment: uploadState.hasAttachment,
-          attachmentFileName: uploadState.pickedFile?.fileName,
-          attachmentFilePath: uploadState.pickedFile?.filePath,
-          isAttachmentUploading: uploadState.isUploading,
-          attachmentFileSize: uploadState.pickedFile?.fileSize,
-          onRemoveAttachment: () =>
-              ref.read(attachmentUploadProvider.notifier).removeAttachment(),
-          isSendDisabled: uploadState.isUploading,
+    return Scaffold(
+      backgroundColor: context.colorScheme.surface,
+      body: SafeArea(
+        child: conversationAsync.when(
+          data: (conversation) => Column(
+            children: [
+              DoctorChatHeader(conversation: conversation),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
+              ),
+              Expanded(
+                child: ChatConversationBody(
+                  conversation: conversation,
+                  onMessageSubmitted: (text) => ref
+                      .read(chatConversationProvider(request).notifier)
+                      .sendMessage(text),
+                  onMessageRetry: (messageId) => ref
+                      .read(chatConversationProvider(request).notifier)
+                      .retryMessage(messageId),
+                  onTypingChanged: ref
+                      .read(chatConversationProvider(request).notifier)
+                      .updateTypingStatus,
+                  onAttachmentTap: () => _handleAttachmentTap(context, ref),
+                  hasAttachment: uploadState.hasAttachment,
+                  attachmentFileName: uploadState.pickedFile?.fileName,
+                  attachmentFilePath: uploadState.pickedFile?.filePath,
+                  isAttachmentUploading: uploadState.isUploading,
+                  attachmentFileSize: uploadState.pickedFile?.fileSize,
+                  onRemoveAttachment: () =>
+                      ref.read(attachmentUploadProvider.notifier).removeAttachment(),
+                  isSendDisabled: uploadState.isUploading,
+                ),
+              ),
+            ],
+          ),
+          error: (error, stackTrace) => Center(
+            child: Text(LocaleKeys.messagesFailuresUnexpectedError.tr()),
+          ),
+          loading: () => const ChatLoadingState(),
         ),
-      ),
-      error: (error, stackTrace) => Scaffold(
-        backgroundColor: context.colorScheme.surface,
-        appBar: const ProfileAppBar(title: LocaleKeys.chatDoctorTitle),
-        body: Center(
-          child: Text(LocaleKeys.messagesFailuresUnexpectedError.tr()),
-        ),
-      ),
-      loading: () => Scaffold(
-        backgroundColor: context.colorScheme.surface,
-        appBar: const ProfileAppBar(title: LocaleKeys.chatDoctorTitle),
-        body: const ChatLoadingState(),
       ),
     );
   }

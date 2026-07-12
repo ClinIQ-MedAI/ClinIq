@@ -122,13 +122,15 @@ class ChatsView extends ConsumerWidget {
 
       if (!context.mounted) return;
 
-      Navigator.pushNamed(
+      await Navigator.pushNamed(
         context,
         Routes.chatDetailsScreen,
         arguments: ChatDetailsArguments(
           conversationId: conversation.id,
         ),
       );
+
+      ref.invalidate(doctorConversationsProvider);
     } catch (e) {
       if (!context.mounted) return;
       _showSnackBar(context, '$e');

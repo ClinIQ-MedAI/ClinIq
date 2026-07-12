@@ -62,11 +62,10 @@ class AvailableDoctorsSection extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: doctors.length,
                 itemBuilder: (context, index) {
-                  return AppointmentCard(
-                    appointment: doctors[index],
-                  ).animate().fadeIn(delay: (100 * index).ms).slideX(
-                    begin: 0.1,
-                  );
+                  return AppointmentCard(appointment: doctors[index])
+                      .animate()
+                      .fadeIn(delay: (100 * index).ms)
+                      .slideX(begin: 0.1);
                 },
               );
             },

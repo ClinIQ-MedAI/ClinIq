@@ -53,6 +53,11 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
       }
     });
 
+    ref.read(doctorConversationsProvider.notifier).updateConversation(
+      conversation.id,
+      (c) => c.copyWith(unreadCount: 0),
+    );
+
     return conversation.copyWith(unreadCount: 0);
   }
 
@@ -268,8 +273,11 @@ class ChatConversationNotifier extends AsyncNotifier<ChatConversationEntity> {
       );
     }
 
-    final messages = await _repo.getConversationMessages(conversationId);
+    if (baseConversation.messages.isEmpty) {
+      final messages = await _repo.getConversationMessages(conversationId);
+      return baseConversation.copyWith(messages: messages);
+    }
 
-    return baseConversation.copyWith(messages: messages);
+    return baseConversation;
   }
 }

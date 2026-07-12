@@ -65,6 +65,13 @@ class DoctorConversationsNotifier
     );
   }
 
+  void updateConversation(
+    String conversationId,
+    ChatConversationEntity Function(ChatConversationEntity conversation) update,
+  ) {
+    _updateConversation(conversationId, update);
+  }
+
   void _updateConversation(
     String conversationId,
     ChatConversationEntity Function(ChatConversationEntity conversation) update,

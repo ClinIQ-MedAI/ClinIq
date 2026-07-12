@@ -29,9 +29,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final doctorDetailAsync = ref.watch(
-      getDoctorByIdProvider(widget.doctorId),
-    );
+    final doctorDetailAsync = ref.watch(getDoctorByIdProvider(widget.doctorId));
 
     ref.listen(bookAppointmentProvider, (previous, next) {
       if (next is AsyncError) {
