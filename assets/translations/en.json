@@ -26,7 +26,8 @@
             "password_requires_special_character": "Passwords must have at least one special character.",
             "password_requires_lowercase": "Passwords must have at least one lowercase letter.",
             "password_requires_uppercase": "Passwords must have at least one uppercase letter.",
-            "invalid_email_format": "Invalid email address."
+            "invalid_email_format": "Invalid email address.",
+            "mic_disabled":"Mic is disabled now , we will enable it soon"
         }
     },
     "validation": {

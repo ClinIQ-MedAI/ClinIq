@@ -48,6 +48,7 @@ abstract class LocaleKeys {
       "messages.failures.password_requires_uppercase";
   static const messagesFailuresInvalidEmailFormat =
       "messages.failures.invalid_email_format";
+  static const messagesFailuresMicDisabled = "messages.failures.mic_disabled";
 
   // validation
   static const validationFieldIsRequired = "validation.field_is_required";
@@ -278,8 +279,7 @@ abstract class LocaleKeys {
   static const homeQuickActionsUrgentCare = "home.quick_actions.urgent_care";
   static const homeQuickActionsHomeVisit = "home.quick_actions.home_visit";
   static const homeQuickActionsPharmacies = "home.quick_actions.pharmacies";
-  static const homeQuickActionsConsultation =
-      "home.quick_actions.consultation";
+  static const homeQuickActionsConsultation = "home.quick_actions.consultation";
   static const homeDoctorsSearchHint = "home.doctors_search_hint";
   static const homeNoSearchResults = "home.no_search_results";
   static const homeNoSearchResultsDesc = "home.no_search_results_desc";
@@ -311,10 +311,12 @@ abstract class LocaleKeys {
   static const specialitiesPsychiatry = "specialities.psychiatry";
   static const specialitiesGeneralSurgery = "specialities.general_surgery";
   static const specialitiesInternalMedicine = "specialities.internal_medicine";
-  static const specialitiesObstetricsGynecology = "specialities.obstetrics_gynecology";
+  static const specialitiesObstetricsGynecology =
+      "specialities.obstetrics_gynecology";
   static const specialitiesRadiology = "specialities.radiology";
   static const specialitiesAnesthesia = "specialities.anesthesia";
-  static const specialitiesEmergencyMedicine = "specialities.emergency_medicine";
+  static const specialitiesEmergencyMedicine =
+      "specialities.emergency_medicine";
   static const specialitiesFamilyMedicine = "specialities.family_medicine";
   static const specialitiesGastroenterology = "specialities.gastroenterology";
   static const specialitiesNephrology = "specialities.nephrology";
@@ -324,7 +326,8 @@ abstract class LocaleKeys {
   static const specialitiesUrology = "specialities.urology";
   static const specialitiesEndocrinology = "specialities.endocrinology";
   static const specialitiesHematology = "specialities.hematology";
-  static const specialitiesInfectiousDisease = "specialities.infectious_disease";
+  static const specialitiesInfectiousDisease =
+      "specialities.infectious_disease";
 
   // chat
   static const chatDoctorTitle = "chat.doctor.title";
@@ -383,7 +386,8 @@ abstract class LocaleKeys {
   static const chatImageViewerExternal = "chat.image_viewer.external";
   static const chatImageViewerCopy = "chat.image_viewer.copy";
   static const chatImageViewerSavedSuccess = "chat.image_viewer.saved_success";
-  static const chatImageViewerCopiedSuccess = "chat.image_viewer.copied_success";
+  static const chatImageViewerCopiedSuccess =
+      "chat.image_viewer.copied_success";
   static const chatImageViewerMoreActions = "chat.image_viewer.more_actions";
 
   // ai
@@ -399,11 +403,13 @@ abstract class LocaleKeys {
   static const aiChatAttachmentPickerTitle = "ai.chat.attachment_picker_title";
   static const aiChatPromptHeadache = "ai.chat.prompt_headache";
   static const aiChatPromptAnalyzeScan = "ai.chat.prompt_analyze_scan";
-  static const aiChatPromptExplainPrescription = "ai.chat.prompt_explain_prescription";
+  static const aiChatPromptExplainPrescription =
+      "ai.chat.prompt_explain_prescription";
   static const aiChatPromptToothPain = "ai.chat.prompt_tooth_pain";
   static const aiChatSuggestedPromptsTitle = "ai.chat.suggested_prompts_title";
   static const aiChatUploadRequestTitle = "ai.chat.upload_request_title";
-  static const aiChatUploadRequestDescription = "ai.chat.upload_request_description";
+  static const aiChatUploadRequestDescription =
+      "ai.chat.upload_request_description";
   static const aiChatUploadRequestButton = "ai.chat.upload_request_button";
 
   // profile
@@ -426,9 +432,12 @@ abstract class LocaleKeys {
   static const profileUserGender = "profile.user.gender";
   static const profileUserCm = "profile.user.cm";
   static const profileUserKg = "profile.user.kg";
-  static const profileUserCompleteProfileTitle = "profile.user.complete_profile_title";
-  static const profileUserCompleteProfileDescription = "profile.user.complete_profile_description";
-  static const profileUserCompleteProfileButton = "profile.user.complete_profile_button";
+  static const profileUserCompleteProfileTitle =
+      "profile.user.complete_profile_title";
+  static const profileUserCompleteProfileDescription =
+      "profile.user.complete_profile_description";
+  static const profileUserCompleteProfileButton =
+      "profile.user.complete_profile_button";
   static const profileUserPhone = "profile.user.phone";
   static const profileUserDateOfBirth = "profile.user.date_of_birth";
   static const profileUserDateOfBirthHint = "profile.user.date_of_birth_hint";
@@ -437,12 +446,17 @@ abstract class LocaleKeys {
   static const profileUserAllergies = "profile.user.allergies";
   static const profileUserAllergiesHint = "profile.user.allergies_hint";
   static const profileUserChronicConditions = "profile.user.chronic_conditions";
-  static const profileUserChronicConditionsHint = "profile.user.chronic_conditions_hint";
+  static const profileUserChronicConditionsHint =
+      "profile.user.chronic_conditions_hint";
   static const profileUserEmergencySection = "profile.user.emergency_section";
-  static const profileUserEmergencyContactName = "profile.user.emergency_contact_name";
-  static const profileUserEmergencyContactNameHint = "profile.user.emergency_contact_name_hint";
-  static const profileUserEmergencyContactPhone = "profile.user.emergency_contact_phone";
-  static const profileUserEmergencyContactPhoneHint = "profile.user.emergency_contact_phone_hint";
+  static const profileUserEmergencyContactName =
+      "profile.user.emergency_contact_name";
+  static const profileUserEmergencyContactNameHint =
+      "profile.user.emergency_contact_name_hint";
+  static const profileUserEmergencyContactPhone =
+      "profile.user.emergency_contact_phone";
+  static const profileUserEmergencyContactPhoneHint =
+      "profile.user.emergency_contact_phone_hint";
   static const profileUserBloodGroupHint = "profile.user.blood_group_hint";
   static const profileUserGenderHint = "profile.user.gender_hint";
   static const profileUserMale = "profile.user.male";

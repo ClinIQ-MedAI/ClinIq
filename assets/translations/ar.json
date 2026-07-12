@@ -26,7 +26,8 @@
             "password_requires_special_character": "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل.",
             "password_requires_lowercase": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل.",
             "password_requires_uppercase": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل.",
-            "invalid_email_format": "البريد الإلكتروني غير صالح."
+            "invalid_email_format": "البريد الإلكتروني غير صالح.",
+            "mic_disbled": " المايك معطل حاليا , سنقوم بتفعيله قريبا"
         }
     },
     "validation": {

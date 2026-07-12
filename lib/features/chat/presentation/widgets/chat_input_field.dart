@@ -1,4 +1,5 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
+import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
@@ -147,7 +148,16 @@ class _ChatInputFieldState extends State<ChatInputField> {
               ),
             ),
             const HorizontalGap(10),
-            ChatIconButton(icon: Icons.mic_none_rounded, onPressed: () {}),
+            ChatIconButton(
+              icon: Icons.mic_none_rounded,
+              onPressed: () {},
+              onLongPress: () {
+                showCustomSnackBar(
+                  context,
+                  LocaleKeys.messagesFailuresMicDisabled,
+                );
+              },
+            ),
             const HorizontalGap(8),
             ChatIconButton(
               icon: widget.isSendDisabled

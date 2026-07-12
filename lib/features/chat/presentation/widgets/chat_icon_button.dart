@@ -7,17 +7,20 @@ class ChatIconButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.onPressed,
+    this.onLongPress,
     this.isPrimary = false,
   });
 
   final IconData icon;
   final VoidCallback? onPressed;
+  final VoidCallback? onLongPress;
   final bool isPrimary;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
+      onLongPress: onLongPress,
       borderRadius: BorderRadius.circular(18.r),
       child: Opacity(
         opacity: onPressed != null ? 1.0 : 0.4,
