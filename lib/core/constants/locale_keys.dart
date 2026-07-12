@@ -340,6 +340,14 @@ abstract class LocaleKeys {
   static const chatDoctorStartFirstConversation =
       "chat.doctor.start_first_conversation";
   static const chatDoctorHelperText = "chat.doctor.helper_text";
+  static const chatDoctorOnlineNow = "chat.doctor.online_now";
+  static const chatDoctorUsuallyRepliesQuickly =
+      "chat.doctor.usually_replies_quickly";
+  static const chatDoctorFeelFreeToAsk = "chat.doctor.feel_free_to_ask";
+  static const chatDoctorStartConversationWith =
+      "chat.doctor.start_conversation_with";
+  static const chatDoctorRating = "chat.doctor.rating";
+  static const chatDoctorExperience = "chat.doctor.experience";
   static const chatDoctorSendMessage = "chat.doctor.send_message";
   static const chatDoctorAhmedName = "chat.doctor.ahmed_name";
   static const chatDoctorAhmedSpecialty = "chat.doctor.ahmed_specialty";

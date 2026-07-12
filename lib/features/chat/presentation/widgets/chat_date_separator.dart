@@ -12,10 +12,13 @@ class ChatDateSeparator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 7.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: context.colorScheme.primary.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(18.r),
+        color: context.colorScheme.surfaceContainerHigh.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(30.r),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.2),
+        ),
       ),
       child: Text(
         title.tr(),

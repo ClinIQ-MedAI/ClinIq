@@ -2,7 +2,7 @@ import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
-import 'package:cliniq/features/chat/presentation/widgets/chat_avatar.dart';
+import 'package:cliniq/features/home/presentation/widgets/doctor_avatar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,10 +20,27 @@ class ChatEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ChatAvatar(type: conversation.type, size: 76),
-            const VerticalGap(20),
+            Container(
+              padding: EdgeInsets.all(24.w),
+              decoration: BoxDecoration(
+                color: context.colorScheme.primary.withValues(alpha: 0.05),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.mark_chat_read_rounded,
+                size: 64.sp,
+                color: context.colorScheme.primary.withValues(alpha: 0.5),
+              ),
+            ),
+            const VerticalGap(24),
+            DoctorAvatar(
+              imageUrl: conversation.imageUrl,
+              name: conversation.title,
+              size: 80,
+            ),
+            const VerticalGap(16),
             Text(
-              conversation.emptyTitle.tr(),
+              'startYourConversationWith'.tr(args: [conversation.title.tr()]),
               textAlign: TextAlign.center,
               style: AppTextStyles.getTextStyle(20).copyWith(
                 color: context.textPalette.primaryColor,
@@ -32,7 +49,7 @@ class ChatEmptyState extends StatelessWidget {
             ),
             const VerticalGap(10),
             Text(
-              conversation.emptyDescription.tr(),
+              'weAreHereToHelpYou'.tr(),
               textAlign: TextAlign.center,
               style: AppTextStyles.getTextStyle(14).copyWith(
                 color: context.textPalette.secondaryColor,

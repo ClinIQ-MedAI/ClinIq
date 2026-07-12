@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashLogo extends StatelessWidget {
   const SplashLogo({super.key, required this.animation});
@@ -31,7 +30,7 @@ class SplashLogo extends StatelessWidget {
           ),
         );
       },
-      child: RepaintBoundary(child: SvgPicture.asset('assets/images/logo.svg')),
+      child: RepaintBoundary(child: Image.asset('assets/images/logo.png')),
     );
   }
 }

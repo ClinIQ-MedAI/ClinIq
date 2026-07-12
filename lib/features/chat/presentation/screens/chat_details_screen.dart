@@ -5,8 +5,8 @@ import 'package:cliniq/features/chat/presentation/providers/attachment_provider.
 import 'package:cliniq/features/chat/presentation/providers/chat_conversation_provider.dart';
 import 'package:cliniq/features/chat/presentation/widgets/attachment_picker_sheet.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_conversation_body.dart';
+import 'package:cliniq/features/chat/presentation/widgets/chat_header_builder.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_loading_state.dart';
-import 'package:cliniq/features/chat/presentation/widgets/doctor_chat_header.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,11 +37,14 @@ class ChatDetailsScreen extends ConsumerWidget {
         child: conversationAsync.when(
           data: (conversation) => Column(
             children: [
-              DoctorChatHeader(conversation: conversation),
+              ChatHeaderBuilder(conversation: conversation),
+
               Divider(
                 height: 1,
                 thickness: 1,
-                color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                color: context.colorScheme.outlineVariant.withValues(
+                  alpha: 0.3,
+                ),
               ),
               Expanded(
                 child: ChatConversationBody(
@@ -61,8 +64,9 @@ class ChatDetailsScreen extends ConsumerWidget {
                   attachmentFilePath: uploadState.pickedFile?.filePath,
                   isAttachmentUploading: uploadState.isUploading,
                   attachmentFileSize: uploadState.pickedFile?.fileSize,
-                  onRemoveAttachment: () =>
-                      ref.read(attachmentUploadProvider.notifier).removeAttachment(),
+                  onRemoveAttachment: () => ref
+                      .read(attachmentUploadProvider.notifier)
+                      .removeAttachment(),
                   isSendDisabled: uploadState.isUploading,
                 ),
               ),

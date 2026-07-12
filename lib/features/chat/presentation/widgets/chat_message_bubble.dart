@@ -32,7 +32,7 @@ class ChatMessageBubble extends StatelessWidget {
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 0.78.sw),
+        constraints: BoxConstraints(maxWidth: 0.75.sw),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: isUser
@@ -60,32 +60,39 @@ class ChatMessageBubble extends StatelessWidget {
         ? context.colorScheme.primary
         : isAi
         ? context.colorScheme.secondary.withValues(alpha: 0.12)
-        : context.colorScheme.surfaceContainerHigh;
+        : context.colorScheme.surface;
     final textColor = isUser
         ? context.colorScheme.onPrimary
         : context.textPalette.primaryColor;
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: _hasText || _isFile ? 12.h : 0,
+        horizontal: 18.w,
+        vertical: _hasText || _isFile ? 14.h : 0,
       ),
       decoration: BoxDecoration(
         color: bubbleColor,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20.r),
-          topRight: Radius.circular(20.r),
-          bottomLeft: Radius.circular(isUser ? 20.r : 6.r),
-          bottomRight: Radius.circular(isUser ? 6.r : 20.r),
+          topLeft: Radius.circular(24.r),
+          topRight: Radius.circular(24.r),
+          bottomLeft: Radius.circular(isUser ? 24.r : 8.r),
+          bottomRight: Radius.circular(isUser ? 8.r : 24.r),
         ),
         boxShadow: _isFailed
             ? null
             : [
-                BoxShadow(
-                  color: context.colorScheme.primary.withValues(alpha: 0.06),
-                  blurRadius: 14,
-                  offset: const Offset(0, 8),
-                ),
+                if (!isUser)
+                  BoxShadow(
+                    color: context.colorScheme.primary.withValues(alpha: 0.05),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                if (isUser)
+                  BoxShadow(
+                    color: context.colorScheme.primary.withValues(alpha: 0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
               ],
       ),
       child: Column(
@@ -104,13 +111,13 @@ class ChatMessageBubble extends StatelessWidget {
           if (_hasText)
             Text(
               message.content,
-              style: AppTextStyles.getTextStyle(14).copyWith(
+              style: AppTextStyles.getTextStyle(15).copyWith(
                 color: textColor,
                 fontWeight: FontWeight.w500,
                 height: 1.45,
               ),
             ),
-          const VerticalGap(7),
+          const VerticalGap(6),
           _metaRow(context, isUser),
         ],
       ),
