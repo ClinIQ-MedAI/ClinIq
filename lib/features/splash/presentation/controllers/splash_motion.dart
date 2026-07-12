@@ -6,32 +6,32 @@ class SplashMotion {
     required VoidCallback onCompleted,
   }) : _controller = AnimationController(
          vsync: vsync,
-         duration: const Duration(milliseconds: 2100),
+         duration: const Duration(milliseconds: 3000),
        ) {
-    background = CurvedAnimation(
-      parent: _controller,
-      curve: const Interval(0, .24, curve: Curves.easeOut),
-    );
     logo = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(.08, .42, curve: Curves.easeOutCubic),
+      curve: const Interval(.12, .32, curve: Curves.easeOutCubic),
     );
-    symbols = CurvedAnimation(
+    title = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(.25, .66, curve: Curves.easeOutCubic),
+      curve: const Interval(.28, .48, curve: Curves.easeOutCubic),
     );
-    copy = CurvedAnimation(
+    tagline = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(.52, .78, curve: Curves.easeOutCubic),
+      curve: const Interval(.40, .60, curve: Curves.easeOutCubic),
     );
-    pulse = CurvedAnimation(
+    ecg = CurvedAnimation(
       parent: _controller,
-      curve: const Interval(.5, 1, curve: Curves.easeInOut),
+      curve: const Interval(.52, .60, curve: Curves.easeOut),
+    );
+    progress = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(.60, .68, curve: Curves.easeOut),
     );
     exit = Tween<double>(begin: 1, end: 0).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(.9, 1, curve: Curves.easeInOut),
+        curve: const Interval(.90, 1.0, curve: Curves.easeOut),
       ),
     );
     _controller.addStatusListener((status) {
@@ -40,11 +40,11 @@ class SplashMotion {
   }
 
   final AnimationController _controller;
-  late final Animation<double> background;
   late final Animation<double> logo;
-  late final Animation<double> symbols;
-  late final Animation<double> copy;
-  late final Animation<double> pulse;
+  late final Animation<double> title;
+  late final Animation<double> tagline;
+  late final Animation<double> ecg;
+  late final Animation<double> progress;
   late final Animation<double> exit;
 
   void start() => _controller.forward();
