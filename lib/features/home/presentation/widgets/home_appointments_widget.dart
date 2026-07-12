@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -217,36 +218,54 @@ class _HomeAppointmentsWidgetState extends State<HomeAppointmentsWidget> {
                         ),
                         const HorizontalGap(8),
                         ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: appointment.doctorImage,
-                            width: 90.w,
-                            height: 90.w,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Container(
-                              color: Colors.white10,
-                              child: const Center(
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
+                          child: isValidNetworkImage(appointment.doctorImage)
+                              ? CachedNetworkImage(
+                                  imageUrl: appointment.doctorImage,
+                                  width: 90.w,
+                                  height: 90.w,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Container(
+                                    color: Colors.white10,
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    width: 90.w,
+                                    height: 90.w,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: context
+                                          .colorScheme.onPrimary
+                                          .withValues(alpha: 0.15),
+                                    ),
+                                    child: Icon(
+                                      Icons.person,
+                                      color:
+                                          context.colorScheme.onPrimary,
+                                      size: 36.sp,
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: 90.w,
+                                  height: 90.w,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: context
+                                        .colorScheme.onPrimary
+                                        .withValues(alpha: 0.15),
+                                  ),
+                                  child: Icon(
+                                    Icons.person,
+                                    color: context.colorScheme.onPrimary,
+                                    size: 36.sp,
+                                  ),
                                 ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              width: 90.w,
-                              height: 90.w,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: context.colorScheme.onPrimary.withValues(
-                                  alpha: 0.15,
-                                ),
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                color: context.colorScheme.onPrimary,
-                                size: 36.sp,
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),

@@ -386,6 +386,26 @@ abstract class LocaleKeys {
   static const chatImageViewerCopiedSuccess = "chat.image_viewer.copied_success";
   static const chatImageViewerMoreActions = "chat.image_viewer.more_actions";
 
+  // ai
+  static const aiChatTitle = "ai.chat.title";
+  static const aiChatSubtitle = "ai.chat.subtitle";
+  static const aiChatAttachmentScan = "ai.chat.attachment_scan";
+  static const aiChatAttachmentPrescription = "ai.chat.attachment_prescription";
+  static const aiChatModalityTitle = "ai.chat.modality_title";
+  static const aiChatModalityDescription = "ai.chat.modality_description";
+  static const aiChatUploadingScan = "ai.chat.uploading_scan";
+  static const aiChatUploadingPrescription = "ai.chat.uploading_prescription";
+  static const aiChatScanTypeHint = "ai.chat.scan_type_hint";
+  static const aiChatAttachmentPickerTitle = "ai.chat.attachment_picker_title";
+  static const aiChatPromptHeadache = "ai.chat.prompt_headache";
+  static const aiChatPromptAnalyzeScan = "ai.chat.prompt_analyze_scan";
+  static const aiChatPromptExplainPrescription = "ai.chat.prompt_explain_prescription";
+  static const aiChatPromptToothPain = "ai.chat.prompt_tooth_pain";
+  static const aiChatSuggestedPromptsTitle = "ai.chat.suggested_prompts_title";
+  static const aiChatUploadRequestTitle = "ai.chat.upload_request_title";
+  static const aiChatUploadRequestDescription = "ai.chat.upload_request_description";
+  static const aiChatUploadRequestButton = "ai.chat.upload_request_button";
+
   // profile
   static const profileUserTitle = "profile.user.title";
   static const profileUserBloodGroup = "profile.user.blood_group";

@@ -12,9 +12,11 @@ import 'package:cliniq/features/home/presentation/widgets/home_section_header.da
 import 'package:cliniq/features/home/presentation/widgets/home_specializations_widget.dart';
 import 'package:cliniq/features/home/presentation/widgets/see_all_button.dart';
 import 'package:cliniq/features/home/presentation/widgets/ai_assistant_section.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class UserHomeView extends ConsumerWidget {
   const UserHomeView({super.key});
 
@@ -32,7 +34,7 @@ class UserHomeView extends ConsumerWidget {
                 .when(
                   data: (result) {
                     return result.fold(
-                      (failure) => Center(child: Text(failure.message)),
+                      (failure) => Center(child: Text(failure.message.tr())),
                       (homeData) {
                         Theme.of(context);
                         return SingleChildScrollView(

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:cliniq/core/widgets/custom_person_icon.dart';
 import 'package:cliniq/features/home/presentation/providers/bottom_nav_index_provider.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class UserProfileImage extends ConsumerWidget {
     super.key,
     this.circleAvatarRadius = 30,
     this.profilePicUrl,
+    this.name,
     this.isEnabled = true,
     this.isCurrentUser = false,
     this.borderColor,
@@ -19,6 +21,7 @@ class UserProfileImage extends ConsumerWidget {
 
   final double circleAvatarRadius;
   final String? profilePicUrl;
+  final String? name;
   final bool isEnabled;
   final bool isCurrentUser;
   final Color? borderColor;
@@ -58,22 +61,53 @@ class UserProfileImage extends ConsumerWidget {
           radius: circleAvatarRadius,
           backgroundColor: context.colorScheme.onPrimary,
           child: ClipOval(
-            child: profilePicUrl != null
+            child: profilePicUrl != null && isValidNetworkImage(profilePicUrl)
                 ? CachedNetworkImage(
                     imageUrl: profilePicUrl!,
                     fit: BoxFit.cover,
                     width: circleAvatarRadius * 2,
                     height: circleAvatarRadius * 2,
                     errorWidget: (context, error, stackTrace) {
-                      return CustomPersonIcon(
-                        circleAvatarRadius: circleAvatarRadius,
-                      );
+                      return _buildFallback(context);
                     },
                   )
-                : CustomPersonIcon(circleAvatarRadius: circleAvatarRadius),
+                : _buildFallback(context),
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildFallback(BuildContext context) {
+    if (name != null && name!.isNotEmpty) {
+      final initial = name![0].toUpperCase();
+      final colorScheme = context.colorScheme;
+      return Container(
+        width: circleAvatarRadius * 2,
+        height: circleAvatarRadius * 2,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            colors: [
+              colorScheme.primary.withValues(alpha: 0.7),
+              colorScheme.primaryContainer,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            initial,
+            style: TextStyle(
+              color: colorScheme.onPrimary,
+              fontSize: circleAvatarRadius,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      );
+    }
+    return CustomPersonIcon(circleAvatarRadius: circleAvatarRadius);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -59,24 +60,37 @@ class AppointmentCard extends StatelessWidget {
                     ),
                   ),
                   child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: appointment.doctorImage,
-                      width: 60.w,
-                      height: 60.w,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: context.colorScheme.primary.withValues(alpha: 0.05),
-                        child: const Center(child: CircularProgressIndicator()),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: context.colorScheme.primary.withValues(alpha: 0.05),
-                        child: Icon(
-                          Icons.person_rounded,
-                          color: context.colorScheme.primary,
-                          size: 30.sp,
-                        ),
-                      ),
-                    ),
+                    child: isValidNetworkImage(appointment.doctorImage)
+                        ? CachedNetworkImage(
+                            imageUrl: appointment.doctorImage,
+                            width: 60.w,
+                            height: 60.w,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: context.colorScheme.primary
+                                  .withValues(alpha: 0.05),
+                              child: const Center(
+                                  child: CircularProgressIndicator()),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: context.colorScheme.primary
+                                  .withValues(alpha: 0.05),
+                              child: Icon(
+                                Icons.person_rounded,
+                                color: context.colorScheme.primary,
+                                size: 30.sp,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            color: context.colorScheme.primary
+                                .withValues(alpha: 0.05),
+                            child: Icon(
+                              Icons.person_rounded,
+                              color: context.colorScheme.primary,
+                              size: 30.sp,
+                            ),
+                          ),
                   ),
                 ),
                 const HorizontalGap(16),

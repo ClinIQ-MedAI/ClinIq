@@ -7,6 +7,10 @@ import 'package:cliniq/core/socket/signalr_service.dart';
 import 'package:cliniq/core/socket/socket_consumer.dart';
 import 'package:cliniq/features/appointments/data/repos_impl/appointments_repo_impl.dart';
 import 'package:cliniq/features/appointments/domain/repos/appointments_repo.dart';
+import 'package:cliniq/features/ai/data/repos_impl/ai_chat_repo_impl.dart';
+import 'package:cliniq/features/ai/data/repos_impl/ai_scan_repo_impl.dart';
+import 'package:cliniq/features/ai/domain/repos/ai_chat_repo.dart';
+import 'package:cliniq/features/ai/domain/repos/ai_scan_repo.dart';
 import 'package:cliniq/features/booking/data/repos_impl/booking_repo_impl.dart';
 import 'package:cliniq/features/booking/domain/repos/booking_repo.dart';
 import 'package:cliniq/features/chat/data/repos_impl/attachment_repo_impl.dart';
@@ -75,5 +79,21 @@ Future<void> setupGetIt() async {
 
   getIt.registerSingleton<BookingRepo>(
     BookingRepoImpl(api: ApiSelector.get(ApiFeatures.booking)),
+  );
+
+  getIt.registerSingleton<AiScanRepo>(
+    AiScanRepoImpl(api: ApiSelector.get(ApiFeatures.chat)),
+  );
+
+  getIt.registerSingleton<SocketConsumer>(
+    SignalRService(hubUrl: 'https://Cliniq.runasp.net/hubs/chatbot'),
+    instanceName: 'aiSocket',
+  );
+
+  getIt.registerSingleton<AiChatRepo>(
+    AiChatRepoImpl(
+      api: ApiSelector.get(ApiFeatures.ai),
+      socket: getIt<SocketConsumer>(instanceName: 'aiSocket'),
+    ),
   );
 }

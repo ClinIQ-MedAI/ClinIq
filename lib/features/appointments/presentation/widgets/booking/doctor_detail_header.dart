@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
@@ -54,22 +55,35 @@ class DoctorDetailHeader extends StatelessWidget {
                 ],
               ),
               child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: detail.doctor.image,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: context.colorScheme.primary.withValues(alpha: 0.05),
-                    child: const Center(child: CircularProgressIndicator()),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: context.colorScheme.primary.withValues(alpha: 0.05),
-                    child: Icon(
-                      Icons.person_rounded,
-                      color: context.colorScheme.primary,
-                      size: 48.sp,
-                    ),
-                  ),
-                ),
+                child: isValidNetworkImage(detail.doctor.image)
+                    ? CachedNetworkImage(
+                        imageUrl: detail.doctor.image,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: context.colorScheme.primary
+                              .withValues(alpha: 0.05),
+                          child: const Center(
+                              child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: context.colorScheme.primary
+                              .withValues(alpha: 0.05),
+                          child: Icon(
+                            Icons.person_rounded,
+                            color: context.colorScheme.primary,
+                            size: 48.sp,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        color: context.colorScheme.primary
+                            .withValues(alpha: 0.05),
+                        child: Icon(
+                          Icons.person_rounded,
+                          color: context.colorScheme.primary,
+                          size: 48.sp,
+                        ),
+                      ),
               ),
             ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
             const VerticalGap(20),

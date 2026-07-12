@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:flutter/material.dart';
 
-enum ImageSourceType { file, blob, network }
+enum ImageSourceType { file, blob, network, invalid }
 
 ImageSourceType resolveImageSourceType(String url) {
-  if (url.startsWith('blob:')) return ImageSourceType.blob;
-  if (url.startsWith('http')) return ImageSourceType.network;
-  return ImageSourceType.file;
+  if (!isValidNetworkImage(url)) return ImageSourceType.invalid;
+  return ImageSourceType.network;
 }
 
 Widget buildImageWidget({
@@ -33,20 +33,6 @@ Widget buildImageWidget({
   final type = resolveImageSourceType(url);
 
   switch (type) {
-    case ImageSourceType.blob:
-      return Image.network(
-        url,
-        fit: fit,
-        width: width,
-        height: height,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return placeholderBuilder(context, url);
-        },
-        errorBuilder: (context, error, stackTrace) =>
-            errorBuilder(context, url, error),
-      );
-
     case ImageSourceType.network:
       return CachedNetworkImage(
         imageUrl: url,
@@ -66,5 +52,9 @@ Widget buildImageWidget({
         errorBuilder: (context, error, stackTrace) =>
             errorBuilder(context, url, error),
       );
+
+    case ImageSourceType.blob:
+    case ImageSourceType.invalid:
+      return const SizedBox.shrink();
   }
 }

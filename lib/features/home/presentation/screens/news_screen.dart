@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -79,24 +80,35 @@ class NewsScreen extends ConsumerWidget {
               SizedBox(
                 height: 200.h,
                 width: double.infinity,
-                child: CachedNetworkImage(
-                  imageUrl: item.image,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: context.colorScheme.surfaceContainerHigh,
-                    child: const Center(
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: context.colorScheme.surfaceContainerHigh,
-                    child: Icon(
-                      Icons.newspaper_rounded,
-                      color: context.textPalette.secondaryColor,
-                      size: 40,
-                    ),
-                  ),
-                ),
+                child: isValidNetworkImage(item.image)
+                    ? CachedNetworkImage(
+                        imageUrl: item.image,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: context.colorScheme.surfaceContainerHigh,
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color:
+                              context.colorScheme.surfaceContainerHigh,
+                          child: Icon(
+                            Icons.newspaper_rounded,
+                            color: context.textPalette.secondaryColor,
+                            size: 40,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        color: context.colorScheme.surfaceContainerHigh,
+                        child: Icon(
+                          Icons.newspaper_rounded,
+                          color: context.textPalette.secondaryColor,
+                          size: 40,
+                        ),
+                      ),
               ),
               Padding(
                 padding: EdgeInsets.all(20.w),

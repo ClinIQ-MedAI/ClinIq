@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cliniq/core/utils/image_validation_helper.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -101,19 +102,29 @@ class SpecializationsScreen extends ConsumerWidget {
                                 .withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(20.r),
                           ),
-                          child: CachedNetworkImage(
-                            imageUrl: spec.image,
-                            fit: BoxFit.contain,
-                            placeholder: (context, url) => const Center(
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2),
-                            ),
-                            errorWidget: (context, url, error) => Icon(
-                              Icons.category_rounded,
-                              color: context.textPalette.secondaryColor,
-                              size: 28.sp,
-                            ),
-                          ),
+                          child: isValidNetworkImage(spec.image)
+                              ? CachedNetworkImage(
+                                  imageUrl: spec.image,
+                                  fit: BoxFit.contain,
+                                  placeholder: (context, url) =>
+                                      const Center(
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(
+                                    Icons.category_rounded,
+                                    color: context
+                                        .textPalette.secondaryColor,
+                                    size: 28.sp,
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.category_rounded,
+                                  color:
+                                      context.textPalette.secondaryColor,
+                                  size: 28.sp,
+                                ),
                         ),
                         const VerticalGap(12),
                         Padding(
