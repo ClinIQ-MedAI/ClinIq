@@ -37,10 +37,12 @@ class ChatDetailsScreen extends ConsumerWidget {
         appBar: ProfileAppBar(title: conversation.title),
         body: ChatConversationBody(
           conversation: conversation,
-          onMessageSubmitted: (text) =>
-              ref.read(chatConversationProvider(request).notifier).sendMessage(text),
-          onMessageRetry: (messageId) =>
-              ref.read(chatConversationProvider(request).notifier).retryMessage(messageId),
+          onMessageSubmitted: (text) => ref
+              .read(chatConversationProvider(request).notifier)
+              .sendMessage(text),
+          onMessageRetry: (messageId) => ref
+              .read(chatConversationProvider(request).notifier)
+              .retryMessage(messageId),
           onTypingChanged: ref
               .read(chatConversationProvider(request).notifier)
               .updateTypingStatus,
@@ -50,8 +52,8 @@ class ChatDetailsScreen extends ConsumerWidget {
           attachmentFilePath: uploadState.pickedFile?.filePath,
           isAttachmentUploading: uploadState.isUploading,
           attachmentFileSize: uploadState.pickedFile?.fileSize,
-          onRemoveAttachment:
-              () => ref.read(attachmentUploadProvider.notifier).removeAttachment(),
+          onRemoveAttachment: () =>
+              ref.read(attachmentUploadProvider.notifier).removeAttachment(),
           isSendDisabled: uploadState.isUploading,
         ),
       ),

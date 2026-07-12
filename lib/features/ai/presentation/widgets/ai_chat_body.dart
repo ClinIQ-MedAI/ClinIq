@@ -1,11 +1,11 @@
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/ai/presentation/providers/ai_chat_provider.dart';
-import 'package:cliniq/features/ai/presentation/providers/ai_scan_upload_provider.dart';
-import 'package:cliniq/features/ai/presentation/widgets/ai_chat_attachment_picker.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_chat_suggested_prompts.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_upload_request_card.dart';
-import 'package:cliniq/features/ai/presentation/widgets/scan_modality_bottom_sheet.dart';
+import 'package:cliniq/features/chat/domain/entities/attachment_type.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
+import 'package:cliniq/features/chat/presentation/providers/attachment_provider.dart';
+import 'package:cliniq/features/chat/presentation/widgets/attachment_picker_sheet.dart';
 import 'package:cliniq/features/chat/presentation/widgets/attachment_preview_widget.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_header.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_input_field.dart';
@@ -23,25 +23,14 @@ class AiChatBody extends ConsumerWidget {
     required this.showUpload,
   });
   final ChatConversationEntity conversation;
-  final AiScanUploadState uploadState;
+  final AttachmentUploadState uploadState;
   final bool showUpload;
 
-  Future<void> _handleAttachmentTap(BuildContext context, WidgetRef ref) async {
-    await AiChatAttachmentPicker.show(
+  void _handleAttachmentTap(BuildContext context, WidgetRef ref) {
+    AttachmentPickerSheet.show(
       context,
-      onScanSelected: () async {
-        final notifier = ref.read(aiScanUploadProvider.notifier);
-        final picked = await notifier.pickFile(true);
-        if (picked && context.mounted) {
-          final modality = await ScanModalityBottomSheet.show(context);
-          if (modality != null && context.mounted) {
-            notifier.uploadWithModality(modality);
-          }
-        }
-      },
-      onPrescriptionSelected: () async {
-        final notifier = ref.read(aiScanUploadProvider.notifier);
-        notifier.pickFile(false);
+      onTypeSelected: (AttachmentType type) {
+        ref.read(attachmentUploadProvider.notifier).pickAttachment(type);
       },
     );
   }
@@ -79,7 +68,7 @@ class AiChatBody extends ConsumerWidget {
               onUploadTap: () => _handleAttachmentTap(context, ref),
             ).animate().fadeIn().slideY(begin: 0.1),
           ),
-        if (uploadState.localFilePath != null)
+        if (uploadState.hasAttachment)
           Padding(
             padding: EdgeInsets.only(bottom: 8.h),
             child: AttachmentPreviewWidget(
@@ -88,7 +77,7 @@ class AiChatBody extends ConsumerWidget {
               isUploading: uploadState.isUploading,
               fileSize: uploadState.fileSize,
               onRemove: () =>
-                  ref.read(aiScanUploadProvider.notifier).removeAttachment(),
+                  ref.read(attachmentUploadProvider.notifier).removeAttachment(),
             ),
           ),
         ChatInputField(

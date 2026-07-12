@@ -9,24 +9,31 @@ class AttachmentUploadState {
   final UploadedAttachmentEntity? uploadedFile;
   final bool isUploading;
   final String? error;
+  final String? selectedModality;
 
   const AttachmentUploadState({
     this.pickedFile,
     this.uploadedFile,
     this.isUploading = false,
     this.error,
+    this.selectedModality,
   });
 
-  bool get hasAttachment => uploadedFile != null;
+  bool get hasAttachment => pickedFile != null;
+  String? get localFilePath => pickedFile?.filePath;
+  String? get fileName => pickedFile?.fileName;
+  int? get fileSize => pickedFile?.fileSize;
 
   AttachmentUploadState copyWith({
     AttachmentEntity? pickedFile,
     UploadedAttachmentEntity? uploadedFile,
     bool? isUploading,
     String? error,
+    String? selectedModality,
     bool clearPickedFile = false,
     bool clearUploadedFile = false,
     bool clearError = false,
+    bool clearModality = false,
   }) {
     return AttachmentUploadState(
       pickedFile: clearPickedFile ? null : (pickedFile ?? this.pickedFile),
@@ -34,6 +41,8 @@ class AttachmentUploadState {
           clearUploadedFile ? null : (uploadedFile ?? this.uploadedFile),
       isUploading: isUploading ?? this.isUploading,
       error: clearError ? null : (error ?? this.error),
+      selectedModality:
+          clearModality ? null : (selectedModality ?? this.selectedModality),
     );
   }
 }
@@ -63,6 +72,27 @@ class AttachmentUploadNotifier extends Notifier<AttachmentUploadState> {
       (file) {
         state = AttachmentUploadState(pickedFile: file);
         _upload(file);
+      },
+    );
+  }
+
+  Future<void> pickAttachment(AttachmentType type) async {
+    final repo = ref.read(attachmentRepoProvider);
+    final result = await repo.pickFile(type);
+
+    result.fold(
+      (failure) {
+        if (failure.message == 'File selection cancelled') {
+          state = const AttachmentUploadState();
+        } else {
+          state = AttachmentUploadState(error: failure.message);
+        }
+      },
+      (file) {
+        state = AttachmentUploadState(
+          pickedFile: file,
+          selectedModality: type.modalityValue,
+        );
       },
     );
   }
@@ -126,5 +156,9 @@ class AttachmentUploadNotifier extends Notifier<AttachmentUploadState> {
 
   void resetAfterSend() {
     state = const AttachmentUploadState();
+  }
+
+  void clearModality() {
+    state = state.copyWith(clearModality: true);
   }
 }

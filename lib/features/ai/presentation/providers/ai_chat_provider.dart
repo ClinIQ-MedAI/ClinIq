@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:developer';
 
 import 'package:cliniq/features/ai/domain/entities/chatbot_reply_entity.dart';
 import 'package:cliniq/features/ai/presentation/providers/ai_chat_repo_provider.dart';
-import 'package:cliniq/features/ai/presentation/providers/ai_scan_upload_provider.dart';
+import 'package:cliniq/features/ai/presentation/providers/ai_scan_repo_provider.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
+import 'package:cliniq/features/chat/presentation/providers/attachment_provider.dart';
 import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -110,13 +113,51 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
     final conversation = state.value;
     if (conversation == null) return;
 
-    final uploadState = ref.read(aiScanUploadProvider);
-    if (text.isEmpty && !uploadState.hasAttachment) return;
+    final attachState = ref.read(attachmentUploadProvider);
+    if (text.isEmpty && !attachState.hasAttachment) return;
 
     ref.read(aiShowUploadRequestProvider.notifier).hide();
 
-    final uploadedScan = uploadState.uploadedScan;
-    final localPath = uploadState.localFilePath;
+    String? scanId;
+    String? prescriptionId;
+    String? attachmentUrl;
+    String? mimeType;
+
+    if (attachState.hasAttachment) {
+      final modality = attachState.selectedModality;
+      final filePath = attachState.localFilePath;
+      if (filePath != null) {
+        final base64 = await _fileToBase64(filePath);
+        if (base64 != null) {
+          final patientId = _getPatientId();
+          if (patientId != null) {
+            final scanRepo = ref.read(aiScanRepoProvider);
+            if (modality != null && modality != 'PRESCRIPTION') {
+              final result = await scanRepo.uploadScan(
+                imageBase64: base64,
+                patientId: patientId,
+                modality: modality,
+              );
+              result.fold((_) {}, (scan) {
+                scanId = scan.id;
+                attachmentUrl = scan.url;
+                mimeType = _guessMimeType(scan.url);
+              });
+            } else {
+              final result = await scanRepo.uploadPrescription(
+                imageBase64: base64,
+                patientId: patientId,
+              );
+              result.fold((_) {}, (scan) {
+                prescriptionId = scan.id;
+                attachmentUrl = scan.url;
+                mimeType = _guessMimeType(scan.url);
+              });
+            }
+          }
+        }
+      }
+    }
 
     final userMessage = ChatMessageEntity(
       id: 'local-ai-${DateTime.now().microsecondsSinceEpoch}',
@@ -124,20 +165,17 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       sentAt: _currentTimeLabel(),
       sender: ChatMessageSender.user,
       status: ChatMessageStatus.sending,
-      attachmentUrl: uploadedScan?.url,
-      attachmentName: uploadState.fileName,
-      attachmentSize: uploadState.fileSize,
-      attachmentMimeType:
-          uploadedScan?.url != null ? _guessMimeType(uploadedScan!.url) : null,
-      localFilePath: localPath,
+      attachmentUrl: attachmentUrl,
+      attachmentName: attachState.fileName,
+      attachmentSize: attachState.fileSize,
+      attachmentMimeType: mimeType,
+      localFilePath: attachState.localFilePath,
     );
 
     _addMessage(userMessage);
 
-    final scanId = uploadedScan?.id;
-
-    if (uploadedScan != null) {
-      ref.read(aiScanUploadProvider.notifier).resetAfterSend();
+    if (attachState.hasAttachment) {
+      ref.read(attachmentUploadProvider.notifier).resetAfterSend();
     }
 
     final languagePreference =
@@ -149,6 +187,7 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
         message: text,
         languagePreference: languagePreference,
         scanId: scanId,
+        prescriptionId: prescriptionId,
       );
 
       result.fold(
@@ -227,6 +266,20 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
           .map((m) => m.id == messageId ? m.copyWith(status: status) : m)
           .toList(),
     ));
+  }
+
+  Future<String?> _fileToBase64(String filePath) async {
+    try {
+      final file = File(filePath);
+      final bytes = await file.readAsBytes();
+      return base64Encode(bytes);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String? _getPatientId() {
+    return ref.read(currentUserProvider)?.id;
   }
 
   String _guessMimeType(String url) {

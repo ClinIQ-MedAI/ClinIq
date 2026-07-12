@@ -6,12 +6,14 @@ class AttachmentType {
   final String descriptionKey;
   final IconData icon;
   final List<String> extensions;
+  final String? modalityValue;
 
   const AttachmentType({
     required this.titleKey,
     required this.descriptionKey,
     required this.icon,
     required this.extensions,
+    this.modalityValue,
   });
 
   static const dentalXRay = AttachmentType(
@@ -19,6 +21,7 @@ class AttachmentType {
     descriptionKey: LocaleKeys.chatDentalXRayDesc,
     icon: Icons.splitscreen_rounded,
     extensions: ['jpg', 'jpeg', 'png', 'dcm'],
+    modalityValue: 'DENTAL_XRAY',
   );
 
   static const boneXRay = AttachmentType(
@@ -26,6 +29,7 @@ class AttachmentType {
     descriptionKey: LocaleKeys.chatBoneXRayDesc,
     icon: Icons.accessibility_new_rounded,
     extensions: ['jpg', 'jpeg', 'png', 'dcm'],
+    modalityValue: 'BONE',
   );
 
   static const chestXRay = AttachmentType(
@@ -33,6 +37,7 @@ class AttachmentType {
     descriptionKey: LocaleKeys.chatChestXRayDesc,
     icon: Icons.healing_rounded,
     extensions: ['jpg', 'jpeg', 'png', 'dcm'],
+    modalityValue: 'CHEST',
   );
 
   static const dentalPhoto = AttachmentType(
@@ -40,6 +45,7 @@ class AttachmentType {
     descriptionKey: LocaleKeys.chatDentalPhotoDesc,
     icon: Icons.photo_camera_rounded,
     extensions: ['jpg', 'jpeg', 'png'],
+    modalityValue: 'DENTAL_PHOTO',
   );
 
   static const medicalPrescription = AttachmentType(
@@ -47,6 +53,7 @@ class AttachmentType {
     descriptionKey: LocaleKeys.chatMedicalPrescriptionDesc,
     icon: Icons.description_rounded,
     extensions: ['jpg', 'jpeg', 'png'],
+    modalityValue: 'PRESCRIPTION',
   );
 
   static const pdfReport = AttachmentType(
