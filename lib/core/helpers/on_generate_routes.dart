@@ -14,6 +14,7 @@ import 'package:cliniq/features/home/presentation/screens/doctors_screen.dart';
 import 'package:cliniq/features/home/presentation/screens/news_screen.dart';
 import 'package:cliniq/features/home/presentation/screens/specializations_screen.dart';
 import 'package:cliniq/features/home/presentation/screens/user_main_layout.dart';
+import 'package:cliniq/features/appointments/presentation/screens/booking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cliniq/core/widgets/undefined_route_page.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
@@ -104,6 +105,11 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
       final doctor = settings.arguments as DoctorEntity?;
       return MaterialPageRoute(
         builder: (_) => DoctorDetailsScreen(doctorId: doctor?.id ?? ''),
+      );
+    case Routes.bookingScreen:
+      final doctorId = settings.arguments as String?;
+      return MaterialPageRoute(
+        builder: (_) => BookingScreen(doctorId: doctorId ?? ''),
       );
 
     // Chat

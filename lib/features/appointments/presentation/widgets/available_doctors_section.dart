@@ -3,17 +3,17 @@ import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
-import 'package:cliniq/features/appointments/presentation/widgets/appointment_card.dart';
+import 'package:cliniq/features/appointments/presentation/widgets/available_doctor_card.dart';
 import 'package:cliniq/features/appointments/presentation/widgets/available_doctors_empty_state.dart';
-import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
+import 'package:cliniq/features/appointments/domain/entities/available_doctor_entity.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AvailableDoctorsSection extends StatelessWidget {
-  final AsyncValue<List<ExaminationAppointmentEntity>> doctorsAsync;
+  final AsyncValue<List<AvailableDoctorEntity>> doctorsAsync;
   final VoidCallback? onSelectAnotherDate;
 
   const AvailableDoctorsSection({
@@ -62,10 +62,9 @@ class AvailableDoctorsSection extends StatelessWidget {
                 physics: const BouncingScrollPhysics(),
                 itemCount: doctors.length,
                 itemBuilder: (context, index) {
-                  return AppointmentCard(appointment: doctors[index])
-                      .animate()
-                      .fadeIn(delay: (100 * index).ms)
-                      .slideX(begin: 0.1);
+                  return AvailableDoctorCard(
+                    doctor: doctors[index],
+                  );
                 },
               );
             },
@@ -77,3 +76,4 @@ class AvailableDoctorsSection extends StatelessWidget {
     );
   }
 }
+

@@ -449,7 +449,8 @@
         "languages": "اللغات",
         "chat_with_doctor_title": "هل لديك أسئلة قبل الحجز؟",
         "chat_with_doctor_subtitle": "يمكنك بدء محادثة مع هذا الطبيب للاستفسار عن الأعراض أو التحضير أو تفاصيل الاستشارة.",
-        "start_chat_button": "ابدأ المحادثة"
+        "start_chat_button": "ابدأ المحادثة",
+        "view_schedule": "عرض الجدول"
     },
     "splash": {
         "tagline": "رفيقك في الرعاية الصحية"

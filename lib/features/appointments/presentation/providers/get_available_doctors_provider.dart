@@ -1,9 +1,9 @@
 import 'package:cliniq/features/appointments/presentation/providers/appointments_repo_provider.dart';
-import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
+import 'package:cliniq/features/appointments/domain/entities/available_doctor_entity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final getAvailableDoctorsProvider =
-    FutureProvider.family<List<ExaminationAppointmentEntity>, String>((
+    FutureProvider.family<List<AvailableDoctorEntity>, String>((
       ref,
       date,
     ) async {

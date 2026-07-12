@@ -520,6 +520,7 @@ abstract class LocaleKeys {
   static const String bookingChatWithDoctorSubtitle =
       "booking.chat_with_doctor_subtitle";
   static const String bookingStartChatButton = "booking.start_chat_button";
+  static const String bookingViewSchedule = "booking.view_schedule";
 
   // chat (shared)
   static const String chatUnableToOpenConversation =
