@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/ai/data/models/scan_analysis_model.dart';
 import 'package:cliniq/features/ai/presentation/providers/ai_chat_provider.dart';
 import 'package:cliniq/features/ai/presentation/providers/ai_scan_upload_provider.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_chat_suggested_prompts.dart';
@@ -54,6 +57,7 @@ class AiChatBody extends ConsumerWidget {
             onMessageRetry: (messageId) {
               ref.read(aiChatProvider.notifier).retryFailedAi(messageId);
             },
+            onUploadAnother: () => _handleAttachmentTap(context, ref),
           ),
         ),
         if (conversation.messages.isEmpty)
@@ -82,8 +86,9 @@ class AiChatBody extends ConsumerWidget {
               filePath: uploadState.localFilePath!,
               isUploading: uploadState.isUploading,
               fileSize: uploadState.fileSize,
-              onRemove: () =>
-                  ref.read(attachmentUploadProvider.notifier).removeAttachment(),
+              onRemove: () => ref
+                  .read(attachmentUploadProvider.notifier)
+                  .removeAttachment(),
             ),
           ),
         ChatInputField(
@@ -96,8 +101,7 @@ class AiChatBody extends ConsumerWidget {
               final attachmentSize = uploadState.fileSize;
               if (filePath == null || modality == null) return;
 
-              final patientId =
-                  ref.read(currentUserProvider)?.id;
+              final patientId = ref.read(currentUserProvider)?.id;
               if (patientId == null) return;
 
               final file = File(filePath);
@@ -107,10 +111,8 @@ class AiChatBody extends ConsumerWidget {
               final ts = DateTime.now();
               final sentAt =
                   '${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}';
-              final userMsgId =
-                  'scan-user-${ts.microsecondsSinceEpoch}';
-              final loadingId =
-                  'scan-loading-${ts.microsecondsSinceEpoch}';
+              final userMsgId = 'scan-user-${ts.microsecondsSinceEpoch}';
+              final loadingId = 'scan-loading-${ts.microsecondsSinceEpoch}';
 
               final notifier = ref.read(aiChatProvider.notifier);
 
@@ -137,10 +139,9 @@ class AiChatBody extends ConsumerWidget {
                 ),
               );
 
-              ref
-                  .read(attachmentUploadProvider.notifier)
-                  .resetAfterSend();
+              ref.read(attachmentUploadProvider.notifier).resetAfterSend();
 
+              log('AiChatBody: calling analyzeScan...');
               final analysis = await ref
                   .read(aiScanUploadProvider.notifier)
                   .analyzeScan(
@@ -150,16 +151,79 @@ class AiChatBody extends ConsumerWidget {
                   );
 
               if (analysis != null) {
-                notifier.updateMessage(
-                  loadingId,
-                  content: analysis.findings,
-                  status: ChatMessageStatus.seen,
-                );
+                if (analysis.isRejected) {
+                  log(
+                    'AiChatBody: analysis REJECTED — urgency=${analysis.urgency}',
+                  );
+                  final rejectionJson = jsonEncode({
+                    '__type': 'rejected_scan',
+                    'summary': analysis.summary,
+                    'recommendations': analysis.recommendations,
+                  });
+                  log('AiChatBody: rejection JSON: $rejectionJson');
+                  notifier.updateMessage(
+                    loadingId,
+                    content: rejectionJson,
+                    status: ChatMessageStatus.seen,
+                  );
+                } else {
+                  log(
+                    'AiChatBody: analysis returned, id="${analysis.id}"',
+                  );
+                  final model = analysis is ScanAnalysisModel
+                      ? analysis
+                      : ScanAnalysisModel(
+                          id: analysis.id,
+                          findings: analysis.findings,
+                          modality: analysis.modality,
+                          status: analysis.status,
+                          createdAt: analysis.createdAt,
+                          imageUrl: analysis.imageUrl,
+                          patientId: analysis.patientId,
+                          urgency: analysis.urgency,
+                          summary: analysis.summary,
+                          recommendations: analysis.recommendations,
+                          scanBase64: analysis.scanBase64,
+                          scanUrl: analysis.scanUrl,
+                          annotatedImageBase64:
+                              analysis.annotatedImageBase64,
+                          primaryDiagnosis: analysis.primaryDiagnosis,
+                          confidence: analysis.confidence,
+                          severity: analysis.severity,
+                          patientContext: analysis.patientContext,
+                          bodyPart: analysis.bodyPart,
+                          clinicalMeaning: analysis.clinicalMeaning,
+                          allProbabilities: analysis.allProbabilities,
+                          findingsList: analysis.findingsList,
+                          inputGate: analysis.inputGate,
+                          aiJobId: analysis.aiJobId,
+                        );
+                  final jsonMap = model.toJson();
+                  jsonMap['__type'] = 'analysis_result';
+                  final resultJson = jsonEncode(jsonMap);
+                  log(
+                    'AiChatBody: storing analysis result JSON (${resultJson.length} chars)',
+                  );
+                  notifier.updateMessage(
+                    loadingId,
+                    content: resultJson,
+                    status: ChatMessageStatus.seen,
+                  );
+                }
+                if (context.mounted) {
+                  Navigator.pushNamed(
+                    context,
+                    Routes.aiAnalysisResultScreen,
+                    arguments: analysis,
+                  );
+                }
               } else {
+                log('AiChatBody: analysis is null');
                 final errorState = ref.read(aiScanUploadProvider);
                 final errorMsg = errorState is AiScanUploadError
                     ? errorState.message
                     : 'Analysis failed';
+                log('AiChatBody: showing error="$errorMsg"');
                 notifier.updateMessage(
                   loadingId,
                   content: errorMsg,

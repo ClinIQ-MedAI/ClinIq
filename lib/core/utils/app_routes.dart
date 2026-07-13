@@ -36,6 +36,7 @@ class Routes {
 
   // ai scan
   static const String aiScanUploadScreen = '/aiScanUploadScreen';
+  static const String aiAnalysisResultScreen = '/aiAnalysisResultScreen';
 
   // notifications
   static const String notificationsScreen = '/notificationsScreen';

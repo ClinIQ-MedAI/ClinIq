@@ -219,15 +219,25 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
     final conversation = state.value;
     if (conversation == null) return;
 
+    final updatedMessages = conversation.messages.map((m) {
+      if (m.id != messageId) return m;
+      return m.copyWith(
+        content: content,
+        status: status,
+      );
+    }).toList();
+
+    final updatedMessage = updatedMessages.firstWhere(
+      (m) => m.id == messageId,
+      orElse: () => conversation.messages.last,
+    );
+    final isLast = updatedMessages.lastOrNull?.id == messageId;
+
     state = AsyncData(
       conversation.copyWith(
-        messages: conversation.messages.map((m) {
-          if (m.id != messageId) return m;
-          return m.copyWith(
-            content: content,
-            status: status,
-          );
-        }).toList(),
+        messages: updatedMessages,
+        lastMessage: isLast ? (updatedMessage.content) : conversation.lastMessage,
+        lastMessageTime: isLast ? updatedMessage.sentAt : conversation.lastMessageTime,
       ),
     );
   }

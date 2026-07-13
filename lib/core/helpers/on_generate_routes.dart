@@ -27,8 +27,10 @@ import 'package:cliniq/features/settings/presentation/screens/privacy_policy_scr
 import 'package:cliniq/features/settings/presentation/screens/settings_screen.dart';
 import 'package:cliniq/features/settings/presentation/screens/terms_and_services_screen.dart';
 import 'package:cliniq/features/user/presentation/screens/edit_profile_screen.dart';
+import 'package:cliniq/features/ai/presentation/screens/ai_analysis_result_screen.dart';
 import 'package:cliniq/features/ai/presentation/screens/ai_chat_screen.dart';
 import 'package:cliniq/features/ai/presentation/screens/ai_scan_upload_screen.dart';
+import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/chat/presentation/arguments/full_screen_image_viewer_arguments.dart';
 import 'package:cliniq/features/chat/presentation/widgets/full_screen_image_viewer.dart';
 import 'package:cliniq/features/notifications/presentation/screens/notifications_screen.dart';
@@ -146,6 +148,14 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
     // AI Scan
     case Routes.aiScanUploadScreen:
       return MaterialPageRoute(builder: (_) => const AiScanUploadScreen());
+    case Routes.aiAnalysisResultScreen:
+      final analysis = settings.arguments as ScanAnalysisEntity?;
+      if (analysis == null) {
+        return MaterialPageRoute(builder: (_) => const UndefinedRoutePage());
+      }
+      return MaterialPageRoute(
+        builder: (_) => AiAnalysisResultScreen(analysis: analysis),
+      );
 
     // Notifications
     case Routes.notificationsScreen:

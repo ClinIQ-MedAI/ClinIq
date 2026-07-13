@@ -47,6 +47,12 @@ class ChatMessageEntity {
     return '${base.replaceAll(RegExp(r'/+$'), '')}/${attachmentUrl!.replaceAll(RegExp(r'^/+'), '')}';
   }
 
+  bool get isPdfAttachment {
+    if (attachmentMimeType == 'application/pdf') return true;
+    final name = attachmentDisplayName;
+    return name.toLowerCase().endsWith('.pdf');
+  }
+
   bool get isImageAttachment {
     if (localFilePath != null) {
       final ext = localFilePath!.split('.').last.toLowerCase();

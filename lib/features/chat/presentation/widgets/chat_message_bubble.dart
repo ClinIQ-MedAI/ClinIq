@@ -1,27 +1,54 @@
+import 'dart:convert';
+
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
+import 'package:cliniq/features/chat/presentation/widgets/analysis_result_message.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_message_status_icon.dart';
 import 'package:cliniq/features/chat/presentation/widgets/file_message_bubble.dart';
 import 'package:cliniq/features/chat/presentation/widgets/image_message_bubble.dart';
+import 'package:cliniq/features/chat/presentation/widgets/pdf_message_bubble.dart';
+import 'package:cliniq/features/chat/presentation/widgets/rejected_analysis_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class ChatMessageBubble extends StatelessWidget {
-  const ChatMessageBubble({super.key, required this.message, this.onRetry});
+  const ChatMessageBubble({super.key, required this.message, this.onRetry, this.onUploadAnother});
 
   final ChatMessageEntity message;
   final VoidCallback? onRetry;
+  final VoidCallback? onUploadAnother;
 
   bool get _hasText => message.content.isNotEmpty;
   bool get _hasAttachment => message.hasAttachment;
-  bool get _isImage => _hasAttachment && message.isImageAttachment;
-  bool get _isFile => _hasAttachment && !message.isImageAttachment;
+  bool get _isPdf => _hasAttachment && message.isPdfAttachment;
+  bool get _isImage => _hasAttachment && !_isPdf && message.isImageAttachment;
+  bool get _isFile => _hasAttachment && !_isPdf && !message.isImageAttachment;
   bool get _isImageOnly => _isImage && !_hasText;
   bool get _isFailed => message.status == ChatMessageStatus.failed;
+
+  bool get _isRejectedScan {
+    if (!_hasText || message.sender != ChatMessageSender.ai) return false;
+    try {
+      final data = jsonDecode(message.content);
+      return data is Map && data['__type'] == 'rejected_scan';
+    } catch (_) {
+      return false;
+    }
+  }
+
+  bool get _isAnalysisResult {
+    if (!_hasText || message.sender != ChatMessageSender.ai) return false;
+    try {
+      final data = jsonDecode(message.content);
+      return data is Map && data['__type'] == 'analysis_result';
+    } catch (_) {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +102,7 @@ class ChatMessageBubble extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 18.w,
-        vertical: _hasText || _isFile ? 14.h : 0,
+        vertical: _hasText || _isFile || _isPdf || _isRejectedScan || _isAnalysisResult ? 14.h : 0,
       ),
       decoration: BoxDecoration(
         color: bubbleColor,
@@ -105,6 +132,11 @@ class ChatMessageBubble extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
+          if (_isPdf)
+            Padding(
+              padding: EdgeInsets.only(bottom: _hasText ? 8.h : 0),
+              child: PdfMessageBubble(message: message, isUser: isUser),
+            ),
           if (_isImage)
             Padding(
               padding: EdgeInsets.only(bottom: _hasText ? 8.h : 0),
@@ -115,7 +147,20 @@ class ChatMessageBubble extends StatelessWidget {
               padding: EdgeInsets.only(bottom: _hasText ? 8.h : 0),
               child: FileMessageBubble(message: message, isUser: isUser),
             ),
-          if (_hasText)
+          if (_isRejectedScan)
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.h),
+              child: RejectedAnalysisMessage(
+                message: message,
+                onUploadAnother: onUploadAnother,
+              ),
+            ),
+          if (_isAnalysisResult)
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.h),
+              child: AnalysisResultMessage(message: message),
+            ),
+          if (_hasText && !_isRejectedScan && !_isAnalysisResult)
             Text(
               message.content,
               style: AppTextStyles.getTextStyle(15).copyWith(

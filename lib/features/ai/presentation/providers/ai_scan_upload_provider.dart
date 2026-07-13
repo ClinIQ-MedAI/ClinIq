@@ -88,6 +88,7 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
       },
       (analysis) {
         log('AiScanUpload: Analysis completed (id: ${analysis.id})');
+        log('AiScanUpload: findings="${analysis.findings}" modality="${analysis.modality}" status="${analysis.status}"');
         state = AiScanUploadCompleted(analysis);
         return analysis;
       },

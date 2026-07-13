@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cliniq/core/api/end_points.dart';
 import 'package:cliniq/core/repos/base_repo/base_repo_impl.dart';
 import 'package:cliniq/features/ai/data/models/scan_analysis_model.dart';
@@ -27,7 +29,11 @@ class AiScanRepoImpl extends BaseRepoImpl implements AiScanRepo {
           'patientId': patientId,
         },
       );
-      return UploadedScanModel.fromJson(response as Map<String, dynamic>);
+      log(
+        'AiScanRepo: uploadScan response keys: ${(response as Map<String, dynamic>).keys}',
+      );
+      log('AiScanRepo: uploadScan response id: ${response['id']}');
+      return UploadedScanModel.fromJson(response);
     });
   }
 
@@ -35,7 +41,14 @@ class AiScanRepoImpl extends BaseRepoImpl implements AiScanRepo {
   Future<Either<Failure, ScanAnalysisEntity>> getScanAnalysis(int id) {
     return handleApi(() async {
       final response = await api.get(EndPoints.getScanAnalysis(id));
-      return ScanAnalysisModel.fromJson(response as Map<String, dynamic>);
+      final json = response as Map<String, dynamic>;
+      log('AiScanRepo: getScanAnalysis($id) raw keys: ${json.keys}');
+      log('AiScanRepo: getScanAnalysis($id) full JSON: $json');
+      final model = ScanAnalysisModel.fromJson(json);
+      log(
+        'AiScanRepo: getScanAnalysis -> findings="${model.findings}", status="${model.status}", modality="${model.modality}"',
+      );
+      return model;
     });
   }
 }

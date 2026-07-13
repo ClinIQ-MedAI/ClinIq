@@ -13,10 +13,12 @@ class ChatMessageList extends StatelessWidget {
     super.key,
     required this.conversation,
     this.onMessageRetry,
+    this.onUploadAnother,
   });
 
   final ChatConversationEntity conversation;
   final ValueChanged<String>? onMessageRetry;
+  final VoidCallback? onUploadAnother;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +47,7 @@ class ChatMessageList extends StatelessWidget {
           onRetry: onMessageRetry != null
               ? () => onMessageRetry!(message.id)
               : null,
+          onUploadAnother: onUploadAnother,
         ).animate().fadeIn(delay: (index * 80).ms).slideY(begin: 0.08);
       },
     );
