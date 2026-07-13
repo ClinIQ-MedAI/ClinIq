@@ -1,19 +1,22 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
+import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/custom_button.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AiAssistantSection extends StatelessWidget {
+class AiAssistantSection extends ConsumerWidget {
   const AiAssistantSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = context.isDark;
 
     return Container(
@@ -34,12 +37,16 @@ class AiAssistantSection extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         border: Border.all(
-          color: context.colorScheme.primary.withValues(alpha: isDark ? 0.25 : 0.15),
+          color: context.colorScheme.primary.withValues(
+            alpha: isDark ? 0.25 : 0.15,
+          ),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: context.colorScheme.primary.withValues(alpha: isDark ? 0.05 : 0.02),
+            color: context.colorScheme.primary.withValues(
+              alpha: isDark ? 0.05 : 0.02,
+            ),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -50,7 +57,16 @@ class AiAssistantSection extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(24.r),
           onTap: () {
-            Navigator.pushNamed(context, Routes.aiChatScreen);
+            final userProfile = ref.watch(currentUserProvider);
+            final isProfileCompleted = userProfile?.isProfileCompleted ?? false;
+            if (isProfileCompleted) {
+              Navigator.pushNamed(context, Routes.aiChatScreen);
+            } else {
+              showCustomSnackBar(
+                context,
+                "You must complete your profile before trying this feature",
+              );
+            }
           },
           child: Padding(
             padding: EdgeInsets.all(20.w),
@@ -103,7 +119,17 @@ class AiAssistantSection extends StatelessWidget {
                           borderRadius: 12,
                           textFontSize: 13,
                           onPressed: () {
-                            Navigator.pushNamed(context, Routes.aiChatScreen);
+                            final userProfile = ref.watch(currentUserProvider);
+                            final isProfileCompleted =
+                                userProfile?.isProfileCompleted ?? false;
+                            if (isProfileCompleted) {
+                              Navigator.pushNamed(context, Routes.aiChatScreen);
+                            } else {
+                              showCustomSnackBar(
+                                context,
+                                "You must complete your profile before trying this feature",
+                              );
+                            }
                           },
                         ),
                       ),

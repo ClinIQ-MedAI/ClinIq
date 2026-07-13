@@ -94,7 +94,7 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       messages.add(
         ChatMessageEntity(
           id: reply.chatId,
-          content: reply.error ?? 'An error occurred',
+          content: 'An error occurred please try again later',
           sentAt: _currentTimeLabel(),
           sender: ChatMessageSender.ai,
           status: ChatMessageStatus.failed,
@@ -149,8 +149,9 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
 
     _addMessage(userMessage);
 
-    final languagePreference =
-        ref.read(currentUserProvider)?.role == 'ar' ? 'ar' : null;
+    final languagePreference = ref.read(currentUserProvider)?.role == 'ar'
+        ? 'ar'
+        : null;
 
     try {
       final repo = ref.read(aiChatRepoProvider);
@@ -221,10 +222,7 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
 
     final updatedMessages = conversation.messages.map((m) {
       if (m.id != messageId) return m;
-      return m.copyWith(
-        content: content,
-        status: status,
-      );
+      return m.copyWith(content: content, status: status);
     }).toList();
 
     final updatedMessage = updatedMessages.firstWhere(
@@ -236,8 +234,12 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
     state = AsyncData(
       conversation.copyWith(
         messages: updatedMessages,
-        lastMessage: isLast ? (updatedMessage.content) : conversation.lastMessage,
-        lastMessageTime: isLast ? updatedMessage.sentAt : conversation.lastMessageTime,
+        lastMessage: isLast
+            ? (updatedMessage.content)
+            : conversation.lastMessage,
+        lastMessageTime: isLast
+            ? updatedMessage.sentAt
+            : conversation.lastMessageTime,
       ),
     );
   }
@@ -267,8 +269,6 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
       ),
     );
   }
-
-
 
   String _currentTimeLabel() {
     final now = DateTime.now();

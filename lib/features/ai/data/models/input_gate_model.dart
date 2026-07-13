@@ -14,7 +14,11 @@ class InputGateModel extends InputGateEntity {
   });
 
   static bool _truthyPassed(Object? raw) {
-    return raw == true || raw == 1 || raw == 'true' || raw == null;
+    if (raw == null) return true;
+    if (raw is bool) return raw;
+    if (raw is num) return raw == 1;
+    if (raw is String) return raw.toLowerCase() == 'true';
+    return false;
   }
 
   factory InputGateModel.fromJson(Map<String, dynamic>? json) {

@@ -13,6 +13,7 @@ import 'package:cliniq/features/appointments/presentation/widgets/booking/doctor
 import 'package:cliniq/features/appointments/presentation/widgets/booking/working_hours_section.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
 import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -99,12 +100,22 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                         isLoading: isBookingLoading,
                         isEnabled: selectedFullDate != null,
                         onPressed: () {
-                          ref
-                              .read(bookAppointmentProvider.notifier)
-                              .book(
-                                doctorId: widget.doctorId,
-                                date: selectedFullDate!,
-                              );
+                          final userProfile = ref.watch(currentUserProvider);
+                          final isProfileCompleted =
+                              userProfile?.isProfileCompleted ?? false;
+                          if (isProfileCompleted) {
+                            ref
+                                .read(bookAppointmentProvider.notifier)
+                                .book(
+                                  doctorId: widget.doctorId,
+                                  date: selectedFullDate!,
+                                );
+                          } else {
+                            showCustomSnackBar(
+                              context,
+                              "You must compelete your profile first before booking",
+                            );
+                          }
                         },
                       ),
                       const VerticalGap(32),

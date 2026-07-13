@@ -14,9 +14,13 @@ import 'package:cliniq/features/chat/presentation/widgets/rejected_analysis_mess
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 class ChatMessageBubble extends StatelessWidget {
-  const ChatMessageBubble({super.key, required this.message, this.onRetry, this.onUploadAnother});
+  const ChatMessageBubble({
+    super.key,
+    required this.message,
+    this.onRetry,
+    this.onUploadAnother,
+  });
 
   final ChatMessageEntity message;
   final VoidCallback? onRetry;
@@ -65,7 +69,9 @@ class ChatMessageBubble extends StatelessWidget {
     final isUser = message.sender == ChatMessageSender.user;
     final isAi = message.sender == ChatMessageSender.ai;
 
-    if (!_hasText && !_hasAttachment && message.status != ChatMessageStatus.loading) {
+    if (!_hasText &&
+        !_hasAttachment &&
+        message.status != ChatMessageStatus.loading) {
       return const SizedBox.shrink();
     }
 
@@ -87,10 +93,6 @@ class ChatMessageBubble extends StatelessWidget {
               ImageMessageBubble(message: message, isUser: isUser)
             else
               _bubbleWithContainer(context, isUser, isAi),
-            if (_isFailed && onRetry != null) ...[
-              const VerticalGap(4),
-              _retryButton(context),
-            ],
           ],
         ),
       ),
@@ -112,7 +114,15 @@ class ChatMessageBubble extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 18.w,
-        vertical: _hasText || _isFile || _isPdf || _isRejectedScan || _isAnalysisResult || _isPrescriptionResult ? 14.h : 0,
+        vertical:
+            _hasText ||
+                _isFile ||
+                _isPdf ||
+                _isRejectedScan ||
+                _isAnalysisResult ||
+                _isPrescriptionResult
+            ? 14.h
+            : 0,
       ),
       decoration: BoxDecoration(
         color: bubbleColor,
@@ -175,7 +185,10 @@ class ChatMessageBubble extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 8.h),
               child: AnalysisResultMessage(message: message),
             ),
-          if (_hasText && !_isRejectedScan && !_isAnalysisResult && !_isPrescriptionResult)
+          if (_hasText &&
+              !_isRejectedScan &&
+              !_isAnalysisResult &&
+              !_isPrescriptionResult)
             Text(
               message.content,
               style: AppTextStyles.getTextStyle(15).copyWith(
@@ -234,39 +247,6 @@ class ChatMessageBubble extends StatelessWidget {
             strokeWidth: 2.5,
             color: context.colorScheme.primary,
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _retryButton(BuildContext context) {
-    final scheme = context.colorScheme;
-
-    return GestureDetector(
-      onTap: onRetry,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: scheme.errorContainer,
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.refresh_rounded,
-              size: 14.sp,
-              color: scheme.onErrorContainer,
-            ),
-            const HorizontalGap(4),
-            Text(
-              'Retry',
-              style: AppTextStyles.getTextStyle(11).copyWith(
-                color: scheme.onErrorContainer,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
         ),
       ),
     );

@@ -181,7 +181,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       StorageKeys.isLoggedIn,
                       false,
                     );
-                    AppStorageHelper.remove(StorageKeys.currentUser);
+                    await AppStorageHelper.remove(StorageKeys.currentUser);
+                    await AppStorageHelper.remove(StorageKeys.currentUserId);
+
                     ref.read(currentUserProvider.notifier).clearUser();
                     if (context.mounted) {
                       Navigator.of(context).pushNamedAndRemoveUntil(

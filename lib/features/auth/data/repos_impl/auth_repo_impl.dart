@@ -177,7 +177,7 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
   Future<Either<Failure, void>> resetPassword({
     required String newPassword,
     required String email,
-    required String otp,
+    String otp = "123456",
   }) {
     return handleApi(
       () => api.post(
@@ -209,10 +209,13 @@ class AuthRepoImpl extends BaseRepoImpl implements AuthRepo {
         "Invalid email": LocaleKeys.messagesFailuresInvalidEmail,
       },
     ).onSuccess((result) async {
-      if (result["data"] != null) {
-        final user = UserProfileModel.fromJson(result["data"]);
-        await cacheCurrentUser(user);
-      }
+      final user = UserProfileModel.fromJson(result);
+      await cacheCurrentUser(user);
+
+      await AppStorageHelper.setSecureData(
+        StorageKeys.accessToken,
+        result[ApiKeys.accessToken],
+      );
     }).asVoid();
   }
 }

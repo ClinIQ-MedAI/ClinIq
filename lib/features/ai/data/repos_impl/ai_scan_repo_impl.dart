@@ -43,7 +43,13 @@ class AiScanRepoImpl extends BaseRepoImpl implements AiScanRepo {
       final response = await api.get(EndPoints.getScanAnalysis(id));
       final json = response as Map<String, dynamic>;
       log('AiScanRepo: getScanAnalysis($id) raw keys: ${json.keys}');
-      log('AiScanRepo: getScanAnalysis($id) full JSON: $json');
+      log('AiScanRepo: has data wrapper: ${json.containsKey('data')}');
+      log('AiScanRepo: has aiAnalysisResult: ${json.containsKey('aiAnalysisResult')}');
+      final hasInputGate = json.containsKey('input_gate') ||
+          (json['aiAnalysisResult'] as Map?)?.containsKey('input_gate') ==
+              true ||
+          (json['data'] as Map?)?.containsKey('input_gate') == true;
+      log('AiScanRepo: input_gate reachable: $hasInputGate');
       return ScanAnalysisModel.fromJson(json);
     });
   }

@@ -1,6 +1,7 @@
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/helpers/show_custom_snack_bar.dart';
 import 'package:cliniq/core/utils/app_routes.dart';
+import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/chat/presentation/arguments/chat_details_arguments.dart';
@@ -12,6 +13,7 @@ import 'package:cliniq/features/chat/presentation/widgets/new_conversation_butto
 import 'package:cliniq/features/chat/presentation/widgets/new_conversation_sheet.dart';
 import 'package:cliniq/features/home/domain/entities/doctor_entity.dart';
 import 'package:cliniq/features/home/presentation/providers/get_home_data_provider.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:cliniq/features/user/presentation/widgets/profile_app_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -79,9 +81,25 @@ class ChatsView extends ConsumerWidget {
                   },
                 );
               },
-              error: (error, stackTrace) => Center(
-                child: Text(LocaleKeys.messagesFailuresUnexpectedError.tr()),
-              ),
+              error: (error, stackTrace) {
+                final userProfile = ref.watch(currentUserProvider);
+                final isProfileCompleted =
+                    userProfile?.isProfileCompleted ?? false;
+
+                final error = isProfileCompleted
+                    ? LocaleKeys.messagesFailuresUnexpectedError.tr()
+                    : "You must complete your profile before trying this feature";
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Center(
+                    child: Text(
+                      error,
+                      style: AppTextStyles.getTextStyle(18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              },
               loading: () => const Center(child: CircularProgressIndicator()),
             ),
           ),
@@ -123,7 +141,18 @@ class ChatsView extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => NewConversationSheet(
         doctors: doctors,
-        onDoctorSelected: (doctor) => _startConversation(context, ref, doctor),
+        onDoctorSelected: (doctor) {
+          final userProfile = ref.watch(currentUserProvider);
+          final isProfileCompleted = userProfile?.isProfileCompleted ?? false;
+          if (isProfileCompleted) {
+            _startConversation(context, ref, doctor);
+          } else {
+            _showSnackBar(
+              context,
+              "You must compelete your profile before you make a new conversation",
+            );
+          }
+        },
       ),
     );
   }
