@@ -328,7 +328,12 @@
                 "analysis_id": "Analysis ID",
                 "job_id": "Job ID",
                 "created_at": "Created At",
-                "metadata": "Metadata"
+                "metadata": "Metadata",
+                "patient_name": "Patient Name",
+                "patient_id": "Patient ID",
+                "ai_job_status": "AI Job Status",
+                "validation_error": "Validation Error",
+                "scan_information": "Scan Information"
             }
         },
         "chat": {

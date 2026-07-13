@@ -455,6 +455,11 @@ abstract class LocaleKeys {
   static const aiScanResultJobId = "ai.scan.result.job_id";
   static const aiScanResultCreatedAt = "ai.scan.result.created_at";
   static const aiScanResultMetadata = "ai.scan.result.metadata";
+  static const aiScanResultPatientName = "ai.scan.result.patient_name";
+  static const aiScanResultPatientId = "ai.scan.result.patient_id";
+  static const aiScanResultAiJobStatus = "ai.scan.result.ai_job_status";
+  static const aiScanResultValidationError = "ai.scan.result.validation_error";
+  static const aiScanResultScanInformation = "ai.scan.result.scan_information";
   static const aiChatAttachmentScan = "ai.chat.attachment_scan";
   static const aiChatAttachmentPrescription = "ai.chat.attachment_prescription";
   static const aiChatModalityTitle = "ai.chat.modality_title";

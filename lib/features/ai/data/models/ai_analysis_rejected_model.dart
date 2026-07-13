@@ -9,6 +9,9 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
     required super.urgency,
     required super.summary,
     required super.recommendations,
+    super.scanBase64,
+    super.scanUrl,
+    super.aiJobStatus,
     super.modality,
     super.createdAt,
     super.patientName,
@@ -26,6 +29,11 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       recommendations: (json['recommendations'] as List<dynamic>? ?? [])
           .map((recommendation) => recommendation.toString())
           .toList(),
+      scanBase64: json['scanBase64'] as String? ?? '',
+      scanUrl: json['scanUrl'] as String? ?? '',
+      aiJobStatus: json['aiJobStatus'] as String? ??
+          json['ai_job_status'] as String? ??
+          '',
       modality: json['modality'] as String? ?? '',
       createdAt: json['createdAt'] as String? ??
           json['created_at'] as String? ??
@@ -46,6 +54,9 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       urgency: entity.urgency,
       summary: entity.summary,
       recommendations: entity.recommendations,
+      scanBase64: entity.scanBase64,
+      scanUrl: entity.scanUrl,
+      aiJobStatus: entity.aiJobStatus,
       modality: entity.modality,
       createdAt: entity.createdAt,
       patientName: entity.patientName,
@@ -60,6 +71,9 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       'urgency': urgency,
       'summary': summary,
       'recommendations': recommendations,
+      'scanBase64': scanBase64,
+      'scanUrl': scanUrl,
+      'ai_job_status': aiJobStatus,
       'modality': modality,
       'createdAt': createdAt,
       'patient_name': patientName,
@@ -73,6 +87,9 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
     String? urgency,
     String? summary,
     List<String>? recommendations,
+    String? scanBase64,
+    String? scanUrl,
+    String? aiJobStatus,
     String? modality,
     String? createdAt,
     String? patientName,
@@ -84,6 +101,9 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       urgency: urgency ?? this.urgency,
       summary: summary ?? this.summary,
       recommendations: recommendations ?? this.recommendations,
+      scanBase64: scanBase64 ?? this.scanBase64,
+      scanUrl: scanUrl ?? this.scanUrl,
+      aiJobStatus: aiJobStatus ?? this.aiJobStatus,
       modality: modality ?? this.modality,
       createdAt: createdAt ?? this.createdAt,
       patientName: patientName ?? this.patientName,

@@ -31,6 +31,9 @@ class AIAnalysisRejectedEntity extends ScanAnalysisEntity {
     required super.urgency,
     required super.summary,
     required super.recommendations,
+    this.scanBase64 = '',
+    this.scanUrl = '',
+    this.aiJobStatus = '',
     super.modality,
     super.createdAt,
     super.patientName,
@@ -38,6 +41,9 @@ class AIAnalysisRejectedEntity extends ScanAnalysisEntity {
   });
 
   final bool inputRejected;
+  final String scanBase64;
+  final String scanUrl;
+  final String aiJobStatus;
 }
 
 class AIAnalysisSuccessEntity extends ScanAnalysisEntity {

@@ -328,7 +328,12 @@
                 "analysis_id": "معرف التحليل",
                 "job_id": "معرف المهمة",
                 "created_at": "تاريخ الإنشاء",
-                "metadata": "البيانات الوصفية"
+                "metadata": "البيانات الوصفية",
+                "patient_name": "اسم المريض",
+                "patient_id": "معرف المريض",
+                "ai_job_status": "حالة مهمة الذكاء الاصطناعي",
+                "validation_error": "خطأ في التحقق",
+                "scan_information": "معلومات الفحص"
             }
         },
         "chat": {
