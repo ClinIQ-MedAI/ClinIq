@@ -333,7 +333,8 @@
                 "patient_id": "Patient ID",
                 "ai_job_status": "AI Job Status",
                 "validation_error": "Validation Error",
-                "scan_information": "Scan Information"
+                "scan_information": "Scan Information",
+                "detections": "Detections"
             }
         },
         "chat": {

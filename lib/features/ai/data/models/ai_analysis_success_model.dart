@@ -19,6 +19,7 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
     super.patientContext,
     super.findingsList,
     super.allProbabilities,
+    super.detections,
     super.scanBase64,
     super.scanUrl,
     super.aiJobStatus,
@@ -32,6 +33,10 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
     final findings = json['ai_findings'] as Map<String, dynamic>? ?? {};
     final rawProbabilities = json['all_probabilities'] as List<dynamic>? ??
         json['allProbabilities'] as List<dynamic>? ??
+        [];
+    final rawDetections = json['detections'] as List<dynamic>? ??
+        json['detection_list'] as List<dynamic>? ??
+        json['detected_regions'] as List<dynamic>? ??
         [];
     final rawFindings = json['findings_list'] as List<dynamic>? ??
         json['findingsList'] as List<dynamic>? ??
@@ -68,6 +73,11 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
           '',
       findingsList: rawFindings.map((e) => e.toString()).toList(),
       allProbabilities: rawProbabilities
+          .map(
+            (e) => ProbabilityModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
+      detections: rawDetections
           .map(
             (e) => ProbabilityModel.fromJson(e as Map<String, dynamic>),
           )
@@ -109,6 +119,7 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
       patientContext: entity.patientContext,
       findingsList: entity.findingsList,
       allProbabilities: entity.allProbabilities,
+      detections: entity.detections,
       scanBase64: entity.scanBase64,
       scanUrl: entity.scanUrl,
       aiJobStatus: entity.aiJobStatus,
@@ -141,6 +152,12 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
                 ProbabilityModel(label: p.label, value: p.value).toJson(),
           )
           .toList(),
+      'detections': detections
+          .map(
+            (d) =>
+                ProbabilityModel(label: d.label, value: d.value).toJson(),
+          )
+          .toList(),
       'scanBase64': scanBase64,
       'scanUrl': scanUrl,
       'aiJobStatus': aiJobStatus,
@@ -165,6 +182,7 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
     String? patientContext,
     List<String>? findingsList,
     List<ProbabilityEntity>? allProbabilities,
+    List<ProbabilityEntity>? detections,
     String? scanBase64,
     String? scanUrl,
     String? aiJobStatus,
@@ -187,6 +205,7 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
       patientContext: patientContext ?? this.patientContext,
       findingsList: findingsList ?? this.findingsList,
       allProbabilities: allProbabilities ?? this.allProbabilities,
+      detections: detections ?? this.detections,
       scanBase64: scanBase64 ?? this.scanBase64,
       scanUrl: scanUrl ?? this.scanUrl,
       aiJobStatus: aiJobStatus ?? this.aiJobStatus,

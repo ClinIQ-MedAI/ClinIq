@@ -7,6 +7,7 @@ import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_info_grid.dart';
+import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_success_detections.dart';
 import 'package:cliniq/features/ai/presentation/widgets/analysis_section_card.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,10 @@ class AiAnalysisSuccessBody extends StatelessWidget {
         if (analysis.annotatedImageBase64.isNotEmpty) ...[
           const VerticalGap(12),
           _buildAnnotatedImage(context),
+        ],
+        if (analysis.detections.isNotEmpty) ...[
+          const VerticalGap(12),
+          AiAnalysisSuccessDetections(detections: analysis.detections),
         ],
         const VerticalGap(12),
         _buildScanInformation(context),
@@ -915,7 +920,7 @@ class AiAnalysisSuccessBody extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 4.h),
+                    const VerticalGap(4),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4.r),
                   child: LinearProgressIndicator(

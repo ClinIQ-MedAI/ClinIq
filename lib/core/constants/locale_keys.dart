@@ -460,6 +460,7 @@ abstract class LocaleKeys {
   static const aiScanResultAiJobStatus = "ai.scan.result.ai_job_status";
   static const aiScanResultValidationError = "ai.scan.result.validation_error";
   static const aiScanResultScanInformation = "ai.scan.result.scan_information";
+  static const aiScanResultDetections = "ai.scan.result.detections";
   static const aiChatAttachmentScan = "ai.chat.attachment_scan";
   static const aiChatAttachmentPrescription = "ai.chat.attachment_prescription";
   static const aiChatModalityTitle = "ai.chat.modality_title";
