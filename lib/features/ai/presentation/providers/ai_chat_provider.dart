@@ -207,6 +207,31 @@ class AiChatNotifier extends AsyncNotifier<ChatConversationEntity> {
     sendMessage(userMessage.content);
   }
 
+  void addMessage(ChatMessageEntity message) {
+    _addMessage(message);
+  }
+
+  void updateMessage(
+    String messageId, {
+    String? content,
+    ChatMessageStatus? status,
+  }) {
+    final conversation = state.value;
+    if (conversation == null) return;
+
+    state = AsyncData(
+      conversation.copyWith(
+        messages: conversation.messages.map((m) {
+          if (m.id != messageId) return m;
+          return m.copyWith(
+            content: content,
+            status: status,
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   void _addMessage(ChatMessageEntity message) {
     final conversation = state.value;
     if (conversation == null) return;

@@ -8,6 +8,7 @@ import 'package:cliniq/features/ai/presentation/widgets/ai_chat_suggested_prompt
 import 'package:cliniq/features/ai/presentation/widgets/ai_upload_request_card.dart';
 import 'package:cliniq/features/chat/domain/entities/attachment_type.dart';
 import 'package:cliniq/features/chat/domain/entities/chat_conversation_entity.dart';
+import 'package:cliniq/features/chat/domain/entities/chat_message_entity.dart';
 import 'package:cliniq/features/chat/presentation/providers/attachment_provider.dart';
 import 'package:cliniq/features/chat/presentation/widgets/attachment_picker_sheet.dart';
 import 'package:cliniq/features/chat/presentation/widgets/attachment_preview_widget.dart';
@@ -91,25 +92,80 @@ class AiChatBody extends ConsumerWidget {
             if (uploadState.hasAttachment) {
               final filePath = uploadState.localFilePath;
               final modality = uploadState.selectedModality;
-              if (filePath != null && modality != null) {
-                final file = File(filePath);
-                final bytes = await file.readAsBytes();
-                final base64 = base64Encode(bytes);
-                final patientId =
-                    ref.read(currentUserProvider)?.id;
-                if (patientId != null) {
-                  ref
-                      .read(aiScanUploadProvider.notifier)
-                      .analyzeScan(
-                        imageBase64: base64,
-                        patientId: patientId,
-                        modality: modality,
-                      );
-                }
-              }
+              final attachmentName = uploadState.fileName;
+              final attachmentSize = uploadState.fileSize;
+              if (filePath == null || modality == null) return;
+
+              final patientId =
+                  ref.read(currentUserProvider)?.id;
+              if (patientId == null) return;
+
+              final file = File(filePath);
+              final bytes = await file.readAsBytes();
+              final base64 = base64Encode(bytes);
+
+              final ts = DateTime.now();
+              final sentAt =
+                  '${ts.hour.toString().padLeft(2, '0')}:${ts.minute.toString().padLeft(2, '0')}';
+              final userMsgId =
+                  'scan-user-${ts.microsecondsSinceEpoch}';
+              final loadingId =
+                  'scan-loading-${ts.microsecondsSinceEpoch}';
+
+              final notifier = ref.read(aiChatProvider.notifier);
+
+              notifier.addMessage(
+                ChatMessageEntity(
+                  id: userMsgId,
+                  content: '',
+                  sentAt: sentAt,
+                  sender: ChatMessageSender.user,
+                  status: ChatMessageStatus.sent,
+                  localFilePath: filePath,
+                  attachmentName: attachmentName,
+                  attachmentSize: attachmentSize,
+                ),
+              );
+
+              notifier.addMessage(
+                ChatMessageEntity(
+                  id: loadingId,
+                  content: '',
+                  sentAt: sentAt,
+                  sender: ChatMessageSender.ai,
+                  status: ChatMessageStatus.loading,
+                ),
+              );
+
               ref
                   .read(attachmentUploadProvider.notifier)
                   .resetAfterSend();
+
+              final analysis = await ref
+                  .read(aiScanUploadProvider.notifier)
+                  .analyzeScan(
+                    imageBase64: base64,
+                    patientId: patientId,
+                    modality: modality,
+                  );
+
+              if (analysis != null) {
+                notifier.updateMessage(
+                  loadingId,
+                  content: analysis.findings,
+                  status: ChatMessageStatus.seen,
+                );
+              } else {
+                final errorState = ref.read(aiScanUploadProvider);
+                final errorMsg = errorState is AiScanUploadError
+                    ? errorState.message
+                    : 'Analysis failed';
+                notifier.updateMessage(
+                  loadingId,
+                  content: errorMsg,
+                  status: ChatMessageStatus.failed,
+                );
+              }
             } else {
               ref.read(aiChatProvider.notifier).sendMessage(text);
             }

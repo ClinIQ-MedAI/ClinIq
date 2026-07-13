@@ -43,7 +43,7 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
     return const AiScanUploadInitial();
   }
 
-  Future<void> analyzeScan({
+  Future<ScanAnalysisEntity?> analyzeScan({
     required String imageBase64,
     required String patientId,
     required String modality,
@@ -67,7 +67,7 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
       (uploaded) => uploaded.id,
     );
 
-    if (uploadId == null) return;
+    if (uploadId == null) return null;
 
     log('AiScanUpload: Upload succeeded (id: $uploadId)');
     state = const AiScanFetchingAnalysis();
@@ -75,19 +75,21 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
     final scanId = int.tryParse(uploadId);
     if (scanId == null) {
       state = AiScanUploadError(LocaleKeys.aiScanInvalidId.tr());
-      return;
+      return null;
     }
 
     final analysisResult = await repo.getScanAnalysis(scanId);
 
-    analysisResult.fold(
+    return analysisResult.fold<ScanAnalysisEntity?>(
       (failure) {
         log('AiScanUpload: Analysis failed: $failure');
         state = AiScanUploadError(failure.message);
+        return null;
       },
       (analysis) {
         log('AiScanUpload: Analysis completed (id: ${analysis.id})');
         state = AiScanUploadCompleted(analysis);
+        return analysis;
       },
     );
   }
