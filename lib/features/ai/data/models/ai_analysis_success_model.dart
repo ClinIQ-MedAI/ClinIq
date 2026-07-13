@@ -19,6 +19,9 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
     super.patientContext,
     super.findingsList,
     super.allProbabilities,
+    super.scanBase64,
+    super.scanUrl,
+    super.aiJobStatus,
     super.modality,
     super.createdAt,
     super.patientName,
@@ -69,6 +72,15 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
             (e) => ProbabilityModel.fromJson(e as Map<String, dynamic>),
           )
           .toList(),
+      scanBase64: json['scanBase64'] as String? ??
+          json['scan_base64'] as String? ??
+          '',
+      scanUrl: json['scanUrl'] as String? ??
+          json['scan_url'] as String? ??
+          '',
+      aiJobStatus: json['aiJobStatus'] as String? ??
+          json['ai_job_status'] as String? ??
+          '',
       modality: json['modality'] as String? ?? '',
       createdAt: json['createdAt'] as String? ??
           json['created_at'] as String? ??
@@ -97,6 +109,9 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
       patientContext: entity.patientContext,
       findingsList: entity.findingsList,
       allProbabilities: entity.allProbabilities,
+      scanBase64: entity.scanBase64,
+      scanUrl: entity.scanUrl,
+      aiJobStatus: entity.aiJobStatus,
       modality: entity.modality,
       createdAt: entity.createdAt,
       patientName: entity.patientName,
@@ -126,6 +141,9 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
                 ProbabilityModel(label: p.label, value: p.value).toJson(),
           )
           .toList(),
+      'scanBase64': scanBase64,
+      'scanUrl': scanUrl,
+      'aiJobStatus': aiJobStatus,
       'modality': modality,
       'createdAt': createdAt,
       'patient_name': patientName,
@@ -147,6 +165,9 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
     String? patientContext,
     List<String>? findingsList,
     List<ProbabilityEntity>? allProbabilities,
+    String? scanBase64,
+    String? scanUrl,
+    String? aiJobStatus,
     String? modality,
     String? createdAt,
     String? patientName,
@@ -166,6 +187,9 @@ class AIAnalysisSuccessModel extends AIAnalysisSuccessEntity {
       patientContext: patientContext ?? this.patientContext,
       findingsList: findingsList ?? this.findingsList,
       allProbabilities: allProbabilities ?? this.allProbabilities,
+      scanBase64: scanBase64 ?? this.scanBase64,
+      scanUrl: scanUrl ?? this.scanUrl,
+      aiJobStatus: aiJobStatus ?? this.aiJobStatus,
       modality: modality ?? this.modality,
       createdAt: createdAt ?? this.createdAt,
       patientName: patientName ?? this.patientName,

@@ -61,6 +61,9 @@ class AIAnalysisSuccessEntity extends ScanAnalysisEntity {
     this.patientContext = '',
     this.findingsList = const [],
     this.allProbabilities = const [],
+    this.scanBase64 = '',
+    this.scanUrl = '',
+    this.aiJobStatus = '',
     super.modality,
     super.createdAt,
     super.patientName,
@@ -76,6 +79,9 @@ class AIAnalysisSuccessEntity extends ScanAnalysisEntity {
   final String patientContext;
   final List<String> findingsList;
   final List<ProbabilityEntity> allProbabilities;
+  final String scanBase64;
+  final String scanUrl;
+  final String aiJobStatus;
 }
 
 class PrescriptionAnalysisEntity extends ScanAnalysisEntity {

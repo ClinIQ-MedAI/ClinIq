@@ -2,19 +2,25 @@ import 'dart:developer';
 
 import 'package:cliniq/features/ai/data/models/ai_analysis_rejected_model.dart';
 import 'package:cliniq/features/ai/data/models/ai_analysis_success_model.dart';
+import 'package:cliniq/features/ai/data/models/input_gate_model.dart';
 import 'package:cliniq/features/ai/data/models/prescription_analysis_model.dart';
 import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 
 abstract final class ScanAnalysisModel {
   static ScanAnalysisEntity fromJson(Map<String, dynamic> json) {
     final analysisJson = _analysisJson(json);
-    final inputGate = analysisJson['input_gate'] as Map<String, dynamic>?;
-    final rawPassed = inputGate?['passed'];
-    final passed = _isTruthy(rawPassed);
+    final inputGateModel = InputGateModel.fromJson(
+      analysisJson['input_gate'] as Map<String, dynamic>?,
+    );
 
-    log('[ScanAnalysisModel] passed_raw=$rawPassed (${rawPassed.runtimeType}) resolved=$passed');
+    log(
+      '[ScanAnalysisModel] input_gate keys: ${analysisJson['input_gate'].runtimeType}',
+    );
+    log(
+      '[ScanAnalysisModel] resolved passed=${inputGateModel.passed}',
+    );
 
-    if (passed) {
+    if (inputGateModel.passed) {
       final modality = analysisJson['modality'] as String? ?? '';
       if (modality == 'PRESCRIPTION') {
         return PrescriptionAnalysisModel.fromJson(analysisJson);
@@ -23,11 +29,6 @@ abstract final class ScanAnalysisModel {
     }
 
     return AIAnalysisRejectedModel.fromJson(analysisJson);
-  }
-
-  /// Returns `true` for [bool] `true`, [int] `1`, or [String] `"true"`.
-  static bool _isTruthy(Object? value) {
-    return value == true || value == 1 || value == 'true';
   }
 
   static Map<String, dynamic> toJson(ScanAnalysisEntity analysis) {
@@ -47,9 +48,13 @@ abstract final class ScanAnalysisModel {
     };
   }
 
-  /// Unwraps a top-level `aiAnalysisResult` key **only** when the inner map
-  /// contains an `input_gate` field.  Otherwise returns the original map so
-  /// that `input_gate` at the top level is never lost.
+  /// Returns the best map to use for analysis parsing.
+  ///
+  /// 1. If `json` has an `aiAnalysisResult` wrapper and that wrapper
+  ///    contains `input_gate`, returns the wrapper content.
+  /// 2. If the wrapper exists but has no `input_gate`, checks the outer
+  ///    `json` for `input_gate` as a fallback.
+  /// 3. Otherwise returns `json` as-is.
   static Map<String, dynamic> _analysisJson(Map<String, dynamic> json) {
     final wrapped = json['aiAnalysisResult'];
     if (wrapped is Map<String, dynamic> || wrapped is Map) {
@@ -59,6 +64,10 @@ abstract final class ScanAnalysisModel {
       if (inner.containsKey('input_gate')) {
         return inner;
       }
+      if (json.containsKey('input_gate')) {
+        return json;
+      }
+      return inner;
     }
     return json;
   }
