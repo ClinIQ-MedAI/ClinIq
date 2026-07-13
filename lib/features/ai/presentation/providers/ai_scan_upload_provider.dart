@@ -34,8 +34,8 @@ class AiScanUploadError extends AiScanUploadState {
 
 final aiScanUploadProvider =
     NotifierProvider<AiScanUploadNotifier, AiScanUploadState>(
-  AiScanUploadNotifier.new,
-);
+      AiScanUploadNotifier.new,
+    );
 
 class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
   @override
@@ -58,14 +58,11 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
       modality: modality,
     );
 
-    final uploadId = uploadResult.fold<String?>(
-      (failure) {
-        log('AiScanUpload: Upload failed: $failure');
-        state = AiScanUploadError(failure.message);
-        return null;
-      },
-      (uploaded) => uploaded.id,
-    );
+    final uploadId = uploadResult.fold<String?>((failure) {
+      log('AiScanUpload: Upload failed: $failure');
+      state = AiScanUploadError(failure.message);
+      return null;
+    }, (uploaded) => uploaded.id);
 
     if (uploadId == null) return null;
 
@@ -87,8 +84,7 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
         return null;
       },
       (analysis) {
-        log('AiScanUpload: Analysis completed (id: ${analysis.id})');
-        log('AiScanUpload: findings="${analysis.findings}" modality="${analysis.modality}" status="${analysis.status}"');
+        log('AiScanUpload: Analysis completed (${analysis.runtimeType})');
         state = AiScanUploadCompleted(analysis);
         return analysis;
       },

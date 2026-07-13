@@ -44,11 +44,7 @@ class AiScanRepoImpl extends BaseRepoImpl implements AiScanRepo {
       final json = response as Map<String, dynamic>;
       log('AiScanRepo: getScanAnalysis($id) raw keys: ${json.keys}');
       log('AiScanRepo: getScanAnalysis($id) full JSON: $json');
-      final model = ScanAnalysisModel.fromJson(json);
-      log(
-        'AiScanRepo: getScanAnalysis -> findings="${model.findings}", status="${model.status}", modality="${model.modality}"',
-      );
-      return model;
+      return ScanAnalysisModel.fromJson(json);
     });
   }
 }

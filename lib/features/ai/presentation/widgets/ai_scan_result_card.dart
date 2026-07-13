@@ -21,24 +21,24 @@ class AiScanResultCard extends StatelessWidget {
         children: [
           Text(
             LocaleKeys.aiScanAnalysisTitle.tr(),
-            style: AppTextStyles.getTextStyle(22).copyWith(fontWeight: FontWeight.w700),
+            style: AppTextStyles.getTextStyle(
+              22,
+            ).copyWith(fontWeight: FontWeight.w700),
           ),
           const VerticalGap(8),
           _infoRow(
             context,
-            LocaleKeys.aiScanModality.tr(),
-            analysis.modality,
-          ),
-          const VerticalGap(4),
-          _infoRow(
-            context,
             LocaleKeys.aiScanStatus.tr(),
-            analysis.status,
+            analysis is AIAnalysisRejectedEntity
+                ? LocaleKeys.aiScanResultFailed.tr()
+                : LocaleKeys.aiScanResultPassed.tr(),
           ),
           const VerticalGap(20),
           Text(
-            LocaleKeys.aiScanFindings.tr(),
-            style: AppTextStyles.getTextStyle(16).copyWith(fontWeight: FontWeight.w600),
+            LocaleKeys.aiScanResultSummary.tr(),
+            style: AppTextStyles.getTextStyle(
+              16,
+            ).copyWith(fontWeight: FontWeight.w600),
           ),
           const VerticalGap(8),
           Container(
@@ -48,16 +48,16 @@ class AiScanResultCard extends StatelessWidget {
               color: context.colorScheme.surface,
               borderRadius: BorderRadius.circular(16.r),
               border: Border.all(
-                color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
+                color: context.colorScheme.outlineVariant.withValues(
+                  alpha: 0.3,
+                ),
               ),
             ),
             child: Text(
-              analysis.findings.isNotEmpty
-                  ? analysis.findings
+              analysis.summary.isNotEmpty
+                  ? analysis.summary
                   : LocaleKeys.aiScanNoFindings.tr(),
-              style: AppTextStyles.getTextStyle(14).copyWith(
-                height: 1.6,
-              ),
+              style: AppTextStyles.getTextStyle(14).copyWith(height: 1.6),
             ),
           ),
         ],
@@ -70,7 +70,9 @@ class AiScanResultCard extends StatelessWidget {
       children: [
         Text(
           '$label: ',
-          style: AppTextStyles.getTextStyle(13).copyWith(fontWeight: FontWeight.w600),
+          style: AppTextStyles.getTextStyle(
+            13,
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
         Text(
           value.isNotEmpty ? value : '-',

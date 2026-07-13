@@ -15,10 +15,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AnalysisResultMessage extends StatelessWidget {
-  const AnalysisResultMessage({
-    super.key,
-    required this.message,
-  });
+  const AnalysisResultMessage({super.key, required this.message});
 
   final ChatMessageEntity message;
 
@@ -37,17 +34,133 @@ class AnalysisResultMessage extends StatelessWidget {
     final analysis = _analysis;
     if (analysis == null) return const SizedBox.shrink();
 
-    return _AnalysisCard(analysis: analysis)
-        .animate()
-        .fadeIn(duration: 300.ms)
-        .slideY(begin: 0.06, duration: 300.ms);
+    return switch (analysis) {
+      AIAnalysisRejectedEntity() => _RejectedCard(analysis: analysis)
+          .animate()
+          .fadeIn(duration: 300.ms)
+          .slideY(begin: 0.06, duration: 300.ms),
+      AIAnalysisSuccessEntity() => _SuccessCard(analysis: analysis)
+          .animate()
+          .fadeIn(duration: 300.ms)
+          .slideY(begin: 0.06, duration: 300.ms),
+    };
   }
 }
 
-class _AnalysisCard extends StatelessWidget {
-  const _AnalysisCard({required this.analysis});
+class _RejectedCard extends StatelessWidget {
+  const _RejectedCard({required this.analysis});
+  final AIAnalysisRejectedEntity analysis;
 
-  final ScanAnalysisEntity analysis;
+  @override
+  Widget build(BuildContext context) {
+    final scheme = context.colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+
+    return InkWell(
+      onTap: () => _openReport(context),
+      borderRadius: BorderRadius.circular(20.r),
+      child: Container(
+        padding: EdgeInsets.all(18.r),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF2A2410) : const Color(0xFFFFF8E1),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: isDark ? const Color(0xFF4A3E1A) : const Color(0xFFF0D78C),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.warning_amber_rounded,
+                    size: 22.sp, color: const Color(0xFFE6A817)),
+                const HorizontalGap(8),
+                Expanded(
+                  child: Text(
+                    LocaleKeys.aiScanRejectedTitle.tr(),
+                    style: AppTextStyles.getTextStyle(15).copyWith(
+                      color: scheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (analysis.summary.isNotEmpty) ...[
+              const VerticalGap(10),
+              Text(
+                analysis.summary,
+                style: AppTextStyles.getTextStyle(12).copyWith(
+                  color: scheme.onSurface.withValues(alpha: 0.65),
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+            if (analysis.inputGate.reason.isNotEmpty) ...[
+              const VerticalGap(8),
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(10.r),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE6A817).withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Text(
+                  analysis.inputGate.reason,
+                  style: AppTextStyles.getTextStyle(11).copyWith(
+                    color: scheme.onSurface.withValues(alpha: 0.6),
+                    fontWeight: FontWeight.w500,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+            const VerticalGap(12),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () => _openReport(context),
+                icon: Icon(Icons.open_in_new_rounded, size: 16.sp),
+                label: Text(
+                  LocaleKeys.aiScanViewFullReport.tr(),
+                  style: AppTextStyles.getTextStyle(13).copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: scheme.primary,
+                  foregroundColor: scheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openReport(BuildContext context) {
+    Navigator.pushNamed(
+      context,
+      Routes.aiAnalysisResultScreen,
+      arguments: analysis,
+    );
+  }
+}
+
+class _SuccessCard extends StatelessWidget {
+  const _SuccessCard({required this.analysis});
+  final AIAnalysisSuccessEntity analysis;
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +174,7 @@ class _AnalysisCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: _bgColor(scheme),
           borderRadius: BorderRadius.circular(20.r),
-          border: Border.all(
-            color: _borderColor(scheme),
-            width: 1,
-          ),
+          border: Border.all(color: _borderColor(scheme), width: 1),
           boxShadow: [
             BoxShadow(
               color: scheme.primary.withValues(alpha: 0.08),
@@ -82,9 +192,9 @@ class _AnalysisCard extends StatelessWidget {
             _summaryRow(scheme),
             const VerticalGap(12),
             _chipsRow(scheme),
-            if (analysis.findings.isNotEmpty) ...[
+            if (analysis.primaryDiagnosis.isNotEmpty) ...[
               const VerticalGap(12),
-              _findingsPreview(scheme),
+              _diagnosisPreview(scheme),
             ],
             const VerticalGap(16),
             _viewReportButton(context, scheme),
@@ -124,10 +234,9 @@ class _AnalysisCard extends StatelessWidget {
         Expanded(
           child: Text(
             LocaleKeys.aiScanAnalysisComplete.tr(),
-            style: AppTextStyles.getTextStyle(15).copyWith(
-              color: scheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppTextStyles.getTextStyle(
+              15,
+            ).copyWith(color: scheme.onSurface, fontWeight: FontWeight.w600),
           ),
         ),
       ],
@@ -150,18 +259,8 @@ class _AnalysisCard extends StatelessWidget {
       spacing: 8.w,
       runSpacing: 6.h,
       children: [
-        if (analysis.modality.isNotEmpty)
-          _chip(
-            scheme,
-            analysis.modality,
-            scheme.primary,
-          ),
         if (analysis.urgency.isNotEmpty)
-          _chip(
-            scheme,
-            analysis.urgency.toUpperCase(),
-            _urgencyColor(scheme),
-          ),
+          _chip(scheme, analysis.urgency.toUpperCase(), _urgencyColor(scheme)),
       ],
     );
   }
@@ -185,10 +284,7 @@ class _AnalysisCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: color.withValues(alpha: 0.25),
-          width: 1,
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
       ),
       child: Text(
         label,
@@ -201,7 +297,7 @@ class _AnalysisCard extends StatelessWidget {
     );
   }
 
-  Widget _findingsPreview(ColorScheme scheme) {
+  Widget _diagnosisPreview(ColorScheme scheme) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.r),
@@ -214,7 +310,7 @@ class _AnalysisCard extends StatelessWidget {
         ),
       ),
       child: Text(
-        analysis.findings,
+        analysis.primaryDiagnosis,
         style: AppTextStyles.getTextStyle(11).copyWith(
           color: scheme.onSurface,
           fontWeight: FontWeight.w500,
@@ -231,15 +327,12 @@ class _AnalysisCard extends StatelessWidget {
       width: double.infinity,
       child: FilledButton.icon(
         onPressed: () => _openReport(context),
-        icon: Icon(
-          Icons.open_in_new_rounded,
-          size: 16.sp,
-        ),
+        icon: Icon(Icons.open_in_new_rounded, size: 16.sp),
         label: Text(
           LocaleKeys.aiScanViewFullReport.tr(),
-          style: AppTextStyles.getTextStyle(13).copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: AppTextStyles.getTextStyle(
+            13,
+          ).copyWith(fontWeight: FontWeight.w600),
         ),
         style: FilledButton.styleFrom(
           backgroundColor: scheme.primary,
@@ -265,13 +358,11 @@ class _AnalysisCard extends StatelessWidget {
     );
   }
 
-  Color _bgColor(ColorScheme scheme) =>
-      scheme.brightness == Brightness.dark
-          ? const Color(0xFF1A2E1A)
-          : const Color(0xFFF1F9F1);
+  Color _bgColor(ColorScheme scheme) => scheme.brightness == Brightness.dark
+      ? const Color(0xFF1A2E1A)
+      : const Color(0xFFF1F9F1);
 
-  Color _borderColor(ColorScheme scheme) =>
-      scheme.brightness == Brightness.dark
-          ? const Color(0xFF2D4A2D)
-          : const Color(0xFFC8E6C9);
+  Color _borderColor(ColorScheme scheme) => scheme.brightness == Brightness.dark
+      ? const Color(0xFF2D4A2D)
+      : const Color(0xFFC8E6C9);
 }
