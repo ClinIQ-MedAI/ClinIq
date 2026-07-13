@@ -1,4 +1,5 @@
 import 'package:cliniq/core/providers/socket_lifecycle_provider.dart';
+import 'package:cliniq/core/services/socket_lifecycle_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class ClinIq extends ConsumerStatefulWidget {
 
 class _ClinIqState extends ConsumerState<ClinIq> {
   late AppThemeCubit appThemeCubit;
+  late final SocketLifecycleService _socketLifecycle;
 
   @override
   void initState() {
@@ -52,12 +54,13 @@ class _ClinIqState extends ConsumerState<ClinIq> {
     appThemeCubit = AppThemeCubit();
     FlutterNativeSplash.remove();
 
-    ref.read(socketLifecycleProvider).start();
+    _socketLifecycle = ref.read(socketLifecycleProvider);
+    _socketLifecycle.start();
   }
 
   @override
   void dispose() {
-    ref.read(socketLifecycleProvider).dispose();
+    _socketLifecycle.dispose();
     super.dispose();
   }
 

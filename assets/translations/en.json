@@ -27,7 +27,7 @@
             "password_requires_lowercase": "Passwords must have at least one lowercase letter.",
             "password_requires_uppercase": "Passwords must have at least one uppercase letter.",
             "invalid_email_format": "Invalid email address.",
-            "mic_disabled":"Mic is disabled now , we will enable it soon"
+            "mic_disabled": "Mic is disabled now , we will enable it soon"
         }
     },
     "validation": {
@@ -319,6 +319,7 @@
                 "validation_passed": "Image validation passed",
                 "validation_failed": "Image validation failed",
                 "action": "Action",
+                "reason": "Reason",
                 "width": "Width",
                 "height": "Height",
                 "aspect_ratio": "Aspect Ratio",
@@ -334,7 +335,20 @@
                 "ai_job_status": "AI Job Status",
                 "validation_error": "Validation Error",
                 "scan_information": "Scan Information",
-                "detections": "Detections"
+                "detections": "Detections",
+                "bone_analysis": "Bone Analysis",
+                "has_fracture": "Has Fracture",
+                "has_hardware": "Has Hardware",
+                "has_healing_signs": "Has Healing Signs",
+                "yes": "Yes",
+                "no": "No",
+                "primary_diagnosis": "Primary Diagnosis",
+                "raw_vlm_output": "Raw VLM Output",
+                "prescription_analysis": "Prescription Analysis",
+                "medication_overview": "Medication Overview",
+                "total": "Total",
+                "verified": "Verified",
+                "unverified": "Unverified"
             }
         },
         "chat": {

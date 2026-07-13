@@ -1,5 +1,4 @@
 import 'package:cliniq/features/auth/presentation/arguments/verify_email_arguments.dart';
-import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cliniq/core/constants/locale_keys.dart';
@@ -18,13 +17,7 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(loginProvider, (previous, next) {
       if (next is AsyncData && next.value is Success) {
-        final userProfile = ref.watch(currentUserProvider);
-        final isProfileCompleted = userProfile?.isProfileCompleted ?? false;
-        if (isProfileCompleted) {
-          navigateToHomeScreen(context);
-        } else {
-          Navigator.pushNamed(context, Routes.completeUserProfileScreen);
-        }
+        navigateToHomeScreen(context);
       } else if (next is AsyncError) {
         if (next.error != null) {
           if (next.error.toString() ==

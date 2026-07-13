@@ -319,6 +319,7 @@
                 "validation_passed": "تم التحقق من الصورة بنجاح",
                 "validation_failed": "فشل التحقق من الصورة",
                 "action": "الإجراء",
+                "reason": "السبب",
                 "width": "العرض",
                 "height": "الارتفاع",
                 "aspect_ratio": "نسبة العرض إلى الارتفاع",
@@ -334,7 +335,20 @@
                 "ai_job_status": "حالة مهمة الذكاء الاصطناعي",
                 "validation_error": "خطأ في التحقق",
                 "scan_information": "معلومات الفحص",
-                "detections": "الاكتشافات"
+                "detections": "الاكتشافات",
+                "bone_analysis": "تحليل العظام",
+                "has_fracture": "وجود كسر",
+                "has_hardware": "وجود أجهزة",
+                "has_healing_signs": "علامات الشفاء",
+                "yes": "نعم",
+                "no": "لا",
+                "primary_diagnosis": "التشخيص الأولي",
+                "raw_vlm_output": "مخرجات VLM الخام",
+                "prescription_analysis": "تحليل الوصفة الطبية",
+                "medication_overview": "نظرة عامة على الأدوية",
+                "total": "الإجمالي",
+                "verified": "موثقة",
+                "unverified": "غير موثقة"
             }
         },
         "chat": {

@@ -33,7 +33,7 @@ class AttachmentOptionCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: context.colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
@@ -44,7 +44,7 @@ class AttachmentOptionCard extends StatelessWidget {
                 size: 26.sp,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 6.h),
             Text(
               type.titleKey.tr(),
               style: AppTextStyles.getTextStyle(12).copyWith(
@@ -55,7 +55,7 @@ class AttachmentOptionCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 3.h),
             Text(
               type.descriptionKey.tr(),
               style: AppTextStyles.getTextStyle(9).copyWith(
