@@ -56,7 +56,7 @@ class HomeRepoImpl extends BaseRepoImpl implements HomeRepo {
     final result = await handleApi(
       () => api.get(EndPoints.examinationAppointments),
     );
-    return result.fold((failure) => Left(failure), (data) {
+    return result.fold((failure) => Right([]), (data) {
       final list = (data['data'] as List)
           .map((e) => ExaminationAppointmentModel.fromJson(e))
           .toList();

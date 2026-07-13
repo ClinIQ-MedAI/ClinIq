@@ -51,7 +51,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             doctorSpeciality: doctorDetail.doctor.speciality,
             doctorImage: doctorDetail.doctor.image,
             appointmentDate: selectedFullDate!,
-            appointmentTime: "09:00 AM", // Current default time in booking
+            appointmentTime: "09:00 AM",
             appointmentStatus: "Upcoming",
           );
           ref.read(getHomeDataProvider.notifier).addAppointment(newAppointment);
@@ -104,7 +104,6 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
                               .book(
                                 doctorId: widget.doctorId,
                                 date: selectedFullDate!,
-                                time: "09:00 AM",
                               );
                         },
                       ),

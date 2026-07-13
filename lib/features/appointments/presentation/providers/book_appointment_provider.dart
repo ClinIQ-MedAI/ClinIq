@@ -17,12 +17,11 @@ class BookAppointmentNotifier extends AsyncNotifier<Success?> {
   Future<void> book({
     required String doctorId,
     required String date,
-    required String time,
   }) async {
     state = const AsyncLoading();
     await ref
         .read(appointmentsRepoProvider)
-        .bookAppointment(doctorId: doctorId, date: date, time: time)
+        .bookAppointment(doctorId: doctorId, date: date)
         .onSuccess((value) async {
           state = const AsyncData(Success());
         })

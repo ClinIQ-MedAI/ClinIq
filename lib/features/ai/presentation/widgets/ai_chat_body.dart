@@ -153,9 +153,11 @@ class AiChatBody extends ConsumerWidget {
 
               if (analysis != null) {
                 final jsonMap = ScanAnalysisModel.toJson(analysis);
-                jsonMap['__type'] = analysis is AIAnalysisRejectedEntity
-                    ? 'rejected_scan'
-                    : 'analysis_result';
+                jsonMap['__type'] = switch (analysis) {
+                  AIAnalysisRejectedEntity() => 'rejected_scan',
+                  PrescriptionAnalysisEntity() => 'prescription_result',
+                  _ => 'analysis_result',
+                };
                 final resultJson = jsonEncode(jsonMap);
                 log(
                   'AiChatBody: storing ${analysis.runtimeType} JSON (${resultJson.length} chars)',

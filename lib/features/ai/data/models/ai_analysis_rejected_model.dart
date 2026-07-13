@@ -9,6 +9,10 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
     required super.urgency,
     required super.summary,
     required super.recommendations,
+    super.modality,
+    super.createdAt,
+    super.patientName,
+    super.patientId,
   });
 
   factory AIAnalysisRejectedModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +26,16 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       recommendations: (json['recommendations'] as List<dynamic>? ?? [])
           .map((recommendation) => recommendation.toString())
           .toList(),
+      modality: json['modality'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ??
+          json['created_at'] as String? ??
+          '',
+      patientName: json['patient_name'] as String? ??
+          json['patientName'] as String? ??
+          '',
+      patientId: json['patient_id'] as String? ??
+          json['patientId'] as String? ??
+          '',
     );
   }
 
@@ -32,6 +46,10 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       urgency: entity.urgency,
       summary: entity.summary,
       recommendations: entity.recommendations,
+      modality: entity.modality,
+      createdAt: entity.createdAt,
+      patientName: entity.patientName,
+      patientId: entity.patientId,
     );
   }
 
@@ -42,6 +60,10 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       'urgency': urgency,
       'summary': summary,
       'recommendations': recommendations,
+      'modality': modality,
+      'createdAt': createdAt,
+      'patient_name': patientName,
+      'patient_id': patientId,
     };
   }
 
@@ -51,6 +73,10 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
     String? urgency,
     String? summary,
     List<String>? recommendations,
+    String? modality,
+    String? createdAt,
+    String? patientName,
+    String? patientId,
   }) {
     return AIAnalysisRejectedModel(
       inputRejected: inputRejected ?? this.inputRejected,
@@ -58,6 +84,10 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       urgency: urgency ?? this.urgency,
       summary: summary ?? this.summary,
       recommendations: recommendations ?? this.recommendations,
+      modality: modality ?? this.modality,
+      createdAt: createdAt ?? this.createdAt,
+      patientName: patientName ?? this.patientName,
+      patientId: patientId ?? this.patientId,
     );
   }
 

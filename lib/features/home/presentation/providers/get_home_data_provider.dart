@@ -6,7 +6,8 @@ import 'package:cliniq/features/home/domain/entities/get_home_data_entity.dart';
 
 import 'package:cliniq/features/home/domain/entities/examination_appointment_entity.dart';
 
-class GetHomeDataNotifier extends AsyncNotifier<Either<Failure, GetHomeDataEntity>> {
+class GetHomeDataNotifier
+    extends AsyncNotifier<Either<Failure, GetHomeDataEntity>> {
   @override
   Future<Either<Failure, GetHomeDataEntity>> build() {
     return ref.read(getHomeRepoProvider).getHomeData();
@@ -14,34 +15,32 @@ class GetHomeDataNotifier extends AsyncNotifier<Either<Failure, GetHomeDataEntit
 
   void addAppointment(ExaminationAppointmentEntity newAppointment) {
     state.whenData((either) {
-      either.fold(
-        (failure) {
-          // If the current state is a failure, do nothing.
-        },
-        (data) {
-          // Check for duplicates
-          if (data.examinationAppointments.any((e) => e.id == newAppointment.id)) return;
+      either.fold((failure) {}, (data) {
+        // Check for duplicates
+        if (data.examinationAppointments.any((e) => e.id == newAppointment.id))
+          return;
 
-          // Insert at top
-          final updatedAppointments = [
-            newAppointment,
-            ...data.examinationAppointments
-          ];
+        // Insert at top
+        final updatedAppointments = [
+          newAppointment,
+          ...data.examinationAppointments,
+        ];
 
-          final updatedData = GetHomeDataEntity(
-            specializations: data.specializations,
-            suggestedDoctors: data.suggestedDoctors,
-            news: data.news,
-            examinationAppointments: updatedAppointments,
-          );
-          
-          state = AsyncData(Right(updatedData));
-        },
-      );
+        final updatedData = GetHomeDataEntity(
+          specializations: data.specializations,
+          suggestedDoctors: data.suggestedDoctors,
+          news: data.news,
+          examinationAppointments: updatedAppointments,
+        );
+
+        state = AsyncData(Right(updatedData));
+      });
     });
   }
 }
 
-final getHomeDataProvider = AsyncNotifierProvider<GetHomeDataNotifier, Either<Failure, GetHomeDataEntity>>(
-  () => GetHomeDataNotifier(),
-);
+final getHomeDataProvider =
+    AsyncNotifierProvider<
+      GetHomeDataNotifier,
+      Either<Failure, GetHomeDataEntity>
+    >(() => GetHomeDataNotifier());

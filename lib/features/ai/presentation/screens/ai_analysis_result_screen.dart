@@ -3,6 +3,7 @@ import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_rejected_body.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_success_body.dart';
+import 'package:cliniq/features/ai/presentation/widgets/prescription_analysis_body.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,9 @@ class AiAnalysisResultScreen extends StatelessWidget {
         ),
         AIAnalysisSuccessEntity success => AiAnalysisSuccessBody(
           analysis: success,
+        ),
+        PrescriptionAnalysisEntity prescription => PrescriptionAnalysisBody(
+          analysis: prescription,
         ),
       },
     );

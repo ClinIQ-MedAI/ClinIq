@@ -14,8 +14,9 @@ class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
   AppointmentsRepoImpl({required super.api});
 
   @override
-  Future<Either<Failure, List<AvailableDoctorEntity>>>
-  getAvailableDoctors(String date) async {
+  Future<Either<Failure, List<AvailableDoctorEntity>>> getAvailableDoctors(
+    String date,
+  ) async {
     final result = await handleApi(
       () =>
           api.get(EndPoints.getDoctorsByDate, queryParameters: {'date': date}),
@@ -83,12 +84,11 @@ class AppointmentsRepoImpl extends BaseRepoImpl implements AppointmentsRepo {
   Future<Either<Failure, void>> bookAppointment({
     required String doctorId,
     required String date,
-    required String time,
   }) async {
     final result = await handleApi(
       () => api.post(
         EndPoints.createBooking,
-        data: {'doctorId': doctorId, 'date': date, 'time': time},
+        data: {'doctorId': doctorId, 'date': date},
       ),
     );
     return result.fold((failure) => Left(failure), (data) => const Right(null));

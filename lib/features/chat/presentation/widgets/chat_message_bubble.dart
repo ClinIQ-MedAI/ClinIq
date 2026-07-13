@@ -50,6 +50,16 @@ class ChatMessageBubble extends StatelessWidget {
     }
   }
 
+  bool get _isPrescriptionResult {
+    if (!_hasText || message.sender != ChatMessageSender.ai) return false;
+    try {
+      final data = jsonDecode(message.content);
+      return data is Map && data['__type'] == 'prescription_result';
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isUser = message.sender == ChatMessageSender.user;
@@ -102,7 +112,7 @@ class ChatMessageBubble extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 18.w,
-        vertical: _hasText || _isFile || _isPdf || _isRejectedScan || _isAnalysisResult ? 14.h : 0,
+        vertical: _hasText || _isFile || _isPdf || _isRejectedScan || _isAnalysisResult || _isPrescriptionResult ? 14.h : 0,
       ),
       decoration: BoxDecoration(
         color: bubbleColor,
@@ -160,7 +170,12 @@ class ChatMessageBubble extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 8.h),
               child: AnalysisResultMessage(message: message),
             ),
-          if (_hasText && !_isRejectedScan && !_isAnalysisResult)
+          if (_isPrescriptionResult)
+            Padding(
+              padding: EdgeInsets.only(bottom: 8.h),
+              child: AnalysisResultMessage(message: message),
+            ),
+          if (_hasText && !_isRejectedScan && !_isAnalysisResult && !_isPrescriptionResult)
             Text(
               message.content,
               style: AppTextStyles.getTextStyle(15).copyWith(

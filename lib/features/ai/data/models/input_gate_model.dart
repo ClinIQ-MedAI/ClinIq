@@ -13,12 +13,16 @@ class InputGateModel extends InputGateEntity {
     super.colorfulFraction,
   });
 
+  static bool _truthyPassed(Object? raw) {
+    return raw == true || raw == 1 || raw == 'true' || raw == null;
+  }
+
   factory InputGateModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
       return const InputGateModel(passed: true);
     }
     return InputGateModel(
-      passed: json['passed'] as bool? ?? true,
+      passed: _truthyPassed(json['passed']),
       reason: json['reason'] as String? ?? '',
       action: json['action'] as String? ?? '',
       width: (json['width'] as num? ?? 0).toDouble(),
