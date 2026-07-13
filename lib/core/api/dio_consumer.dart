@@ -29,9 +29,9 @@ class DioConsumer extends ApiConsumer {
       ),
     );
 
-    dio.options.connectTimeout = const Duration(seconds: 10);
-    dio.options.receiveTimeout = const Duration(seconds: 30);
-    dio.options.sendTimeout = const Duration(seconds: 15);
+    dio.options.connectTimeout = const Duration(seconds: 15);
+    dio.options.receiveTimeout = const Duration(seconds: 35);
+    dio.options.sendTimeout = const Duration(seconds: 20);
   }
 
   Future<void> init() async {

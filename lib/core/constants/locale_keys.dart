@@ -401,6 +401,18 @@ abstract class LocaleKeys {
   // ai
   static const aiChatTitle = "ai.chat.title";
   static const aiChatSubtitle = "ai.chat.subtitle";
+  static const aiScanUploadingImage = "ai.scan.uploading_image";
+  static const aiScanFetchingAnalysis = "ai.scan.fetching_analysis";
+  static const aiScanAnalysisTitle = "ai.scan.analysis_title";
+  static const aiScanFindings = "ai.scan.findings";
+  static const aiScanModality = "ai.scan.modality";
+  static const aiScanStatus = "ai.scan.status";
+  static const aiScanErrorUpload = "ai.scan.error_upload";
+  static const aiScanErrorAnalysis = "ai.scan.error_analysis";
+  static const aiScanRetry = "ai.scan.retry";
+  static const aiScanSelectImage = "ai.scan.select_image";
+  static const aiScanNoFindings = "ai.scan.no_findings";
+  static const aiScanInvalidId = "ai.scan.invalid_id";
   static const aiChatAttachmentScan = "ai.chat.attachment_scan";
   static const aiChatAttachmentPrescription = "ai.chat.attachment_prescription";
   static const aiChatModalityTitle = "ai.chat.modality_title";

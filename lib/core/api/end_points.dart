@@ -51,9 +51,9 @@ class EndPoints {
   static const String getMyBookings = "patient/bookings/me";
   static const String getDoctorsByDate = "patient/bookings/doctors";
 
-  // AI chat
+  // AI scans
+  static String getScanAnalysis(int id) => "ai/scans/$id";
   static const String aiScanUpload = "ai/scans/upload";
-  static const String aiPrescriptionUpload = "ai/prescriptions/upload";
   static const String aiSendMessage = "chatbot";
   static const String aiGetHistory = "chatbot/history";
 }

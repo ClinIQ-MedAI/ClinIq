@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/ai/presentation/providers/ai_chat_provider.dart';
+import 'package:cliniq/features/ai/presentation/providers/ai_scan_upload_provider.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_chat_suggested_prompts.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_upload_request_card.dart';
 import 'package:cliniq/features/chat/domain/entities/attachment_type.dart';
@@ -10,6 +14,7 @@ import 'package:cliniq/features/chat/presentation/widgets/attachment_preview_wid
 import 'package:cliniq/features/chat/presentation/widgets/chat_header.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_input_field.dart';
 import 'package:cliniq/features/chat/presentation/widgets/chat_message_list.dart';
+import 'package:cliniq/features/user/presentation/providers/current_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,8 +87,32 @@ class AiChatBody extends ConsumerWidget {
           ),
         ChatInputField(
           bottomSpacing: 28,
-          onMessageSubmitted: (text) {
-            ref.read(aiChatProvider.notifier).sendMessage(text);
+          onMessageSubmitted: (text) async {
+            if (uploadState.hasAttachment) {
+              final filePath = uploadState.localFilePath;
+              final modality = uploadState.selectedModality;
+              if (filePath != null && modality != null) {
+                final file = File(filePath);
+                final bytes = await file.readAsBytes();
+                final base64 = base64Encode(bytes);
+                final patientId =
+                    ref.read(currentUserProvider)?.id;
+                if (patientId != null) {
+                  ref
+                      .read(aiScanUploadProvider.notifier)
+                      .analyzeScan(
+                        imageBase64: base64,
+                        patientId: patientId,
+                        modality: modality,
+                      );
+                }
+              }
+              ref
+                  .read(attachmentUploadProvider.notifier)
+                  .resetAfterSend();
+            } else {
+              ref.read(aiChatProvider.notifier).sendMessage(text);
+            }
           },
           onTypingChanged: (_) {},
           onAttachmentTap: () => _handleAttachmentTap(context, ref),

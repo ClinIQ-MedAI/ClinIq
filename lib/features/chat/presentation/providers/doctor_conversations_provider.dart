@@ -87,4 +87,12 @@ class DoctorConversationsNotifier
           conversation,
     ]);
   }
+
+  Future<void> reload() async {
+    state = const AsyncLoading();
+
+    state = await AsyncValue.guard(() async {
+      return _repo.getConversations();
+    });
+  }
 }

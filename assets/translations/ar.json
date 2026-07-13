@@ -273,6 +273,20 @@
         "infectious_disease": "الأمراض المعدية"
     },
     "ai": {
+        "scan": {
+            "uploading_image": "جاري رفع الصورة...",
+            "fetching_analysis": "جاري تحليل الفحص...",
+            "analysis_title": "تحليل الفحص",
+            "findings": "النتائج",
+            "modality": "نوع الفحص",
+            "status": "الحالة",
+            "error_upload": "فشل رفع الفحص",
+            "error_analysis": "فشل في استرجاع التحليل",
+            "retry": "إعادة المحاولة",
+            "select_image": "اختر صورة لبدء تحليل الفحص",
+            "no_findings": "لا توجد نتائج متاحة",
+            "invalid_id": "معرف الفحص غير صالح"
+        },
         "chat": {
             "title": "دردشة الذكاء الاصطناعي",
             "subtitle": "مساعد إرشاد طبي فوري",

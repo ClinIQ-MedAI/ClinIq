@@ -34,6 +34,9 @@ class Routes {
   static const String aiChatScreen = '/aiChatScreen';
   static const String fullScreenImageViewer = '/fullScreenImageViewer';
 
+  // ai scan
+  static const String aiScanUploadScreen = '/aiScanUploadScreen';
+
   // notifications
   static const String notificationsScreen = '/notificationsScreen';
 }

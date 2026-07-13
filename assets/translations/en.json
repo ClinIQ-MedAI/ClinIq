@@ -273,6 +273,20 @@
         "infectious_disease": "Infectious Disease"
     },
     "ai": {
+        "scan": {
+            "uploading_image": "Uploading image...",
+            "fetching_analysis": "Fetching analysis...",
+            "analysis_title": "Scan Analysis",
+            "findings": "Findings",
+            "modality": "Modality",
+            "status": "Status",
+            "error_upload": "Failed to upload scan",
+            "error_analysis": "Failed to retrieve analysis",
+            "retry": "Retry",
+            "select_image": "Select an image to start scan analysis",
+            "no_findings": "No findings available",
+            "invalid_id": "Invalid scan ID received"
+        },
         "chat": {
             "title": "AI Chat",
             "subtitle": "Instant medical guidance assistant",

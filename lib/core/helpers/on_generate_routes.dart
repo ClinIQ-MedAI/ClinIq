@@ -28,6 +28,7 @@ import 'package:cliniq/features/settings/presentation/screens/settings_screen.da
 import 'package:cliniq/features/settings/presentation/screens/terms_and_services_screen.dart';
 import 'package:cliniq/features/user/presentation/screens/edit_profile_screen.dart';
 import 'package:cliniq/features/ai/presentation/screens/ai_chat_screen.dart';
+import 'package:cliniq/features/ai/presentation/screens/ai_scan_upload_screen.dart';
 import 'package:cliniq/features/chat/presentation/arguments/full_screen_image_viewer_arguments.dart';
 import 'package:cliniq/features/chat/presentation/widgets/full_screen_image_viewer.dart';
 import 'package:cliniq/features/notifications/presentation/screens/notifications_screen.dart';
@@ -141,6 +142,10 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
         opaque: false,
         barrierDismissible: false,
       );
+
+    // AI Scan
+    case Routes.aiScanUploadScreen:
+      return MaterialPageRoute(builder: (_) => const AiScanUploadScreen());
 
     // Notifications
     case Routes.notificationsScreen:
