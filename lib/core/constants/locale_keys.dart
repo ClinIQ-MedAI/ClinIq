@@ -461,6 +461,47 @@ abstract class LocaleKeys {
   static const aiScanResultValidationError = "ai.scan.result.validation_error";
   static const aiScanResultScanInformation = "ai.scan.result.scan_information";
   static const aiScanResultDetections = "ai.scan.result.detections";
+  static const aiScanResultPrimaryDiagnosis = "ai.scan.result.primary_diagnosis";
+  static const aiScanResultRawVlmOutput = "ai.scan.result.raw_vlm_output";
+  static const aiScanResultPrescriptionAnalysis =
+      "ai.scan.result.prescription_analysis";
+  static const aiScanResultMedicationOverview =
+      "ai.scan.result.medication_overview";
+  static const aiScanResultTotal = "ai.scan.result.total";
+  static const aiScanResultVerified = "ai.scan.result.verified";
+  static const aiScanResultUnverified = "ai.scan.result.unverified";
+  static const aiScanResultMedications = "ai.scan.result.medications";
+  static const aiScanResultMedication = "ai.scan.result.medication";
+  static const aiScanResultDrugExtracted = "ai.scan.result.drug_extracted";
+  static const aiScanResultOfficialDrugName =
+      "ai.scan.result.official_drug_name";
+  static const aiScanResultDosage = "ai.scan.result.dosage";
+  static const aiScanResultFrequency = "ai.scan.result.frequency";
+  static const aiScanResultSchedule = "ai.scan.result.schedule";
+  static const aiScanResultScheduleSource = "ai.scan.result.schedule_source";
+  static const aiScanResultOfficialMatch = "ai.scan.result.official_match";
+  static const aiScanResultOfficial = "ai.scan.result.official";
+  static const aiScanResultUnofficial = "ai.scan.result.unofficial";
+  static const aiScanResultConfidenceLabel = "ai.scan.result.confidence_label";
+  static const aiScanResultAiNotes = "ai.scan.result.ai_notes";
+  static const aiScanResultDetectedMedications =
+      "ai.scan.result.detected_medications";
+  static const aiScanResultUploadedPrescription =
+      "ai.scan.result.uploaded_prescription";
+  static const aiScanResultDifferentialDiagnoses =
+      "ai.scan.result.differential_diagnoses";
+  static const aiScanResultTimestamp = "ai.scan.result.timestamp";
+  static const aiScanResultImageType = "ai.scan.result.image_type";
+  static const aiScanResultAiJobId = "ai.scan.result.ai_job_id";
+  static const aiScanResultDoctorName = "ai.scan.result.doctor_name";
+  static const aiScanResultDoctorNotes = "ai.scan.result.doctor_notes";
+  static const aiScanResultDoctorReviewDate =
+      "ai.scan.result.doctor_review_date";
+  static const aiScanResultReviewed = "ai.scan.result.reviewed";
+  static const aiScanResultImageQuality = "ai.scan.result.image_quality";
+  static const aiScanResultRejectReason = "ai.scan.result.reject_reason";
+  static const aiScanResultYes = "ai.scan.result.yes";
+  static const aiScanResultNo = "ai.scan.result.no";
   static const aiChatAttachmentScan = "ai.chat.attachment_scan";
   static const aiChatAttachmentPrescription = "ai.chat.attachment_prescription";
   static const aiChatModalityTitle = "ai.chat.modality_title";

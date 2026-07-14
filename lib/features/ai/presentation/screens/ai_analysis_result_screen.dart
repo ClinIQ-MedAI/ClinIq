@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
@@ -14,6 +16,15 @@ class AiAnalysisResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TEMPORARY: verify which body the screen renders for the entity type.
+    log(
+      '[AiAnalysisResultScreen] entity=${analysis.runtimeType} -> '
+      '${switch (analysis) {
+        AIAnalysisRejectedEntity() => 'AiAnalysisRejectedBody',
+        AIAnalysisSuccessEntity() => 'AiAnalysisSuccessBody',
+        PrescriptionAnalysisEntity() => 'PrescriptionAnalysisBody',
+      }}',
+    );
     return Scaffold(
       backgroundColor: context.colorScheme.surfaceContainerLow,
       appBar: AppBar(

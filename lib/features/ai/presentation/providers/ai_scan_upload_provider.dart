@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:cliniq/core/constants/locale_keys.dart';
@@ -75,20 +76,85 @@ class AiScanUploadNotifier extends Notifier<AiScanUploadState> {
       return null;
     }
 
-    final analysisResult = await repo.getScanAnalysis(scanId);
+    // The AI job runs asynchronously on the backend, so the first fetch often
+    // returns `aiJobStatus: Pending` with an empty `aiAnalysisResult`. We MUST
+    // poll until the job is completed, otherwise every scan is classified as a
+    // (blank) success. Only the completed payload has the real input_gate.
+    return _pollForCompletedAnalysis(scanId);
+  }
 
-    return analysisResult.fold<ScanAnalysisEntity?>(
-      (failure) {
-        log('AiScanUpload: Analysis failed: $failure');
+  /// Polls the analysis endpoint until the AI job finishes (or a timeout),
+  /// then routes the completed response to its result entity.
+  Future<ScanAnalysisEntity?> _pollForCompletedAnalysis(int scanId) async {
+    const maxAttempts = 30;
+    const pollInterval = Duration(seconds: 2);
+
+    final repo = ref.read(aiScanRepoProvider);
+    ScanAnalysisEntity? latest;
+
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      final result = await repo.getScanAnalysis(scanId);
+
+      final failure = result.fold((f) => f, (_) => null);
+      if (failure != null) {
+        log('AiScanUpload: Analysis fetch failed: ${failure.message}');
         state = AiScanUploadError(failure.message);
         return null;
-      },
-      (analysis) {
-        log('AiScanUpload: Analysis completed (${analysis.runtimeType})');
-        state = AiScanUploadCompleted(analysis);
-        return analysis;
-      },
-    );
+      }
+
+      latest = result.getOrElse(() => throw StateError('unreachable'));
+      final status = _jobStatus(latest).trim().toLowerCase();
+      log('AiScanUpload: poll #$attempt status="$status" '
+          'type=${latest.runtimeType}');
+
+      if (status == 'failed' || status == 'error') {
+        // A hard processing failure only. An input-gate REJECTION is NOT a
+        // failure here — it comes back as a completed job and is classified by
+        // the router (input_gate.passed == false) into the rejected entity.
+        state = AiScanUploadError(LocaleKeys.aiScanErrorAnalysis.tr());
+        return null;
+      }
+
+      // Completed, or the backend didn't report a pending status: the payload
+      // is final, so route it now.
+      if (!_isPending(status)) {
+        log('AiScanUpload: Analysis ready (${latest.runtimeType})');
+        state = AiScanUploadCompleted(latest);
+        return latest;
+      }
+
+      if (attempt < maxAttempts) {
+        await Future.delayed(pollInterval);
+      }
+    }
+
+    // Timed out while still pending.
+    log('AiScanUpload: polling timed out (still pending)');
+    state = AiScanUploadError(LocaleKeys.aiScanErrorAnalysis.tr());
+    return null;
+  }
+
+  /// True while the backend is still processing the scan.
+  bool _isPending(String status) {
+    return const {
+      'pending',
+      'processing',
+      'inprogress',
+      'in_progress',
+      'in progress',
+      'queued',
+      'inqueue',
+      'running',
+      'started',
+    }.contains(status);
+  }
+
+  String _jobStatus(ScanAnalysisEntity analysis) {
+    return switch (analysis) {
+      AIAnalysisRejectedEntity(:final aiJobStatus) => aiJobStatus,
+      AIAnalysisSuccessEntity(:final aiJobStatus) => aiJobStatus,
+      PrescriptionAnalysisEntity(:final aiJobStatus) => aiJobStatus,
+    };
   }
 
   void reset() {

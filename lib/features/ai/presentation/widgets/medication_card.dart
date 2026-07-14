@@ -1,8 +1,10 @@
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/ai/domain/entities/medication_entity.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,7 +19,13 @@ class MedicationCard extends StatelessWidget {
     final isOfficial = medication.officialMatch;
     final badgeColor =
         isOfficial ? const Color(0xFF4CAF50) : const Color(0xFFFF9800);
-    final badgeLabel = isOfficial ? 'Official' : 'Unofficial';
+    final badgeLabel = isOfficial
+        ? LocaleKeys.aiScanResultOfficial.tr()
+        : LocaleKeys.aiScanResultUnofficial.tr();
+
+    final title = medication.drug.isNotEmpty
+        ? medication.drug
+        : medication.drugExtracted;
 
     return Container(
       width: double.infinity,
@@ -45,17 +53,50 @@ class MedicationCard extends StatelessWidget {
               ),
             ),
           Text(
-            medication.drug,
+            title,
             style: AppTextStyles.getTextStyle(16).copyWith(
               color: context.textPalette.primaryColor,
               fontWeight: FontWeight.w700,
             ),
           ),
           const VerticalGap(8),
-          _infoRow(context, 'Dosage', medication.dosage),
-          _infoRow(context, 'Frequency', medication.frequency),
+          if (medication.drugExtracted.isNotEmpty &&
+              medication.drugExtracted != medication.drug)
+            _infoRow(
+              context,
+              LocaleKeys.aiScanResultDrugExtracted.tr(),
+              medication.drugExtracted,
+            ),
+          if (medication.drug.isNotEmpty)
+            _infoRow(
+              context,
+              LocaleKeys.aiScanResultOfficialDrugName.tr(),
+              medication.drug,
+            ),
+          if (medication.dosage.isNotEmpty)
+            _infoRow(
+              context,
+              LocaleKeys.aiScanResultDosage.tr(),
+              medication.dosage,
+            ),
+          if (medication.frequency.isNotEmpty)
+            _infoRow(
+              context,
+              LocaleKeys.aiScanResultFrequency.tr(),
+              medication.frequency,
+            ),
           if (medication.scheduleAr.isNotEmpty)
-            _infoRow(context, 'Schedule (AR)', medication.scheduleAr),
+            _infoRow(
+              context,
+              LocaleKeys.aiScanResultSchedule.tr(),
+              medication.scheduleAr,
+            ),
+          if (medication.scheduleSource.isNotEmpty)
+            _infoRow(
+              context,
+              LocaleKeys.aiScanResultScheduleSource.tr(),
+              medication.scheduleSource,
+            ),
           const VerticalGap(8),
           Row(
             children: [
@@ -90,7 +131,7 @@ class MedicationCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100.w,
+            width: 120.w,
             child: Text(
               label,
               style: AppTextStyles.getTextStyle(11).copyWith(
@@ -124,7 +165,7 @@ class MedicationCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(6.r),
       ),
       child: Text(
-        '$pct% confidence',
+        '$pct% ${LocaleKeys.aiScanResultConfidenceLabel.tr()}',
         style: AppTextStyles.getTextStyle(10).copyWith(
           color: score > 0.7
               ? const Color(0xFF4CAF50)

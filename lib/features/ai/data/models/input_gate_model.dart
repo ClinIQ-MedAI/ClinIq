@@ -25,19 +25,31 @@ class InputGateModel extends InputGateEntity {
     if (json == null) {
       return const InputGateModel(passed: true);
     }
+
+    // Image-quality metrics live inside `scores` in the backend payload,
+    // but tolerate a flat shape too for backwards compatibility.
+    final scoresRaw = json['scores'];
+    final scores = scoresRaw is Map
+        ? Map<String, dynamic>.from(scoresRaw)
+        : <String, dynamic>{};
+
+    num? metric(String snake, String camel) =>
+        scores[snake] as num? ??
+        scores[camel] as num? ??
+        json[snake] as num? ??
+        json[camel] as num?;
+
     return InputGateModel(
       passed: _truthyPassed(json['passed']),
       reason: json['reason'] as String? ?? '',
       action: json['action'] as String? ?? '',
-      width: (json['width'] as num? ?? 0).toDouble(),
-      height: (json['height'] as num? ?? 0).toDouble(),
-      aspectRatio: (json['aspect_ratio'] as num? ?? json['aspectRatio'] as num? ?? 0).toDouble(),
-      intensityStd:
-          (json['intensity_std'] as num? ?? json['intensityStd'] as num? ?? 0).toDouble(),
-      colorSpread:
-          (json['color_spread'] as num? ?? json['colorSpread'] as num? ?? 0).toDouble(),
+      width: (metric('width', 'width') ?? 0).toDouble(),
+      height: (metric('height', 'height') ?? 0).toDouble(),
+      aspectRatio: (metric('aspect_ratio', 'aspectRatio') ?? 0).toDouble(),
+      intensityStd: (metric('intensity_std', 'intensityStd') ?? 0).toDouble(),
+      colorSpread: (metric('color_spread', 'colorSpread') ?? 0).toDouble(),
       colorfulFraction:
-          (json['colorful_fraction'] as num? ?? json['colorfulFraction'] as num? ?? 0).toDouble(),
+          (metric('colorful_fraction', 'colorfulFraction') ?? 0).toDouble(),
     );
   }
 

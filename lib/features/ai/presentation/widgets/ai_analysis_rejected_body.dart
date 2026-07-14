@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -7,8 +5,10 @@ import 'package:cliniq/core/widgets/horizontal_gap.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
 import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_info_grid.dart';
+import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_success_detections.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_text_section.dart';
 import 'package:cliniq/features/ai/presentation/widgets/analysis_section_card.dart';
+import 'package:cliniq/features/ai/presentation/widgets/scan_image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -40,6 +40,10 @@ class AiAnalysisRejectedBody extends StatelessWidget {
         if (analysis.recommendations.isNotEmpty) ...[
           const VerticalGap(12),
           _buildRecommendations(context, scheme),
+        ],
+        if (analysis.detections.isNotEmpty) ...[
+          const VerticalGap(12),
+          AiAnalysisSuccessDetections(detections: analysis.detections),
         ],
         const VerticalGap(12),
         _buildInputDetails(context),
@@ -98,13 +102,27 @@ class AiAnalysisRejectedBody extends StatelessWidget {
               ),
             ],
           ),
-          if (analysis.modality.isNotEmpty) ...[
+          if (analysis.modality.isNotEmpty || analysis.urgency.isNotEmpty) ...[
             const VerticalGap(10),
-            _chip(
-              Icon(Icons.camera_alt_rounded, size: 12.sp),
-              analysis.modality,
-              context.textPalette.secondaryColor,
-              context,
+            Wrap(
+              spacing: 8.w,
+              runSpacing: 6.h,
+              children: [
+                if (analysis.modality.isNotEmpty)
+                  _chip(
+                    Icon(Icons.camera_alt_rounded, size: 12.sp),
+                    analysis.modality,
+                    context.textPalette.secondaryColor,
+                    context,
+                  ),
+                if (analysis.urgency.isNotEmpty)
+                  _chip(
+                    Icon(Icons.priority_high_rounded, size: 12.sp),
+                    '${LocaleKeys.aiScanRejectedUrgency.tr()}: ${analysis.urgency.toUpperCase()}',
+                    scheme.error,
+                    context,
+                  ),
+              ],
             ),
           ],
         ],
@@ -138,63 +156,16 @@ class AiAnalysisRejectedBody extends StatelessWidget {
   }
 
   Widget _buildScanImage(BuildContext context) {
-    final hasUrl = analysis.scanUrl.isNotEmpty;
-    final hasBase64 = analysis.scanBase64.isNotEmpty;
-    if (!hasUrl && !hasBase64) return const SizedBox.shrink();
-
-    final imageProvider = hasUrl
-        ? NetworkImage(analysis.scanUrl) as ImageProvider
-        : MemoryImage(base64Decode(analysis.scanBase64)) as ImageProvider;
+    if (analysis.scanUrl.isEmpty && analysis.scanBase64.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return AnalysisSectionCard(
       title: LocaleKeys.aiScanResultOriginalScan.tr(),
       icon: Icons.image_rounded,
-      child: InkWell(
-        onTap: () => _showFullScreenImage(context, imageProvider),
-        borderRadius: BorderRadius.circular(12.r),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12.r),
-          child: Container(
-            width: double.infinity,
-            constraints: BoxConstraints(maxHeight: 300.h),
-            decoration: BoxDecoration(
-              color: context.colorScheme.surfaceContainerHighest,
-            ),
-            child: Image(
-              image: imageProvider,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => Center(
-                child: Icon(
-                  Icons.broken_image_outlined,
-                  color: context.colorScheme.error,
-                  size: 48.sp,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showFullScreenImage(
-    BuildContext context,
-    ImageProvider imageProvider,
-  ) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          body: Center(
-            child: InteractiveViewer(
-              child: Image(image: imageProvider, fit: BoxFit.contain),
-            ),
-          ),
-        ),
+      child: ScanImageView(
+        base64: analysis.scanBase64,
+        url: analysis.scanUrl,
       ),
     );
   }
@@ -372,10 +343,10 @@ class AiAnalysisRejectedBody extends StatelessWidget {
 
     final Map<String, String> items = {};
     if (gate.width > 0) {
-      items[LocaleKeys.aiScanResultWidth.tr()] = '${gate.width}px';
+      items[LocaleKeys.aiScanResultWidth.tr()] = '${gate.width.toInt()}px';
     }
     if (gate.height > 0) {
-      items[LocaleKeys.aiScanResultHeight.tr()] = '${gate.height}px';
+      items[LocaleKeys.aiScanResultHeight.tr()] = '${gate.height.toInt()}px';
     }
     if (gate.aspectRatio > 0) {
       items[LocaleKeys.aiScanResultAspectRatio.tr()] =
@@ -395,7 +366,7 @@ class AiAnalysisRejectedBody extends StatelessWidget {
     }
 
     return AnalysisSectionCard(
-      title: LocaleKeys.aiScanResultInputValidation.tr(),
+      title: LocaleKeys.aiScanResultImageQuality.tr(),
       icon: Icons.tune_rounded,
       child: AiAnalysisInfoGrid(items: items),
     );

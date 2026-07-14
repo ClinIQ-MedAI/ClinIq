@@ -2,8 +2,11 @@ import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/vertical_gap.dart';
+import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/ai/presentation/providers/ai_scan_upload_provider.dart';
-import 'package:cliniq/features/ai/presentation/widgets/ai_scan_result_card.dart';
+import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_rejected_body.dart';
+import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_success_body.dart';
+import 'package:cliniq/features/ai/presentation/widgets/prescription_analysis_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,8 +29,17 @@ class AiScanUploadBody extends ConsumerWidget {
           context,
           LocaleKeys.aiScanFetchingAnalysis.tr(),
         ),
-      AiScanUploadCompleted(analysis: final analysis) =>
-        AiScanResultCard(analysis: analysis),
+      AiScanUploadCompleted(analysis: final analysis) => switch (analysis) {
+        AIAnalysisRejectedEntity rejected => AiAnalysisRejectedBody(
+          analysis: rejected,
+        ),
+        AIAnalysisSuccessEntity success => AiAnalysisSuccessBody(
+          analysis: success,
+        ),
+        PrescriptionAnalysisEntity prescription => PrescriptionAnalysisBody(
+          analysis: prescription,
+        ),
+      },
       AiScanUploadError(message: final message) => _buildError(
           context,
           message,

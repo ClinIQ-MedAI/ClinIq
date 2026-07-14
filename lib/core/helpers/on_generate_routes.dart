@@ -150,6 +150,8 @@ Route<dynamic> onGenerateRoutes(RouteSettings settings, BuildContext context) {
       return MaterialPageRoute(builder: (_) => const AiScanUploadScreen());
     case Routes.aiAnalysisResultScreen:
       final analysis = settings.arguments as ScanAnalysisEntity?;
+      // TEMPORARY: verify the entity type survives the route arguments.
+      log('[Route] aiAnalysisResultScreen arg type: ${analysis.runtimeType}');
       if (analysis == null) {
         return MaterialPageRoute(builder: (_) => const UndefinedRoutePage());
       }

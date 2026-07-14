@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
 import 'package:cliniq/core/widgets/horizontal_gap.dart';
@@ -8,6 +7,9 @@ import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_info_grid.dart';
 import 'package:cliniq/features/ai/presentation/widgets/analysis_section_card.dart';
 import 'package:cliniq/features/ai/presentation/widgets/medication_card.dart';
+import 'package:cliniq/features/ai/presentation/widgets/prescription_raw_vlm_section.dart';
+import 'package:cliniq/features/ai/presentation/widgets/scan_image_view.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,6 +17,8 @@ class PrescriptionAnalysisBody extends StatelessWidget {
   const PrescriptionAnalysisBody({super.key, required this.analysis});
 
   final PrescriptionAnalysisEntity analysis;
+
+  static const Color _accent = Color(0xFF4CAF50);
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +29,24 @@ class PrescriptionAnalysisBody extends StatelessWidget {
         _buildStatusHeader(context, scheme),
         const VerticalGap(12),
         _buildScanImage(context),
-        const VerticalGap(12),
-        _buildStatisticsRow(context),
-        if (analysis.summary.isNotEmpty) ...[
+        if (analysis.primaryDiagnosis.isNotEmpty) ...[
           const VerticalGap(12),
-          _buildSummary(context),
+          _buildPrimaryDiagnosis(context, scheme),
         ],
         const VerticalGap(12),
-        _buildMedications(context),
+        _buildStatisticsRow(context),
+        if (analysis.medications.isNotEmpty) ...[
+          const VerticalGap(12),
+          _buildMedications(context),
+        ],
+        const VerticalGap(12),
+        PrescriptionRawVlmSection(medications: analysis.rawMedications),
         if (analysis.aiFindingsNotes.isNotEmpty) ...[
           const VerticalGap(12),
           _buildNotes(context),
         ],
+        const VerticalGap(12),
+        _buildScanInformation(context),
         const VerticalGap(12),
         _buildInputInfo(context),
       ],
@@ -50,9 +60,7 @@ class PrescriptionAnalysisBody extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surface,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: const Color(0xFF4CAF50).withValues(alpha: 0.25),
-        ),
+        border: Border.all(color: _accent.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,19 +71,19 @@ class PrescriptionAnalysisBody extends StatelessWidget {
                 width: 42.r,
                 height: 42.r,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF4CAF50).withValues(alpha: 0.12),
+                  color: _accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
                   Icons.medication_rounded,
-                  color: const Color(0xFF4CAF50),
+                  color: _accent,
                   size: 24.sp,
                 ),
               ),
               const HorizontalGap(12),
               Expanded(
                 child: Text(
-                  'Prescription Analysis',
+                  LocaleKeys.aiScanResultPrescriptionAnalysis.tr(),
                   style: AppTextStyles.getTextStyle(18).copyWith(
                     color: context.textPalette.primaryColor,
                     fontWeight: FontWeight.w800,
@@ -89,7 +97,8 @@ class PrescriptionAnalysisBody extends StatelessWidget {
             spacing: 8.w,
             runSpacing: 6.h,
             children: [
-              _chip(context, 'PRESCRIPTION', const Color(0xFF4CAF50)),
+              if (analysis.modality.isNotEmpty)
+                _chip(context, analysis.modality, _accent),
               if (analysis.createdAt.isNotEmpty)
                 _chip(
                   context,
@@ -122,111 +131,108 @@ class PrescriptionAnalysisBody extends StatelessWidget {
 
   Widget _buildScanImage(BuildContext context) {
     return AnalysisSectionCard(
-      title: 'Uploaded Prescription',
+      title: LocaleKeys.aiScanResultUploadedPrescription.tr(),
       icon: Icons.image_rounded,
-      child: InkWell(
-        onTap: () => _showFullScreenImage(context),
-        borderRadius: BorderRadius.circular(12.r),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12.r),
-          child: Container(
-            width: double.infinity,
-            constraints: BoxConstraints(maxHeight: 300.h),
-            decoration: BoxDecoration(
-              color: context.colorScheme.surfaceContainerHighest,
-            ),
-            child: analysis.scanBase64.isNotEmpty
-                ? Image.memory(
-                    base64Decode(analysis.scanBase64),
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.broken_image_outlined,
-                      color: context.colorScheme.error,
-                      size: 40.sp,
-                    ),
-                  )
-                : Center(
-                    child: Icon(
-                      Icons.image_not_supported_rounded,
-                      size: 48.sp,
-                      color: context.textPalette.secondaryColor,
-                    ),
-                  ),
-          ),
-        ),
+      child: ScanImageView(
+        base64: analysis.scanBase64,
+        url: analysis.scanUrl,
       ),
     );
   }
 
-  void _showFullScreenImage(BuildContext context) {
-    if (analysis.scanBase64.isEmpty) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          body: Center(
-            child: InteractiveViewer(
-              child: Image.memory(
-                base64Decode(analysis.scanBase64),
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) => Icon(
-                  Icons.broken_image_outlined,
-                  color: Colors.white,
-                  size: 48.sp,
-                ),
-              ),
+  Widget _buildPrimaryDiagnosis(BuildContext context, ColorScheme scheme) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [_accent.withValues(alpha: 0.08), scheme.surface],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: _accent.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44.r,
+            height: 44.r,
+            decoration: BoxDecoration(
+              color: _accent.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(
+              Icons.medical_services_outlined,
+              color: _accent,
+              size: 22.sp,
             ),
           ),
-        ),
+          const HorizontalGap(12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  LocaleKeys.aiScanResultPrimaryDiagnosis.tr(),
+                  style: AppTextStyles.getTextStyle(11).copyWith(
+                    color: context.textPalette.secondaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  analysis.primaryDiagnosis,
+                  style: AppTextStyles.getTextStyle(16).copyWith(
+                    color: context.textPalette.primaryColor,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildStatisticsRow(BuildContext context) {
     return AnalysisSectionCard(
-      title: 'Medication Overview',
+      title: LocaleKeys.aiScanResultMedicationOverview.tr(),
       icon: Icons.analytics_rounded,
       child: Row(
         children: [
           _statItem(
             context,
             '${analysis.totalMedications}',
-            'Total',
+            LocaleKeys.aiScanResultTotal.tr(),
             context.colorScheme.primary,
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w),
-            child: Container(
-              width: 1,
-              height: 40.h,
-              color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
-            ),
-          ),
+          _divider(context),
           _statItem(
             context,
             '${analysis.verifiedMedications}',
-            'Verified',
-            const Color(0xFF4CAF50),
+            LocaleKeys.aiScanResultVerified.tr(),
+            _accent,
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w),
-            child: Container(
-              width: 1,
-              height: 40.h,
-              color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
-            ),
-          ),
+          _divider(context),
           _statItem(
             context,
             '${analysis.totalMedications - analysis.verifiedMedications}',
-            'Unverified',
+            LocaleKeys.aiScanResultUnverified.tr(),
             const Color(0xFFFF9800),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _divider(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      child: Container(
+        width: 1,
+        height: 40.h,
+        color: context.colorScheme.outlineVariant.withValues(alpha: 0.3),
       ),
     );
   }
@@ -259,24 +265,10 @@ class PrescriptionAnalysisBody extends StatelessWidget {
     );
   }
 
-  Widget _buildSummary(BuildContext context) {
-    return AnalysisSectionCard(
-      title: 'Summary',
-      icon: Icons.summarize_rounded,
-      child: Text(
-        analysis.summary,
-        style: AppTextStyles.getTextStyle(13).copyWith(
-          color: context.textPalette.primaryColor,
-          fontWeight: FontWeight.w500,
-          height: 1.45,
-        ),
-      ),
-    );
-  }
-
   Widget _buildMedications(BuildContext context) {
     return AnalysisSectionCard(
-      title: 'Medications (${analysis.medications.length})',
+      title:
+          '${LocaleKeys.aiScanResultMedications.tr()} (${analysis.medications.length})',
       icon: Icons.medication_rounded,
       child: Column(
         children: analysis.medications.asMap().entries.map((entry) {
@@ -291,7 +283,7 @@ class PrescriptionAnalysisBody extends StatelessWidget {
 
   Widget _buildNotes(BuildContext context) {
     return AnalysisSectionCard(
-      title: 'AI Notes',
+      title: LocaleKeys.aiScanResultAiNotes.tr(),
       icon: Icons.notes_rounded,
       child: Text(
         analysis.aiFindingsNotes,
@@ -304,34 +296,86 @@ class PrescriptionAnalysisBody extends StatelessWidget {
     );
   }
 
+  Widget _buildScanInformation(BuildContext context) {
+    final Map<String, String> items = {};
+    if (analysis.patientName.isNotEmpty) {
+      items[LocaleKeys.aiScanResultPatientName.tr()] = analysis.patientName;
+    }
+    if (analysis.patientId.isNotEmpty) {
+      items[LocaleKeys.aiScanResultPatientId.tr()] = analysis.patientId;
+    }
+    if (analysis.modality.isNotEmpty) {
+      items[LocaleKeys.aiScanModality.tr()] = analysis.modality;
+    }
+    if (analysis.imageType.isNotEmpty) {
+      items[LocaleKeys.aiScanResultImageType.tr()] = analysis.imageType;
+    }
+    if (analysis.aiJobStatus.isNotEmpty) {
+      items[LocaleKeys.aiScanResultAiJobStatus.tr()] = analysis.aiJobStatus;
+    }
+    if (analysis.aiJobId.isNotEmpty) {
+      items[LocaleKeys.aiScanResultAiJobId.tr()] = analysis.aiJobId;
+    }
+    if (analysis.createdAt.isNotEmpty) {
+      items[LocaleKeys.aiScanResultCreatedAt.tr()] = analysis.createdAt;
+    }
+    if (analysis.doctorName.isNotEmpty) {
+      items[LocaleKeys.aiScanResultDoctorName.tr()] = analysis.doctorName;
+    }
+    if (analysis.doctorNotes.isNotEmpty) {
+      items[LocaleKeys.aiScanResultDoctorNotes.tr()] = analysis.doctorNotes;
+    }
+    if (analysis.doctorReviewDate.isNotEmpty) {
+      items[LocaleKeys.aiScanResultDoctorReviewDate.tr()] =
+          analysis.doctorReviewDate;
+    }
+    if (analysis.isReviewed) {
+      items[LocaleKeys.aiScanResultReviewed.tr()] =
+          LocaleKeys.aiScanResultYes.tr();
+    }
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    return AnalysisSectionCard(
+      title: LocaleKeys.aiScanResultScanInformation.tr(),
+      icon: Icons.person_outline_rounded,
+      child: AiAnalysisInfoGrid(items: items),
+    );
+  }
+
   Widget _buildInputInfo(BuildContext context) {
     final gate = analysis.inputGate;
     final Map<String, String> items = {};
     if (gate.width > 0) {
-      items['Width'] = '${gate.width}px';
+      items[LocaleKeys.aiScanResultWidth.tr()] = '${gate.width.toInt()}px';
     }
     if (gate.height > 0) {
-      items['Height'] = '${gate.height}px';
+      items[LocaleKeys.aiScanResultHeight.tr()] = '${gate.height.toInt()}px';
     }
     if (gate.aspectRatio > 0) {
-      items['Aspect Ratio'] = gate.aspectRatio.toStringAsFixed(2);
-    }
-    items['Validation'] = gate.passed ? 'Passed' : 'Failed';
-    if (gate.action.isNotEmpty) {
-      items['Action'] = gate.action;
-    }
-    if (gate.intensityStd > 0) {
-      items['Intensity Std'] = gate.intensityStd.toStringAsFixed(2);
+      items[LocaleKeys.aiScanResultAspectRatio.tr()] =
+          gate.aspectRatio.toStringAsFixed(2);
     }
     if (gate.colorSpread > 0) {
-      items['Color Spread'] = gate.colorSpread.toStringAsFixed(2);
+      items[LocaleKeys.aiScanResultColorSpread.tr()] =
+          gate.colorSpread.toStringAsFixed(2);
+    }
+    if (gate.intensityStd > 0) {
+      items[LocaleKeys.aiScanResultIntensityStd.tr()] =
+          gate.intensityStd.toStringAsFixed(2);
     }
     if (gate.colorfulFraction > 0) {
-      items['Colorful Fraction'] = gate.colorfulFraction.toStringAsFixed(2);
+      items[LocaleKeys.aiScanResultColorfulFraction.tr()] =
+          gate.colorfulFraction.toStringAsFixed(3);
+    }
+    items[LocaleKeys.aiScanResultInputValidation.tr()] = gate.passed
+        ? LocaleKeys.aiScanResultPassed.tr()
+        : LocaleKeys.aiScanResultFailed.tr();
+    if (gate.action.isNotEmpty) {
+      items[LocaleKeys.aiScanResultAction.tr()] = gate.action;
     }
 
     return AnalysisSectionCard(
-      title: 'Input Validation',
+      title: LocaleKeys.aiScanResultImageQuality.tr(),
       icon: Icons.info_outline_rounded,
       child: AiAnalysisInfoGrid(items: items),
     );

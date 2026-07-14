@@ -1,114 +1,144 @@
+import 'dart:convert';
+
 import 'package:cliniq/features/ai/data/models/input_gate_model.dart';
+import 'package:cliniq/features/ai/data/models/probability_model.dart';
 import 'package:cliniq/features/ai/domain/entities/input_gate_entity.dart';
+import 'package:cliniq/features/ai/domain/entities/probability_entity.dart';
 import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 
 class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
   const AIAnalysisRejectedModel({
-    required super.inputRejected,
     required super.inputGate,
-    required super.urgency,
-    required super.summary,
-    required super.recommendations,
-    super.scanBase64,
-    super.scanUrl,
-    super.aiJobStatus,
+    super.inputRejected,
+    super.urgency,
+    super.summary,
+    super.recommendations,
+    super.detections,
     super.modality,
-    super.createdAt,
+    super.scanUrl,
+    super.scanBase64,
+    super.aiJobStatus,
     super.patientName,
     super.patientId,
+    super.createdAt,
   });
 
+  /// Parses the ORIGINAL (top-level) rejected response. Top-level fields are
+  /// read directly, while analysis fields live inside `aiAnalysisResult`.
   factory AIAnalysisRejectedModel.fromJson(Map<String, dynamic> json) {
+    // Analysis fields live inside `aiAnalysisResult` when wrapped, or at the
+    // top level when the backend returns a flat response.
+    final result = _asNullableMap(json['aiAnalysisResult']) ?? json;
+
     return AIAnalysisRejectedModel(
-      inputRejected: json['input_rejected'] as bool? ?? true,
-      inputGate: InputGateModel.fromJson(
-        json['input_gate'] as Map<String, dynamic>?,
-      ),
-      urgency: json['urgency'] as String? ?? '',
-      summary: json['summary'] as String? ?? '',
-      recommendations: (json['recommendations'] as List<dynamic>? ?? [])
+      // Top level.
+      modality: json['modality'] as String? ?? '',
+      scanUrl: json['scanUrl'] as String? ?? '',
+      scanBase64: json['scanBase64'] as String? ?? '',
+      aiJobStatus: json['aiJobStatus'] as String? ?? '',
+      patientName: json['patientName'] as String? ?? '',
+      patientId: json['patientId'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      // aiAnalysisResult.
+      inputRejected: result['input_rejected'] as bool? ?? true,
+      inputGate: InputGateModel.fromJson(_asNullableMap(result['input_gate'])),
+      urgency: result['urgency'] as String? ?? '',
+      summary: result['summary'] as String? ?? '',
+      recommendations: (result['recommendations'] as List<dynamic>? ?? [])
           .map((recommendation) => recommendation.toString())
           .toList(),
-      scanBase64: json['scanBase64'] as String? ?? '',
-      scanUrl: json['scanUrl'] as String? ?? '',
-      aiJobStatus: json['aiJobStatus'] as String? ??
-          json['ai_job_status'] as String? ??
-          '',
-      modality: json['modality'] as String? ?? '',
-      createdAt: json['createdAt'] as String? ??
-          json['created_at'] as String? ??
-          '',
-      patientName: json['patient_name'] as String? ??
-          json['patientName'] as String? ??
-          '',
-      patientId: json['patient_id'] as String? ??
-          json['patientId'] as String? ??
-          '',
+      detections: _parseDetections(result['detections']),
     );
   }
 
   factory AIAnalysisRejectedModel.fromEntity(AIAnalysisRejectedEntity entity) {
     return AIAnalysisRejectedModel(
-      inputRejected: entity.inputRejected,
       inputGate: entity.inputGate,
+      inputRejected: entity.inputRejected,
       urgency: entity.urgency,
       summary: entity.summary,
       recommendations: entity.recommendations,
-      scanBase64: entity.scanBase64,
-      scanUrl: entity.scanUrl,
-      aiJobStatus: entity.aiJobStatus,
+      detections: entity.detections,
       modality: entity.modality,
-      createdAt: entity.createdAt,
+      scanUrl: entity.scanUrl,
+      scanBase64: entity.scanBase64,
+      aiJobStatus: entity.aiJobStatus,
       patientName: entity.patientName,
       patientId: entity.patientId,
+      createdAt: entity.createdAt,
     );
   }
 
+  /// Serializes back to the ORIGINAL response shape (top-level fields plus an
+  /// `aiAnalysisResult` wrapper) so a round-trip re-parses identically.
   Map<String, dynamic> toJson() {
     return {
-      'input_rejected': inputRejected,
-      'input_gate': _inputGateToJson(inputGate),
-      'urgency': urgency,
-      'summary': summary,
-      'recommendations': recommendations,
-      'scanBase64': scanBase64,
-      'scanUrl': scanUrl,
-      'ai_job_status': aiJobStatus,
       'modality': modality,
+      'scanUrl': scanUrl,
+      'scanBase64': scanBase64,
+      'aiJobStatus': aiJobStatus,
+      'patientName': patientName,
+      'patientId': patientId,
       'createdAt': createdAt,
-      'patient_name': patientName,
-      'patient_id': patientId,
+      'aiAnalysisResult': {
+        'input_rejected': inputRejected,
+        'input_gate': _inputGateToJson(inputGate),
+        'urgency': urgency,
+        'summary': summary,
+        'recommendations': recommendations,
+        'detections': detections
+            .map((d) => ProbabilityModel(label: d.label, value: d.value).toJson())
+            .toList(),
+      },
     };
   }
 
   AIAnalysisRejectedModel copyWith({
-    bool? inputRejected,
     InputGateEntity? inputGate,
+    bool? inputRejected,
     String? urgency,
     String? summary,
     List<String>? recommendations,
-    String? scanBase64,
-    String? scanUrl,
-    String? aiJobStatus,
+    List<ProbabilityEntity>? detections,
     String? modality,
-    String? createdAt,
+    String? scanUrl,
+    String? scanBase64,
+    String? aiJobStatus,
     String? patientName,
     String? patientId,
+    String? createdAt,
   }) {
     return AIAnalysisRejectedModel(
-      inputRejected: inputRejected ?? this.inputRejected,
       inputGate: inputGate ?? this.inputGate,
+      inputRejected: inputRejected ?? this.inputRejected,
       urgency: urgency ?? this.urgency,
       summary: summary ?? this.summary,
       recommendations: recommendations ?? this.recommendations,
-      scanBase64: scanBase64 ?? this.scanBase64,
-      scanUrl: scanUrl ?? this.scanUrl,
-      aiJobStatus: aiJobStatus ?? this.aiJobStatus,
+      detections: detections ?? this.detections,
       modality: modality ?? this.modality,
-      createdAt: createdAt ?? this.createdAt,
+      scanUrl: scanUrl ?? this.scanUrl,
+      scanBase64: scanBase64 ?? this.scanBase64,
+      aiJobStatus: aiJobStatus ?? this.aiJobStatus,
       patientName: patientName ?? this.patientName,
       patientId: patientId ?? this.patientId,
+      createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  /// Tolerates a real map (any key type) or a JSON-encoded string, so a
+  /// double-encoded `aiAnalysisResult` (or nested object) is still parsed.
+  static Map<String, dynamic>? _asNullableMap(Object? value) {
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return Map<String, dynamic>.from(value);
+    if (value is String && value.trim().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(value);
+        if (decoded is Map) return Map<String, dynamic>.from(decoded);
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
   }
 
   Map<String, dynamic> _inputGateToJson(InputGateEntity inputGate) {
@@ -123,5 +153,13 @@ class AIAnalysisRejectedModel extends AIAnalysisRejectedEntity {
       colorSpread: inputGate.colorSpread,
       colorfulFraction: inputGate.colorfulFraction,
     ).toJson();
+  }
+
+  static List<ProbabilityEntity> _parseDetections(Object? raw) {
+    if (raw is! List) return const [];
+    return raw
+        .whereType<Map>()
+        .map((e) => ProbabilityModel.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
   }
 }

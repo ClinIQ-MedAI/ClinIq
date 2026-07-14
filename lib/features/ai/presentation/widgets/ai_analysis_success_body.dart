@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cliniq/core/constants/locale_keys.dart';
 import 'package:cliniq/core/utils/app_text_styles.dart';
 import 'package:cliniq/core/utils/app_theme_extension.dart';
@@ -9,6 +7,7 @@ import 'package:cliniq/features/ai/domain/entities/scan_analysis_entity.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_info_grid.dart';
 import 'package:cliniq/features/ai/presentation/widgets/ai_analysis_success_detections.dart';
 import 'package:cliniq/features/ai/presentation/widgets/analysis_section_card.dart';
+import 'package:cliniq/features/ai/presentation/widgets/scan_image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,6 +45,10 @@ class AiAnalysisSuccessBody extends StatelessWidget {
         if (analysis.findingsList.isNotEmpty) ...[
           const VerticalGap(12),
           _buildFindingsList(context, scheme),
+        ],
+        if (analysis.differentialDiagnoses.isNotEmpty) ...[
+          const VerticalGap(12),
+          _buildDifferentialDiagnoses(context, scheme),
         ],
         if (analysis.recommendations.isNotEmpty) ...[
           const VerticalGap(12),
@@ -202,32 +205,9 @@ class AiAnalysisSuccessBody extends StatelessWidget {
             ),
           ),
           const VerticalGap(12),
-          GestureDetector(
-            onTap: () => _showFullscreenImage(context),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14.r),
-              child: analysis.scanBase64.isNotEmpty
-                  ? Image.memory(
-                      base64Decode(analysis.scanBase64),
-                      width: double.infinity,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.broken_image_outlined,
-                        color: context.colorScheme.error,
-                        size: 40.sp,
-                      ),
-                    )
-                  : Image.network(
-                      analysis.scanUrl,
-                      width: double.infinity,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.broken_image_outlined,
-                        color: context.colorScheme.error,
-                        size: 40.sp,
-                      ),
-                    ),
-            ),
+          ScanImageView(
+            base64: analysis.scanBase64,
+            url: analysis.scanUrl,
           ),
           const VerticalGap(8),
           Center(
@@ -240,55 +220,6 @@ class AiAnalysisSuccessBody extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showFullscreenImage(BuildContext context) {
-    final hasScan = analysis.scanBase64.isNotEmpty ||
-        analysis.scanUrl.isNotEmpty;
-    if (!hasScan) return;
-
-    showDialog(
-      context: context,
-      builder: (_) => Dialog(
-        backgroundColor: Colors.black,
-        insetPadding: EdgeInsets.zero,
-        child: Stack(
-          children: [
-            Center(
-              child: InteractiveViewer(
-                child: analysis.scanBase64.isNotEmpty
-                    ? Image.memory(
-                        base64Decode(analysis.scanBase64),
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(
-                          Icons.broken_image_outlined,
-                          color: Colors.white70,
-                          size: 48.sp,
-                        ),
-                      )
-                    : Image.network(
-                        analysis.scanUrl,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(
-                          Icons.broken_image_outlined,
-                          color: Colors.white70,
-                          size: 48.sp,
-                        ),
-                      ),
-              ),
-            ),
-            Positioned(
-              top: 32.h,
-              right: 16.w,
-              child: IconButton(
-                icon: Icon(Icons.close_rounded, color: Colors.white, size: 28.sp),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -635,6 +566,44 @@ class AiAnalysisSuccessBody extends StatelessWidget {
     );
   }
 
+  Widget _buildDifferentialDiagnoses(BuildContext context, ColorScheme scheme) {
+    return AnalysisSectionCard(
+      title: LocaleKeys.aiScanResultDifferentialDiagnoses.tr(),
+      icon: Icons.account_tree_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: analysis.differentialDiagnoses.map(
+          (diagnosis) => Padding(
+            padding: EdgeInsets.only(bottom: 6.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '•',
+                  style: AppTextStyles.getTextStyle(14).copyWith(
+                    color: scheme.primary,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const HorizontalGap(8),
+                Expanded(
+                  child: Text(
+                    diagnosis,
+                    style: AppTextStyles.getTextStyle(13).copyWith(
+                      color: context.textPalette.secondaryColor,
+                      fontWeight: FontWeight.w500,
+                      height: 1.45,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ).toList(),
+      ),
+    );
+  }
+
   Widget _buildRecommendations(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -785,19 +754,7 @@ class AiAnalysisSuccessBody extends StatelessWidget {
             ),
           ),
           const VerticalGap(12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14.r),
-            child: Image.memory(
-              base64Decode(analysis.annotatedImageBase64),
-              width: double.infinity,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) => Icon(
-                Icons.broken_image_outlined,
-                color: context.colorScheme.error,
-                size: 40.sp,
-              ),
-            ),
-          ),
+          ScanImageView(base64: analysis.annotatedImageBase64),
         ],
       ),
     );
@@ -820,12 +777,32 @@ class AiAnalysisSuccessBody extends StatelessWidget {
     if (analysis.aiJobStatus.isNotEmpty) {
       items[LocaleKeys.aiScanResultAiJobStatus.tr()] = analysis.aiJobStatus;
     }
+    if (analysis.aiJobId.isNotEmpty) {
+      items[LocaleKeys.aiScanResultAiJobId.tr()] = analysis.aiJobId;
+    }
     if (analysis.bodyPart.isNotEmpty) {
       items[LocaleKeys.aiScanResultBodyPart.tr()] = analysis.bodyPart;
     }
     if (analysis.patientContext.isNotEmpty) {
       items[LocaleKeys.aiScanResultPatientContext.tr()] =
           analysis.patientContext;
+    }
+    if (analysis.timestamp.isNotEmpty) {
+      items[LocaleKeys.aiScanResultTimestamp.tr()] = analysis.timestamp;
+    }
+    if (analysis.doctorName.isNotEmpty) {
+      items[LocaleKeys.aiScanResultDoctorName.tr()] = analysis.doctorName;
+    }
+    if (analysis.doctorNotes.isNotEmpty) {
+      items[LocaleKeys.aiScanResultDoctorNotes.tr()] = analysis.doctorNotes;
+    }
+    if (analysis.doctorReviewDate.isNotEmpty) {
+      items[LocaleKeys.aiScanResultDoctorReviewDate.tr()] =
+          analysis.doctorReviewDate;
+    }
+    if (analysis.isReviewed) {
+      items[LocaleKeys.aiScanResultReviewed.tr()] =
+          LocaleKeys.aiScanResultYes.tr();
     }
     if (items.isEmpty) return const SizedBox.shrink();
 
@@ -841,10 +818,10 @@ class AiAnalysisSuccessBody extends StatelessWidget {
 
     final Map<String, String> items = {};
     if (gate.width > 0) {
-      items[LocaleKeys.aiScanResultWidth.tr()] = '${gate.width}px';
+      items[LocaleKeys.aiScanResultWidth.tr()] = '${gate.width.toInt()}px';
     }
     if (gate.height > 0) {
-      items[LocaleKeys.aiScanResultHeight.tr()] = '${gate.height}px';
+      items[LocaleKeys.aiScanResultHeight.tr()] = '${gate.height.toInt()}px';
     }
     if (gate.aspectRatio > 0) {
       items[LocaleKeys.aiScanResultAspectRatio.tr()] =
